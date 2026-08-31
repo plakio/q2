@@ -84,7 +84,7 @@ final class GitHub_Updater {
 	 * @return string[]
 	 */
 	public function add_check_update_link( array $plugin_meta, string $plugin_file ): array {
-		if ( $plugin_file !== $this->plugin_file || ! current_user_can( 'update_plugins' ) ) {
+		if ( $plugin_file !== $this->plugin_file ) {
 			return $plugin_meta;
 		}
 
