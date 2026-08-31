@@ -222,7 +222,7 @@ final class GitHub_Updater {
 			'name'          => 'Q2',
 			'slug'          => self::REPOSITORY,
 			'version'       => $release['version'],
-			'author'        => 'Q2 contributors',
+			'author'        => '<a href="https://plak.io/">Plak</a>',
 			'homepage'      => self::UPDATE_URI,
 			'requires'      => '7.1',
 			'requires_php'  => '8.1',
