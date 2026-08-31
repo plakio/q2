@@ -187,7 +187,7 @@ function App() {
 				</nav>
 				<Team />
 				<div className="q2-sidebar-footer">
-					{ __( 'Powered by WordPress · Q2', 'q2' ) }
+					{ __( 'Powered by Q2', 'q2' ) }
 				</div>
 			</aside>
 			<main id="q2-main" className="q2-main" tabIndex="-1">
