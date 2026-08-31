@@ -1932,5 +1932,114 @@ a {
 	align-items: end;
 }
 
+/* Tasks screen */
+.q2-tasks-screen .q2-page-header {
+	flex-wrap: wrap;
+	gap: 1rem;
+}
+
+.q2-tasks-filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.6rem;
+	align-items: center;
+}
+
+.q2-tasks-filters button {
+	padding: 0.4rem 0.8rem;
+	border: 0;
+	background: var(--q2-soft);
+	font-size: 0.85rem;
+}
+
+.q2-tasks-filters button.is-active {
+	background: var(--q2-accent);
+	color: #fff;
+}
+
+.q2-tasks-filters label {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	color: var(--q2-muted);
+	font-size: 0.85rem;
+}
+
+.q2-tasks-overdue {
+	margin: 0 0 1rem;
+	color: #b04040;
+	font-weight: 600;
+}
+
+.q2-tasks-list {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	border-top: 1px solid var(--q2-line);
+}
+
+.q2-task-row {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	gap: 0.5rem 1rem;
+	align-items: center;
+	padding: 1rem 0.5rem;
+	border-bottom: 1px solid var(--q2-line);
+}
+
+.q2-task-row.is-overdue strong {
+	color: #b04040;
+}
+
+.q2-task-row.is-done {
+	opacity: 0.65;
+}
+
+.q2-task-row strong {
+	font-size: 1rem;
+}
+
+.q2-task-post {
+	display: block;
+	color: var(--q2-muted);
+	font-size: 0.85rem;
+}
+
+.q2-task-meta {
+	display: flex;
+	gap: 0.6rem;
+	align-items: center;
+	color: var(--q2-muted);
+	font-size: 0.82rem;
+}
+
+.q2-task-meta time {
+	white-space: nowrap;
+}
+
+.q2-task-assigned-row {
+	display: flex;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	gap: -0.35rem;
+}
+
+.q2-task-assigned-row li {
+	margin-left: -0.35rem;
+}
+
+.q2-task-assigned-row li:first-child {
+	margin-left: 0;
+}
+
+.q2-task-assigned-row img {
+	width: 1.65rem;
+	height: 1.65rem;
+	border-radius: 50%;
+	border: 2px solid #fff;
+	background: var(--q2-soft);
+}
+
 /* stylelint-enable no-descending-specificity */
 

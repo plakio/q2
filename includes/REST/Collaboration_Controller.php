@@ -196,15 +196,25 @@ final class Collaboration_Controller {
 		return rest_ensure_response(
 			array_map(
 				static function ( object $row ): array {
-					$actor = get_userdata( (int) $row->actor_user_id );
+					$actor   = get_userdata( (int) $row->actor_user_id );
+					$payload = array();
+					if ( ! empty( $row->payload ) ) {
+						$decoded = json_decode( (string) $row->payload, true );
+						if ( is_array( $decoded ) ) {
+							$payload = $decoded;
+						}
+					}
 					return array(
-						'id'        => (int) $row->id,
-						'type'      => $row->type,
-						'objectId'  => (int) $row->object_id,
-						'actorName' => $actor ? $actor->display_name : __( 'A former member', 'q2' ),
-						'avatarUrl' => get_avatar_url( (int) $row->actor_user_id, array( 'size' => 64 ) ),
-						'createdAt' => mysql_to_rfc3339( $row->created_at ),
-						'read'      => null !== $row->read_at,
+						'id'                  => (int) $row->id,
+						'type'                => $row->type,
+						'objectId'            => (int) $row->object_id,
+						'objectType'          => (string) $row->object_type,
+						'secondaryObjectType' => (string) $row->secondary_object_type,
+						'payload'             => $payload,
+						'actorName'           => $actor ? $actor->display_name : __( 'A former member', 'q2' ),
+						'avatarUrl'           => get_avatar_url( (int) $row->actor_user_id, array( 'size' => 64 ) ),
+						'createdAt'           => mysql_to_rfc3339( $row->created_at ),
+						'read'                => null !== $row->read_at,
 					);
 				},
 				$rows

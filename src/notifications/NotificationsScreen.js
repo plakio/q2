@@ -1,12 +1,43 @@
 import apiFetch from '@wordpress/api-fetch';
 import { useCallback, useEffect, useState } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
+import StateMessage from '../components/StateMessage';
 
-const typeLabels = {
+const TYPE_LABELS = {
 	comment: __( 'commented on a thread you follow', 'q2' ),
 	mention: __( 'mentioned you', 'q2' ),
 	like: __( 'liked your update', 'q2' ),
+	task_assigned: __( 'assigned a task to you', 'q2' ),
 };
+
+function formatDate( value ) {
+	if ( ! value ) {
+		return '';
+	}
+	return new Intl.DateTimeFormat( undefined, {
+		dateStyle: 'medium',
+	} ).format( new Date( value ) );
+}
+
+function describeTask( payload ) {
+	if ( ! payload ) {
+		return null;
+	}
+	const taskTitle = payload.title || __( 'Untitled task', 'q2' );
+	if ( payload.due_date ) {
+		return sprintf(
+			/* translators: 1: task title, 2: due date. */
+			__( 'the task “%1$s” (due %2$s)', 'q2' ),
+			taskTitle,
+			payload.due_date
+		);
+	}
+	return sprintf(
+		/* translators: %s: task title. */
+		__( 'the task “%s”', 'q2' ),
+		taskTitle
+	);
+}
 
 export default function NotificationsScreen( { onOpenPost } ) {
 	const [ notifications, setNotifications ] = useState( [] );
@@ -68,44 +99,53 @@ export default function NotificationsScreen( { onOpenPost } ) {
 				<p>{ __( 'Loading notifications…', 'q2' ) }</p>
 			) }
 			{ status === 'error' && (
-				<p role="alert">
-					{ __( 'Notifications could not be loaded.', 'q2' ) }
-				</p>
+				<StateMessage>
+					<strong>
+						{ __( 'Notifications could not be loaded.', 'q2' ) }
+					</strong>
+				</StateMessage>
 			) }
 			{ status === 'ready' && notifications.length === 0 && (
 				<p>{ __( 'You are all caught up.', 'q2' ) }</p>
 			) }
 			{ status === 'ready' && (
 				<ul className="q2-notification-list">
-					{ notifications.map( ( item ) => (
-						<li
-							key={ item.id }
-							className={ item.read ? '' : 'is-unread' }
-						>
-							<button
-								type="button"
-								onClick={ async () => {
-									await markRead( item.id );
-									onOpenPost( item.objectId );
-								} }
+					{ notifications.map( ( item ) => {
+						const taskContext =
+							'task_assigned' === item.type
+								? describeTask( item.payload )
+								: null;
+						const summary =
+							taskContext ||
+							TYPE_LABELS[ item.type ] ||
+							__( 'sent an update', 'q2' );
+						return (
+							<li
+								key={ item.id }
+								className={ item.read ? '' : 'is-unread' }
 							>
-								<img src={ item.avatarUrl } alt="" />
-								<span>
-									<strong>{ item.actorName }</strong>{ ' ' }
-									{ typeLabels[ item.type ] ||
-										__( 'sent an update', 'q2' ) }
-									<time dateTime={ item.createdAt }>
-										{ ' — ' }
-										{ new Intl.DateTimeFormat( undefined, {
-											dateStyle: 'medium',
-										} ).format(
-											new Date( item.createdAt )
-										) }
-									</time>
-								</span>
-							</button>
-						</li>
-					) ) }
+								<button
+									type="button"
+									onClick={ async () => {
+										await markRead( item.id );
+										if ( item.objectId ) {
+											onOpenPost( item.objectId );
+										}
+									} }
+								>
+									<img src={ item.avatarUrl } alt="" />
+									<span>
+										<strong>{ item.actorName }</strong>{ ' ' }
+										{ summary }
+										<time dateTime={ item.createdAt }>
+											{ ' — ' }
+											{ formatDate( item.createdAt ) }
+										</time>
+									</span>
+								</button>
+							</li>
+						);
+					} ) }
 				</ul>
 			) }
 		</div>

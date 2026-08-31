@@ -29,6 +29,7 @@ import BlockContentEditor, { POST_BLOCKS } from './editor/BlockContentEditor';
 import { buildFeedPath } from './feed/query';
 import MediaScreen from './media/MediaScreen';
 import NotificationsScreen from './notifications/NotificationsScreen';
+import TasksScreen from './tasks/TasksScreen';
 import PagesScreen from './pages/PagesScreen';
 import PeopleScreen from './people/PeopleScreen';
 import SearchScreen from './search/SearchScreen';
@@ -52,6 +53,7 @@ const routes = [
 		sidebar: true,
 	},
 	{ key: 'search', label: __( 'Search', 'q2' ), icon: search, sidebar: true },
+	{ key: 'tasks', label: __( 'Tasks', 'q2' ), icon: postList, sidebar: true },
 	{ key: 'people', label: __( 'People', 'q2' ), icon: people, sidebar: true },
 	{ key: 'projects', label: __( 'Projects', 'q2' ), icon: postList },
 	{ key: 'starters', label: __( 'Starter Buttons', 'q2' ), icon: starEmpty },
@@ -130,6 +132,8 @@ function App() {
 		content = <MediaScreen />;
 	} else if ( route === 'search' ) {
 		content = <SearchScreen />;
+	} else if ( route === 'tasks' ) {
+		content = <TasksScreen />;
 	} else if ( route === 'starters' ) {
 		content = <StartersScreen />;
 	} else if ( route === 'notifications' ) {

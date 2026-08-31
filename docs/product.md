@@ -26,7 +26,7 @@ Q2 turns a current WordPress site into an application for asynchronous communica
 
 ## Navigation
 
-The shell has Feed, Notifications, Search, Pages, Projects, and People, plus account controls. On mobile the primary navigation becomes a compact drawer/bottom-accessible control without changing information architecture.
+The shell has Feed, Notifications, Search, Pages, Projects, Tasks, Media, People, and Starter Buttons, plus account controls. On mobile the primary navigation becomes a compact drawer/bottom-accessible control without changing information architecture.
 
 The complete Q2 application lives at the site homepage `/`. Sections use home-scoped fragment state such as `/#notifications` and `/#pages`, so they do not compete with WordPress content routes. `/q2/` remains only as a compatibility entry.
 
@@ -49,6 +49,7 @@ The complete Q2 application lives at the site homepage `/`. Sections use home-sc
 
 - Pages navigation/search/pattern starters/media UX.
 - `q2/task`, `q2/project-status`, and `q2/changelog` with assignment notifications.
+- Tasks listing (assigned to me or all tasks) with overdue filtering.
 
 ### Later
 
