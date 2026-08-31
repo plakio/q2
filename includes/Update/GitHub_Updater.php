@@ -37,13 +37,6 @@ final class GitHub_Updater {
 	private string $plugin_file;
 
 	/**
-	 * Installed plugin directory name.
-	 *
-	 * @var string
-	 */
-	private string $plugin_directory;
-
-	/**
 	 * Installed version from the plugin header.
 	 *
 	 * @var string
@@ -56,12 +49,11 @@ final class GitHub_Updater {
 	 * @param string $file Absolute or resolvable main plugin file path.
 	 */
 	public function __construct( string $file ) {
-		$resolved               = realpath( $file );
-		$this->file             = false !== $resolved ? $resolved : wp_normalize_path( $file );
-		$this->plugin_file      = plugin_basename( $this->file );
-		$this->plugin_directory = dirname( $this->plugin_file );
-		$data                   = get_file_data( $this->file, array( 'Version' => 'Version' ) );
-		$this->version          = (string) ( $data['Version'] ?? '' );
+		$resolved          = realpath( $file );
+		$this->file        = false !== $resolved ? $resolved : wp_normalize_path( $file );
+		$this->plugin_file = plugin_basename( $this->file );
+		$data              = get_file_data( $this->file, array( 'Version' => 'Version' ) );
+		$this->version     = (string) ( $data['Version'] ?? '' );
 	}
 
 	/**
@@ -70,7 +62,6 @@ final class GitHub_Updater {
 	public function register(): void {
 		add_filter( 'update_plugins_github.com', array( $this, 'check_update' ), 10, 3 );
 		add_filter( 'plugins_api', array( $this, 'plugin_information' ), 10, 3 );
-		add_filter( 'upgrader_install_package_result', array( $this, 'normalize_installed_directory' ), 10, 2 );
 		add_filter( 'plugin_row_meta', array( $this, 'add_check_update_link' ), 10, 2 );
 		add_action( 'admin_init', array( $this, 'handle_manual_update_check' ) );
 		add_action( 'admin_notices', array( $this, 'render_manual_update_notice' ) );
@@ -234,41 +225,6 @@ final class GitHub_Updater {
 			),
 			'download_link' => $release['package'],
 		);
-	}
-
-	/**
-	 * Renames GitHub's extracted package directory back to `q2`.
-	 *
-	 * @param array<string, mixed> $result     Upgrader result.
-	 * @param array<string, mixed> $hook_extra Upgrader context.
-	 * @return array<string, mixed>
-	 */
-	public function normalize_installed_directory( array $result, array $hook_extra ): array {
-		if ( ( $hook_extra['plugin'] ?? '' ) !== $this->plugin_file ) {
-			return $result;
-		}
-
-		$destination       = (string) ( $result['destination'] ?? '' );
-		$local_destination = (string) ( $result['local_destination'] ?? WP_PLUGIN_DIR );
-		$target            = trailingslashit( $local_destination ) . $this->plugin_directory;
-		if ( '' === $destination || $destination === $target || ! function_exists( 'move_dir' ) ) {
-			return $result;
-		}
-
-		global $wp_filesystem;
-		if ( $wp_filesystem && $wp_filesystem->exists( $target ) ) {
-			$wp_filesystem->delete( $target, true );
-		}
-
-		$moved = move_dir( $destination, $target );
-		if ( is_wp_error( $moved ) ) {
-			return $result;
-		}
-
-		$result['destination']        = $target;
-		$result['destination_name']   = $this->plugin_directory;
-		$result['remote_destination'] = $target;
-		return $result;
 	}
 
 	/**
