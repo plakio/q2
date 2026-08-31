@@ -19,7 +19,7 @@ composer install
 composer lint
 ```
 
-`npm run build` compiles the application and creates clean versioned and `latest` plugin ZIPs with SHA-256 checksums in `dist/`. Development files, dependencies, local agent configuration, credentials, and caches are excluded.
+`npm run build` compiles the application and creates a clean versioned plugin ZIP with its SHA-256 checksum in `dist/`. Development files, dependencies, local agent configuration, credentials, and caches are excluded.
 
 ## Releases and updates
 

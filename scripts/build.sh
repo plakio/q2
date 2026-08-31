@@ -18,11 +18,8 @@ npm run build:assets
 STAGING_ROOT="$(mktemp -d)"
 trap 'rm -rf "$STAGING_ROOT"' EXIT
 PACKAGE_DIR="$STAGING_ROOT/$PLUGIN_SLUG"
+rm -rf "$DIST_DIR"
 mkdir -p "$PACKAGE_DIR" "$DIST_DIR"
-rm -f "$DIST_DIR/$PLUGIN_SLUG-$VERSION.zip" \
-	"$DIST_DIR/$PLUGIN_SLUG-$VERSION.zip.sha256" \
-	"$DIST_DIR/$PLUGIN_SLUG-latest.zip" \
-	"$DIST_DIR/$PLUGIN_SLUG-latest.zip.sha256"
 
 for path in q2.php readme.txt README.md build includes templates; do
 	if [[ -e "$ROOT_DIR/$path" ]]; then
@@ -35,11 +32,8 @@ if [[ -d "$ROOT_DIR/languages" ]]; then
 fi
 
 ZIP_FILE="$DIST_DIR/$PLUGIN_SLUG-$VERSION.zip"
-LATEST_ZIP_FILE="$DIST_DIR/$PLUGIN_SLUG-latest.zip"
 ( cd "$STAGING_ROOT" && zip -qr "$ZIP_FILE" "$PLUGIN_SLUG" )
-cp "$ZIP_FILE" "$LATEST_ZIP_FILE"
 shasum -a 256 "$ZIP_FILE" > "$ZIP_FILE.sha256"
-shasum -a 256 "$LATEST_ZIP_FILE" > "$LATEST_ZIP_FILE.sha256"
 
 if unzip -Z1 "$ZIP_FILE" | rg -q '(^|/)(node_modules|vendor|src|scripts|docs|\.git|\.env)(/|$)'; then
 	printf 'Error: release ZIP contains development-only or sensitive files.\n' >&2
@@ -47,4 +41,3 @@ if unzip -Z1 "$ZIP_FILE" | rg -q '(^|/)(node_modules|vendor|src|scripts|docs|\.g
 fi
 
 printf 'Built %s\n' "$ZIP_FILE"
-printf 'Built %s\n' "$LATEST_ZIP_FILE"

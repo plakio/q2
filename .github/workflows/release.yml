@@ -51,9 +51,6 @@ jobs:
           gh release create "$GITHUB_REF_NAME" \
             "dist/q2-$VERSION.zip" \
             "dist/q2-$VERSION.zip.sha256" \
-            "dist/q2-latest.zip" \
-            "dist/q2-latest.zip.sha256" \
             --title "Q2 $VERSION" \
             --generate-notes \
             --verify-tag
-
