@@ -17,6 +17,23 @@ WordPress database
 
 Q2 is a plugin. An explicit root rewrite serves the complete application at the WordPress homepage. Sections use fragment routing within `/`, while a rewrite endpoint keeps old `/q2/` links available. The shell does not load the active theme header, footer, or styles. wp-admin stays independent.
 
+## Screens
+
+Each workspace screen reads from a focused controller set:
+
+| Screen | Routes used |
+|---|---|
+| Feed | `/wp/v2/posts` (Core), `q2/v1/collaboration/*`, `q2/v1/preferences/feed-view`, `q2/v1/people` |
+| Pages | `q2/v1/pages` (CRUD over `post_type=page`) |
+| Search | `q2/v1/search`, `q2/v1/knowledge/tags` |
+| Media | `q2/v1/media`, `/wp/v2/media` |
+| Starters | `q2/v1/knowledge/patterns`, `q2/v1/knowledge/starters` |
+| Notifications | `q2/v1/notifications`, `q2/v1/notifications/read` |
+| People | `q2/v1/people` |
+| Embedded blocks | `q2/task`, `q2/project-status`, `q2/changelog` and the `q2/v1/posts/(?P<id>\d+)/tasks` summary |
+
+All controllers sit behind object-level or capability-level permission callbacks; no route returns data beyond `current_user_can()`. Reusable screenless widgets (search, members autocomplete, mention helpers) live under `src/components` and `src/mentions`.
+
 ## Bootstrap and routing
 
 PHP registers explicit root and `q2` rewrite rules plus a query variable, then selects a theme-independent template. Requests require authentication and the `read` capability; unauthenticated users are redirected to the standard login URL with a safe return target.

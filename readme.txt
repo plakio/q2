@@ -23,6 +23,14 @@ Q2 is an independent project inspired by product lessons from P2. It is not an o
 
 == Changelog ==
 
+= 0.3.0 =
+* Add the Pages screen with hierarchical navigation, full Gutenberg editing, and parent cycle protection.
+* Add the universal Search screen that indexes posts, pages, comments, people, and tags.
+* Add the Media screen with MIME filtering, image previews, and inline metadata editing.
+* Add the Starter Buttons manager so administrators can curate block patterns.
+* Add the q2/task block with assignees, due dates, and status, persisted in a new wp_q2_tasks table for indexable summaries and assignment notifications.
+* Add the q2/project-status and q2/changelog Gutenberg blocks.
+
 = 0.2.0 =
 * Add a modern P2-inspired responsive application design.
 * Add Gutenberg post creation and inline editing with tags.

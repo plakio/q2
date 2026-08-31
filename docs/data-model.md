@@ -11,7 +11,7 @@
 | Media/file | attachment post | Core media lifecycle. |
 | Tag | `post_tag` term | No duplicate tag index. |
 | Pattern/starter | Core block pattern entities/APIs | Q2 option stores only the selected starter references/order. |
-| Task/project/changelog | Blocks inside post/page content | Attributes are versioned block data; no task CPT initially. |
+| Task/project/changelog | `q2/task` etc. blocks + `wp_q2_tasks` table | Block data is the source of truth; the table is an index keyed by `block_id` for status summaries and assignment notifications. |
 | Feed mode | User meta `q2_feed_view` | Small, one-value preference; appropriate for user meta. |
 
 ## Collaboration tables
@@ -64,6 +64,20 @@ An event cursor supports new comments on an already-read thread without destruct
 - `created_at`
 - unique `(mentioned_user_id, object_type, object_id)`
 - indexes for user feed and object cleanup
+
+### `{$wpdb->prefix}q2_tasks`
+
+- `id` bigint unsigned primary key
+- `block_id` varchar(64) — stable UUID for the `q2/task` block
+- `parent_post_id` bigint unsigned — owning post/page
+- `actor_user_id`, `title`, `status` (`todo`/`in_progress`/`done`), `due_date`
+- `assignees` JSON array of user IDs
+- `version` optimistic counter
+- `created_at`, `updated_at`
+- unique `(block_id)` — one row per block
+- indexes `(parent_post_id, status, due_date)`, `(status, due_date)`, `(parent_post_id, due_date)` for project-status and overdue queries
+
+The table is rebuilt from parsed block content on every post save (`Q2\Tasks\Sync`), so the post body remains the source of truth and the table provides indexable aggregate views and assignment notifications.
 
 ## Why tables
 
