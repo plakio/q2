@@ -1971,6 +1971,15 @@ a {
 	font-weight: 600;
 }
 
+.q2-tasks-error {
+	margin: 0 0 1rem;
+	padding: 0.6rem 0.85rem;
+	border-left: 4px solid #d63638;
+	background: #fdecec;
+	color: #8a2222;
+}
+
+
 .q2-tasks-list {
 	padding: 0;
 	margin: 0;
@@ -2039,6 +2048,22 @@ a {
 	border-radius: 50%;
 	border: 2px solid #fff;
 	background: var(--q2-soft);
+}
+
+.q2-task-toggle {
+	padding: 0.35rem 0.7rem;
+	border: 1px solid var(--q2-line);
+	border-radius: 999px;
+	background: #fff;
+	color: var(--q2-ink);
+	font-size: 0.78rem;
+	white-space: nowrap;
+}
+
+.q2-task-toggle[aria-pressed="true"] {
+	border-color: #166534;
+	background: #d8f3df;
+	color: #166534;
 }
 
 /* stylelint-enable no-descending-specificity */

@@ -50,8 +50,18 @@ register_activation_hook(
 		Q2\Application\Application::register_rewrite_rules();
 		Q2\Core\Capabilities::activate();
 		Q2\Core\Installer::install();
+		Q2\Tasks\Cron::ensure_scheduled();
 		flush_rewrite_rules();
 	}
 );
 
-register_deactivation_hook( __FILE__, 'flush_rewrite_rules' );
+register_deactivation_hook(
+	__FILE__,
+	static function (): void {
+		$timestamp = wp_next_scheduled( Q2\Tasks\Cron::HOOK_NAME );
+		if ( $timestamp ) {
+			wp_unschedule_event( $timestamp, Q2\Tasks\Cron::HOOK_NAME );
+		}
+		flush_rewrite_rules();
+	}
+);

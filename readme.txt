@@ -23,6 +23,11 @@ Q2 is an independent project inspired by product lessons from P2. It is not an o
 
 == Changelog ==
 
+= 0.2.2 =
+* Allow opt-in task state mutations through PATCH /q2/v1/tasks/(block_id) so members can mark a task done without re-saving the full post.
+* Send a daily Q2 cron reminder to assignees with tasks due on or before the next day, deduped by (task, date, recipient).
+* Surface the new task_due_soon notification type in the Notifications inbox.
+
 = 0.2.0 =
 * Add the Pages screen with hierarchical navigation, full Gutenberg editing, and parent cycle protection.
 * Add the universal Search screen that indexes posts, pages, comments, people, and tags.

@@ -79,6 +79,8 @@ An event cursor supports new comments on an already-read thread without destruct
 
 The table is rebuilt from parsed block content on every post save (`Q2\Tasks\Sync`), so the post body remains the source of truth and the table provides indexable aggregate views and assignment notifications.
 
+The companion `Q2\Tasks\Cron` service registers a `daily` WP-Cron event that scans rows with `due_date <= today + 1 day` (excluding `done`) and emits a `task_due_soon` notification per (task, date, recipient) combination. Dedupe keys live in the shared `wp_q2_notifications` table.
+
 ## Why tables
 
 Notifications are append-heavy and filtered by recipient/type/read time. Follows/reactions/mentions require uniqueness plus fast forward and reverse lookups. Packing these into user meta creates serialized blobs or unbounded rows with weak composite indexing; post meta makes recipient-centric queries expensive. Dedicated tables make correctness and cleanup explicit.

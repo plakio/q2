@@ -8,6 +8,7 @@ const TYPE_LABELS = {
 	mention: __( 'mentioned you', 'q2' ),
 	like: __( 'liked your update', 'q2' ),
 	task_assigned: __( 'assigned a task to you', 'q2' ),
+	task_due_soon: __( 'reminded you about a task', 'q2' ),
 };
 
 function formatDate( value ) {
@@ -112,7 +113,8 @@ export default function NotificationsScreen( { onOpenPost } ) {
 				<ul className="q2-notification-list">
 					{ notifications.map( ( item ) => {
 						const taskContext =
-							'task_assigned' === item.type
+							'task_assigned' === item.type ||
+							'task_due_soon' === item.type
 								? describeTask( item.payload )
 								: null;
 						const summary =

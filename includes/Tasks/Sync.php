@@ -86,6 +86,11 @@ final class Sync {
 				)
 			);
 
+			// Wake the daily cron so newly added/rescheduled tasks surface today.
+			if ( ! empty( $task['dueDate'] ) ) {
+				do_action( 'q2_tasks_due_changed' );
+			}
+
 			foreach ( $new_assignees as $assignee ) {
 				$this->collaboration->notify(
 					array(

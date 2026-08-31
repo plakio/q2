@@ -8,6 +8,16 @@ const SCOPE_OPTIONS = [
 	{ key: 'all', label: __( 'All tasks', 'q2' ) },
 ];
 
+function toggleLabel( task, busyId ) {
+	if ( busyId === task.blockId ) {
+		return __( 'Updating…', 'q2' );
+	}
+	if ( 'done' === task.status ) {
+		return __( 'Mark active', 'q2' );
+	}
+	return __( 'Mark done', 'q2' );
+}
+
 function formatDate( value ) {
 	if ( ! value ) {
 		return '';
@@ -22,8 +32,10 @@ export default function TasksScreen() {
 	const [ tasks, setTasks ] = useState( [] );
 	const [ status, setStatus ] = useState( 'loading' );
 	const [ overdueOnly, setOverdueOnly ] = useState( false );
+	const [ busyId, setBusyId ] = useState( '' );
+	const [ errorMessage, setErrorMessage ] = useState( '' );
 
-	useEffect( () => {
+	const reload = () => {
 		const params = new URLSearchParams( {
 			scope,
 			perPage: '50',
@@ -39,7 +51,33 @@ export default function TasksScreen() {
 				setStatus( 'ready' );
 			} )
 			.catch( () => setStatus( 'error' ) );
-	}, [ scope, overdueOnly ] );
+	};
+
+	useEffect( reload, [ scope, overdueOnly ] );
+
+	const toggleStatus = async ( task ) => {
+		const next = 'done' === task.status ? 'todo' : 'done';
+		setBusyId( task.blockId );
+		setErrorMessage( '' );
+		try {
+			await apiFetch( {
+				path: `/q2/v1/tasks/${ task.blockId }`,
+				method: 'PATCH',
+				data: { status: next },
+			} );
+			setTasks( ( current ) =>
+				current.map( ( t ) =>
+					t.blockId === task.blockId ? { ...t, status: next } : t
+				)
+			);
+		} catch ( reason ) {
+			setErrorMessage(
+				reason.message || __( 'The task could not be updated.', 'q2' )
+			);
+		} finally {
+			setBusyId( '' );
+		}
+	};
 
 	const today = new Date();
 	const overdue = tasks.filter( ( t ) => {
@@ -87,6 +125,11 @@ export default function TasksScreen() {
 					</label>
 				</div>
 			</header>
+			{ errorMessage && (
+				<p role="alert" className="q2-tasks-error">
+					{ errorMessage }
+				</p>
+			) }
 			{ overdue.length > 0 && (
 				<p
 					className="q2-tasks-overdue"
@@ -177,6 +220,15 @@ export default function TasksScreen() {
 											) ) }
 										</ul>
 									) }
+									<button
+										type="button"
+										className="q2-task-toggle"
+										onClick={ () => toggleStatus( task ) }
+										disabled={ busyId === task.blockId }
+										aria-pressed={ 'done' === task.status }
+									>
+										{ toggleLabel( task, busyId ) }
+									</button>
 								</div>
 							</li>
 						);

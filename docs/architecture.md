@@ -93,6 +93,14 @@ Rendered content uses normal WordPress block/content filters in trusted server r
 
 PHP events such as `q2_notification_created` and registered notification-channel interfaces will allow mail/push/integration adapters. Block types expose normal block filters. REST responses follow registered schemas. Public extension contracts will be versioned only after the first core workflows stabilize.
 
+## Tasks
+
+A `q2/task` block carries `blockId`, `title`, `status`, `dueDate`, and `assignees` inside the post content. On every post save the `Q2\Tasks\Sync` service parses the saved blocks, upserts the `wp_q2_tasks` table (keyed by `block_id`), prunes orphaned rows, and emits `task_assigned` notifications for newly added assignees (dedupe by `task:block:user`).
+
+A daily WP-Cron event `q2_tasks_daily_reminder` is registered on activation and replanned on `q2_tasks_due_changed`. It calls `Q2\Tasks\Repository::due_on_or_before( '+1 day' )` and emits `task_due_soon` notifications with a dedupe key of `(task_id, due_date, user_id)` so recipients are not repeatedly reminded inside the same day.
+
+The `PATCH /q2/v1/tasks/(block_id)` route allows targeted mutations (status, title, due_date, assignees) without the cost of saving the parent post: the controller looks up the block, upserts the row, and rewrites only the q2/task block comment in the post content.
+
 ## Realtime seam
 
 Mutations emit domain events independent of transport. Initially the UI refreshes on navigation/user action and may poll bounded “since cursor” endpoints. A future SSE/WebSocket/WordPress collaboration adapter can consume the same event sequence. Realtime is not required for data integrity.

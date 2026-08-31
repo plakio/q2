@@ -87,6 +87,201 @@ final class Tasks_Controller {
 				},
 			)
 		);
+		register_rest_route(
+			'q2/v1',
+			'/tasks/(?P<block_id>[a-zA-Z0-9_-]+)',
+			array(
+				'methods'             => 'PATCH',
+				'callback'            => array( $this, 'update_task' ),
+				'permission_callback' => array( $this, 'can_modify_task' ),
+				'args'                => array(
+					'status'    => array(
+						'type'              => 'string',
+						'sanitize_callback' => 'sanitize_key',
+					),
+					'title'     => array(
+						'type'              => 'string',
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+					'due_date'  => array(
+						'type'              => 'string',
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+					'assignees' => array(
+						'type'  => 'array',
+						'items' => array( 'type' => 'integer' ),
+					),
+				),
+			)
+		);
+	}
+
+	/**
+	 * Permission callback: ensure the current user can edit the parent post.
+	 *
+	 * @param \WP_REST_Request $request Current request.
+	 */
+	public function can_modify_task( \WP_REST_Request $request ): bool {
+		global $wpdb;
+		$block_id = (string) $request->get_param( 'block_id' );
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$post_id = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT parent_post_id FROM {$wpdb->prefix}q2_tasks WHERE block_id = %s",
+				$block_id
+			)
+		);
+		return $post_id > 0 && current_user_can( 'edit_post', $post_id );
+	}
+
+	/**
+	 * Updates a task by block ID and patches the parent post's q2/task block.
+	 *
+	 * @param \WP_REST_Request $request Current request.
+	 */
+	public function update_task( \WP_REST_Request $request ): \WP_REST_Response|\WP_Error {
+		global $wpdb;
+		$block_id = (string) $request->get_param( 'block_id' );
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$row = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT id, parent_post_id, title, status, due_date, assignees FROM {$wpdb->prefix}q2_tasks WHERE block_id = %s",
+				$block_id
+			)
+		);
+
+		if ( ! $row ) {
+			return new \WP_Error( 'q2_task_not_found', __( 'That task could not be found.', 'q2' ), array( 'status' => 404 ) );
+		}
+
+		$post = get_post( (int) $row->parent_post_id );
+		if ( ! $post instanceof \WP_Post ) {
+			return new \WP_Error( 'q2_task_not_found', __( 'The parent post for that task could not be loaded.', 'q2' ), array( 'status' => 404 ) );
+		}
+
+		// Compute new field values with fallbacks to current values.
+		$next_status = (string) $request->get_param( 'status' );
+		if ( '' !== $next_status && ! in_array( $next_status, array( 'todo', 'in_progress', 'done' ), true ) ) {
+			return new \WP_Error( 'q2_task_invalid_status', __( 'That task status is not supported.', 'q2' ), array( 'status' => 400 ) );
+		}
+
+		$next_title = $request->has_param( 'title' )
+			? (string) $request->get_param( 'title' )
+			: (string) $row->title;
+
+		$next_due = $request->has_param( 'due_date' )
+			? (string) $request->get_param( 'due_date' )
+			: (string) $row->due_date;
+
+		$next_assignees = array();
+		if ( $request->has_param( 'assignees' ) ) {
+			foreach ( (array) $request->get_param( 'assignees' ) as $user_id ) {
+				$next_assignees[] = (int) $user_id;
+			}
+		} else {
+			$decoded = json_decode( (string) $row->assignees, true );
+			if ( is_array( $decoded ) ) {
+				$next_assignees = array_map( 'intval', $decoded );
+			}
+		}
+
+		$payload = array(
+			'parent_post_id' => (int) $row->parent_post_id,
+			'actor_user_id'  => get_current_user_id(),
+			'title'          => $next_title,
+			'status'         => '' === $next_status ? (string) $row->status : $next_status,
+			'due_date'       => '' === $next_due ? null : $next_due,
+			'assignees'      => $next_assignees,
+		);
+		$this->repository->upsert( array_merge( $payload, array( 'block_id' => $block_id ) ) );
+
+		// Patch the source block attributes too so subsequent saves do not revert.
+		$updated_content = $this->patch_task_block_in_content(
+			$post->post_content,
+			$block_id,
+			array(
+				'title'     => $next_title,
+				'status'    => $payload['status'],
+				'dueDate'   => '' === $next_due ? '' : $next_due,
+				'assignees' => array_values( $next_assignees ),
+			)
+		);
+
+		if ( $updated_content !== $post->post_content ) {
+			wp_update_post(
+				array(
+					'ID'           => (int) $row->parent_post_id,
+					'post_content' => $updated_content,
+				),
+				true
+			);
+		}
+
+		$updated = $wpdb->get_row(
+			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				"SELECT id, block_id, parent_post_id, title, status, due_date, assignees FROM {$wpdb->prefix}q2_tasks WHERE block_id = %s",
+				$block_id
+			)
+		);
+
+		$payload_out = $updated ? $this->prepare_task( $updated ) : array();
+		if ( empty( $payload_out ) ) {
+			return new \WP_Error( 'q2_task_unreadable', __( 'You do not have permission to view that task.', 'q2' ), array( 'status' => 403 ) );
+		}
+		return rest_ensure_response( $payload_out );
+	}
+
+	/**
+	 * Patches a q2/task block attribute set inside serialized block content.
+	 *
+	 * @param string               $content Post content.
+	 * @param string               $block_id Block ID.
+	 * @param array<string, mixed> $attrs New attributes.
+	 * @return string
+	 */
+	private function patch_task_block_in_content( string $content, string $block_id, array $attrs ): string {
+		if ( '' === $content || '' === $block_id ) {
+			return $content;
+		}
+		$needle = 'data-block-id="' . $block_id . '"';
+		$pos    = strpos( $content, $needle );
+		if ( false === $pos ) {
+			return $content;
+		}
+		// Walk back to find the opening wp-block comment for this block.
+		$open = strrpos( substr( $content, 0, $pos ), '<!-- wp:q2/task' );
+		if ( false === $open ) {
+			return $content;
+		}
+		$close = strpos( $content, '/-->', $open );
+		if ( false === $close ) {
+			return $content;
+		}
+		$segment = substr( $content, $open, $close - $open + 4 );
+
+		$new_attrs = array();
+		if ( isset( $attrs['title'] ) ) {
+			$new_attrs['title'] = (string) $attrs['title'];
+		}
+		if ( isset( $attrs['status'] ) ) {
+			$new_attrs['status'] = (string) $attrs['status'];
+		}
+		if ( array_key_exists( 'dueDate', $attrs ) ) {
+			$new_attrs['dueDate'] = (string) $attrs['dueDate'];
+		}
+		if ( isset( $attrs['assignees'] ) ) {
+			$new_attrs['assignees'] = array_values( (array) $attrs['assignees'] );
+		}
+
+		$encoded = wp_json_encode( $new_attrs );
+		if ( false === $encoded ) {
+			return $content;
+		}
+
+		$updated_segment = '<!-- wp:q2/task ' . $encoded . ' -->';
+		return substr( $content, 0, $open ) . $updated_segment . substr( $content, $close + 4 );
 	}
 
 	/**

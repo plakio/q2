@@ -21,6 +21,7 @@ use Q2\REST\Media_Controller;
 use Q2\REST\Pages_Controller;
 use Q2\REST\People_Controller;
 use Q2\REST\Tasks_Controller;
+use Q2\Tasks\Cron as Tasks_Cron;
 use Q2\Tasks\Sync as Tasks_Sync;
 use Q2\Update\GitHub_Updater;
 
@@ -62,6 +63,7 @@ final class Plugin {
 		( new People_Controller() )->register();
 		( new Tasks_Controller() )->register();
 		( new Tasks_Sync() )->register();
+		( new Tasks_Cron() )->register();
 		( new GitHub_Updater( Q2_PATH . 'q2.php' ) )->register();
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 	}
