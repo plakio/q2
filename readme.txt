@@ -29,6 +29,9 @@ Q2 is an independent project inspired by product lessons from P2. It is not an o
 * Add incremental chronological feed loading.
 * Add rich native WordPress comments, threaded replies, inline editing, and deletion controls.
 * Add the authenticated people directory.
+* Add member and @all mention autocomplete with durable mention notifications.
+* Add accurate unread post/comment filters, My Posts, and My Mentions.
+* Add in-app notifications, thread following, Likes, and persistent feed views.
 
 = 0.1.3 =
 * Add automatic updates from public GitHub Releases and reproducible build/release tooling.

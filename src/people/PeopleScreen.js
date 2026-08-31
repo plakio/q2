@@ -69,6 +69,9 @@ export default function PeopleScreen() {
 							<img src={ person.avatarUrl } alt="" />
 							<div>
 								<h2>{ person.name }</h2>
+								<span className="q2-person-mention">
+									@{ person.slug }
+								</span>
 								<p>
 									{ person.roles.length
 										? person.roles.join( ' · ' )

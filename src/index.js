@@ -4,6 +4,7 @@ import {
 	useCallback,
 	useEffect,
 	useMemo,
+	useRef,
 	useState,
 } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
@@ -20,9 +21,13 @@ import {
 	starEmpty,
 } from '@wordpress/icons';
 import CommentsThread from './comments/CommentsThread';
+import usePostCollaboration from './collaboration/usePostCollaboration';
 import TagPicker from './components/TagPicker';
 import BlockContentEditor, { POST_BLOCKS } from './editor/BlockContentEditor';
+import { buildFeedPath } from './feed/query';
+import NotificationsScreen from './notifications/NotificationsScreen';
 import PeopleScreen from './people/PeopleScreen';
+import './mentions/register';
 import { routeFromHash, routeFromPath } from './routes';
 import './style.scss';
 
@@ -62,6 +67,7 @@ function routeFromLocation() {
 function App() {
 	const [ route, setRoute ] = useState( routeFromLocation );
 	const [ menuOpen, setMenuOpen ] = useState( false );
+	const [ focusPostId, setFocusPostId ] = useState( 0 );
 
 	useEffect( () => {
 		const onPopState = () => setRoute( routeFromLocation() );
@@ -102,14 +108,24 @@ function App() {
 	if ( ! known ) {
 		content = <NotFound />;
 	} else if ( route === 'feed' ) {
-		content = <Feed />;
+		content = <Feed focusPostId={ focusPostId } />;
 	} else if ( route === 'people' ) {
 		content = <PeopleScreen />;
+	} else if ( route === 'notifications' ) {
+		content = (
+			<NotificationsScreen
+				onOpenPost={ ( postId ) => {
+					setFocusPostId( postId );
+					goToRoute( 'feed' );
+				} }
+			/>
+		);
 	}
 
 	return (
 		<div className={ `q2-app${ menuOpen ? ' is-menu-open' : '' }` }>
 			<Topbar
+				route={ route }
 				onNavigate={ goToRoute }
 				onToggleMenu={ () => setMenuOpen( ( value ) => ! value ) }
 			/>
@@ -170,8 +186,25 @@ function SiteIcon( { className = '' } ) {
 	);
 }
 
-function Topbar( { onNavigate, onToggleMenu } ) {
+function Topbar( { route, onNavigate, onToggleMenu } ) {
 	const user = settings.currentUser || {};
+	const [ unreadCount, setUnreadCount ] = useState( 0 );
+
+	useEffect( () => {
+		const loadUnread = () => {
+			apiFetch( { path: '/q2/v1/notifications?unread=true' } )
+				.then( ( result ) => setUnreadCount( result.length ) )
+				.catch( () => {} );
+		};
+		loadUnread();
+		window.addEventListener( 'q2:notifications-changed', loadUnread );
+		return () =>
+			window.removeEventListener(
+				'q2:notifications-changed',
+				loadUnread
+			);
+	}, [ route ] );
+
 	return (
 		<header className="q2-topbar">
 			<a className="q2-product" href={ settings.homeUrl }>
@@ -210,6 +243,11 @@ function Topbar( { onNavigate, onToggleMenu } ) {
 				aria-label={ __( 'Notifications', 'q2' ) }
 			>
 				<Icon icon={ bell } size={ 21 } />
+				{ unreadCount > 0 && (
+					<span className="q2-notification-badge">
+						{ unreadCount > 99 ? '99+' : unreadCount }
+					</span>
+				) }
 			</button>
 			<img className="q2-topbar-avatar" src={ user.avatarUrl } alt="" />
 			<button
@@ -273,24 +311,52 @@ function Team() {
 	);
 }
 
-function Feed() {
+function Feed( { focusPostId = 0 } ) {
 	const [ posts, setPosts ] = useState( [] );
 	const [ status, setStatus ] = useState( 'loading' );
 	const [ error, setError ] = useState( '' );
 	const [ refresh, setRefresh ] = useState( 0 );
 	const [ page, setPage ] = useState( 1 );
 	const [ hasMore, setHasMore ] = useState( true );
+	const [ filter, setFilter ] = useState( 'all' );
+	const [ view, setView ] = useState( 'default' );
+	const [ feedMeta, setFeedMeta ] = useState( {
+		newPostIds: [],
+		newCommentPostIds: [],
+		mentionPostIds: [],
+	} );
 	const perPage = 10;
+
+	useEffect( () => {
+		apiFetch( { path: '/q2/v1/collaboration/feed' } )
+			.then( setFeedMeta )
+			.catch( () => {} );
+		apiFetch( { path: '/q2/v1/preferences/feed-view' } )
+			.then( ( result ) => setView( result.view ) )
+			.catch( () => {} );
+	}, [ refresh ] );
 
 	useEffect( () => {
 		let active = true;
 		setStatus( page === 1 ? 'loading' : 'loading-more' );
-		const context = settings.capabilities?.createPosts
-			? '&context=edit'
-			: '';
-		apiFetch( {
-			path: `/wp/v2/posts?per_page=${ perPage }&page=${ page }&_embed=author,wp:term,replies${ context }`,
-		} )
+		const path = buildFeedPath( {
+			page,
+			perPage,
+			canEdit: settings.capabilities?.createPosts,
+			userId: settings.currentUser.id,
+			filter,
+			feedMeta,
+			focusPostId,
+		} );
+		if ( ! path ) {
+			setPosts( [] );
+			setHasMore( false );
+			setStatus( 'ready' );
+			return () => {
+				active = false;
+			};
+		}
+		apiFetch( { path } )
 			.then( ( result ) => {
 				if ( active ) {
 					setPosts( ( current ) =>
@@ -312,7 +378,7 @@ function Feed() {
 		return () => {
 			active = false;
 		};
-	}, [ page, refresh ] );
+	}, [ feedMeta, filter, focusPostId, page, refresh ] );
 
 	const reload = useCallback( () => {
 		setPage( 1 );
@@ -327,20 +393,75 @@ function Feed() {
 		);
 	}, [] );
 
+	const chooseFilter = ( nextFilter ) => {
+		setPosts( [] );
+		setPage( 1 );
+		setFilter( nextFilter );
+	};
+
+	const chooseView = async ( nextView ) => {
+		setView( nextView );
+		await apiFetch( {
+			path: '/q2/v1/preferences/feed-view',
+			method: 'POST',
+			data: { view: nextView },
+		} );
+	};
+
 	return (
-		<div className="q2-feed">
+		<div className={ `q2-feed is-${ view }-view` }>
 			{ settings.capabilities?.createPosts && (
 				<Composer onCreated={ reload } />
 			) }
 			<div className="q2-feed-tools">
-				<button type="button">
-					{ __( 'Filters', 'q2' ) }
-					<Icon icon={ chevronDown } size={ 17 } />
-				</button>
-				<button type="button">
-					{ __( 'Default view', 'q2' ) }
-					<Icon icon={ chevronDown } size={ 17 } />
-				</button>
+				<label htmlFor="q2-feed-filter">
+					<span className="screen-reader-text">
+						{ __( 'Filter feed', 'q2' ) }
+					</span>
+					<select
+						id="q2-feed-filter"
+						value={ filter }
+						onChange={ ( event ) =>
+							chooseFilter( event.target.value )
+						}
+					>
+						<option value="all">{ __( 'All posts', 'q2' ) }</option>
+						<option value="new-posts">
+							{ __( 'New Posts', 'q2' ) }
+						</option>
+						<option value="new-comments">
+							{ __( 'New Comments', 'q2' ) }
+						</option>
+						<option value="my-posts">
+							{ __( 'My Posts', 'q2' ) }
+						</option>
+						<option value="mentions">
+							{ __( 'My Mentions', 'q2' ) }
+						</option>
+					</select>
+				</label>
+				<label htmlFor="q2-feed-view">
+					<span className="screen-reader-text">
+						{ __( 'Feed view', 'q2' ) }
+					</span>
+					<select
+						id="q2-feed-view"
+						value={ view }
+						onChange={ ( event ) =>
+							chooseView( event.target.value )
+						}
+					>
+						<option value="default">
+							{ __( 'Default view', 'q2' ) }
+						</option>
+						<option value="expanded">
+							{ __( 'Expanded view', 'q2' ) }
+						</option>
+						<option value="compact">
+							{ __( 'Compact view', 'q2' ) }
+						</option>
+					</select>
+				</label>
 			</div>
 			<div className="q2-feed-content">
 				{ status === 'loading' && (
@@ -376,6 +497,10 @@ function Feed() {
 							key={ post.id }
 							post={ post }
 							onUpdated={ updatePost }
+							isUnread={
+								feedMeta.newPostIds.includes( post.id ) ||
+								feedMeta.newCommentPostIds.includes( post.id )
+							}
 						/>
 					) ) }
 				{ status === 'loading-more' && (
@@ -470,8 +595,14 @@ function Composer( { onCreated } ) {
 	);
 }
 
-function Post( { post, onUpdated } ) {
+function Post( { post, onUpdated, isUnread = false } ) {
 	const author = post._embedded?.author?.[ 0 ];
+	const articleRef = useRef( null );
+	const {
+		state: collaborationState,
+		ready: collaborationReady,
+		update: updateCollaboration,
+	} = usePostCollaboration( post.id );
 	const [ commentsOpen, setCommentsOpen ] = useState( false );
 	const [ editing, setEditing ] = useState( false );
 	const [ replyCount, setReplyCount ] = useState(
@@ -503,6 +634,33 @@ function Post( { post, onUpdated } ) {
 		[ post.date_gmt ]
 	);
 
+	useEffect( () => {
+		if (
+			! collaborationReady ||
+			! isUnread ||
+			collaborationState.read ||
+			! articleRef.current
+		) {
+			return undefined;
+		}
+		const observer = new window.IntersectionObserver(
+			( entries ) => {
+				if ( entries.some( ( entry ) => entry.isIntersecting ) ) {
+					updateCollaboration( 'read' );
+					observer.disconnect();
+				}
+			},
+			{ threshold: 0.6 }
+		);
+		observer.observe( articleRef.current );
+		return () => observer.disconnect();
+	}, [
+		collaborationReady,
+		collaborationState.read,
+		isUnread,
+		updateCollaboration,
+	] );
+
 	const saveEdit = async ( content ) => {
 		const updated = await apiFetch( {
 			path: `/wp/v2/posts/${ post.id }?context=edit`,
@@ -518,7 +676,12 @@ function Post( { post, onUpdated } ) {
 	};
 
 	return (
-		<article className="q2-post">
+		<article
+			ref={ articleRef }
+			className={ `q2-post${
+				isUnread && ! collaborationState.read ? ' is-unread' : ''
+			}` }
+		>
 			{ canEdit && ! editing && (
 				<button
 					className="q2-post-menu"
@@ -582,13 +745,39 @@ function Post( { post, onUpdated } ) {
 					<Icon icon={ comment } size={ 18 } />
 					{ replyLabel }
 				</button>
-				<button type="button">
+				<button
+					type="button"
+					disabled={ ! collaborationReady }
+					aria-pressed={ collaborationState.following }
+					onClick={ () =>
+						updateCollaboration(
+							'follow',
+							! collaborationState.following
+						)
+					}
+				>
 					<Icon icon={ bell } size={ 18 } />
-					{ __( 'Follow', 'q2' ) }
+					{ collaborationState.following
+						? __( 'Following', 'q2' )
+						: __( 'Follow', 'q2' ) }
 				</button>
-				<button type="button">
+				<button
+					type="button"
+					disabled={ ! collaborationReady }
+					aria-pressed={ collaborationState.liked }
+					onClick={ () =>
+						updateCollaboration(
+							'like',
+							! collaborationState.liked
+						)
+					}
+				>
 					<Icon icon={ starEmpty } size={ 18 } />
-					{ __( 'Like', 'q2' ) }
+					{ collaborationState.liked
+						? __( 'Liked', 'q2' )
+						: __( 'Like', 'q2' ) }
+					{ collaborationState.likes > 0 &&
+						` (${ collaborationState.likes })` }
 				</button>
 			</footer>
 			{ commentsOpen && (

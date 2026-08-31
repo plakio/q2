@@ -2,7 +2,7 @@
 
 Q2 is a modern, self-hosted collaborative workspace built natively on WordPress and Gutenberg. It is an independent project inspired by product lessons from P2; it is not an official continuation, fork, or compatibility layer.
 
-This repository contains the research, product/architecture specification, application foundation, and Phase 3 core workspace. The authenticated homepage now provides a Gutenberg composer, chronological incremental feed, editable posts, tags, rich threaded comments, and a people directory. Sections use URLs such as `/#people`; `/q2/` remains available only for compatibility.
+This repository contains the research, product/architecture specification, application foundation, core workspace, and Phase 4 collaboration layer. The authenticated homepage provides a Gutenberg composer, chronological incremental feed, editable posts, tags, rich threaded comments, member mentions, unread filters, notifications, follows, Likes, feed views, and a people directory. Sections use URLs such as `/#notifications`; `/q2/` remains available only for compatibility.
 
 ## Requirements
 

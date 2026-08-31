@@ -49,6 +49,7 @@ register_activation_hook(
 	static function (): void {
 		Q2\Application\Application::register_rewrite_rules();
 		Q2\Core\Capabilities::activate();
+		Q2\Core\Installer::install();
 		flush_rewrite_rules();
 	}
 );

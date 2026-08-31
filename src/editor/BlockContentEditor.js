@@ -120,7 +120,18 @@ export default function BlockContentEditor( {
 				</BlockTools>
 			</BlockEditorProvider>
 			<footer className="q2-editor-actions">
-				<span aria-live="polite">{ message }</span>
+				<span aria-live="polite">
+					{ message ||
+						( window.q2Settings?.capabilities?.mentionAll
+							? __(
+									'Mention teammates with @username or @all.',
+									'q2'
+							  )
+							: __(
+									'Mention teammates with @username.',
+									'q2'
+							  ) ) }
+				</span>
 				<div>
 					{ onCancel && (
 						<Button

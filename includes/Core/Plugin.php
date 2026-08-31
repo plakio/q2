@@ -12,7 +12,9 @@ namespace Q2\Core;
 defined( 'ABSPATH' ) || exit;
 
 use Q2\Application\Application;
+use Q2\Collaboration\Activity;
 use Q2\REST\Bootstrap_Controller;
+use Q2\REST\Collaboration_Controller;
 use Q2\REST\Comments_Controller;
 use Q2\REST\People_Controller;
 use Q2\Update\GitHub_Updater;
@@ -43,8 +45,11 @@ final class Plugin {
 	 * Registers Q2 modules after all plugins are loaded.
 	 */
 	public function boot(): void {
+		Installer::maybe_upgrade();
 		( new Application() )->register();
+		( new Activity() )->register();
 		( new Bootstrap_Controller() )->register();
+		( new Collaboration_Controller() )->register();
 		( new Comments_Controller() )->register();
 		( new People_Controller() )->register();
 		( new GitHub_Updater( Q2_PATH . 'q2.php' ) )->register();
