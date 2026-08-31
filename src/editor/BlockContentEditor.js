@@ -25,6 +25,9 @@ export const POST_BLOCKS = [
 	'core/quote',
 	'core/code',
 	'core/embed',
+	'q2/task',
+	'q2/project-status',
+	'q2/changelog',
 ];
 
 export const COMMENT_BLOCKS = [

@@ -1766,3 +1766,171 @@ a {
 }
 
 /* stylelint-enable no-descending-specificity */
+
+/* Task + Project Status + Changelog blocks */
+/* stylelint-disable no-descending-specificity */
+.q2-task {
+	display: grid;
+	gap: 0.6rem;
+	padding: 1.2rem 1.4rem;
+	border: 1px solid var(--q2-line);
+	border-left: 4px solid var(--q2-accent);
+	border-radius: 0.4rem;
+	background: #fff;
+}
+
+.q2-task-status {
+	display: inline-block;
+	padding: 0.15rem 0.5rem;
+	border-radius: 999px;
+	background: var(--q2-soft);
+	color: var(--q2-ink);
+	font-size: 0.7rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.q2-task-status.is-in_progress {
+	background: #fef3c7;
+	color: #8b5a00;
+}
+
+.q2-task-status.is-done {
+	background: #d8f3df;
+	color: #166534;
+}
+
+.q2-task-summary {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	align-items: center;
+	color: var(--q2-ink);
+}
+
+.q2-task-summary strong {
+	font-size: 1.05rem;
+}
+
+.q2-task-due {
+	color: var(--q2-accent);
+	font-size: 0.85rem;
+}
+
+.q2-task-assigned {
+	color: var(--q2-muted);
+	font-size: 0.8rem;
+}
+
+.q2-task-assignees label {
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+	padding: 0.25rem 0;
+	border-bottom: 1px solid var(--q2-line);
+}
+
+.q2-task-assignees small {
+	color: var(--q2-muted);
+}
+
+.q2-project-status {
+	display: grid;
+	gap: 1rem;
+	padding: 1.5rem;
+	border: 1px solid var(--q2-line);
+	border-radius: 0.4rem;
+	background: #fff;
+}
+
+.q2-project-status header h3,
+.q2-project-status h3 {
+	margin: 0;
+	font-size: 1.1rem;
+}
+
+.q2-project-status header p {
+	margin: 0.25rem 0 0;
+	color: var(--q2-muted);
+	font-size: 0.85rem;
+}
+
+.q2-project-status-summary {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0.75rem;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+.q2-project-status-summary li {
+	display: grid;
+	gap: 0.15rem;
+	padding: 1rem;
+	border: 1px solid var(--q2-line);
+	border-radius: 0.3rem;
+	text-align: center;
+}
+
+.q2-project-status-summary strong {
+	font-size: 1.7rem;
+	line-height: 1;
+}
+
+.q2-project-status-summary .is-done {
+	background: #d8f3df;
+}
+
+.q2-project-status-summary .is-progress {
+	background: #fef3c7;
+}
+
+.q2-project-status-hint {
+	color: var(--q2-muted);
+	font-size: 0.8rem;
+}
+
+.q2-changelog {
+	display: grid;
+	gap: 1rem;
+	padding: 1.5rem;
+	border: 1px solid var(--q2-line);
+	border-radius: 0.4rem;
+	background: #fff;
+}
+
+.q2-changelog-header h3 {
+	margin: 0;
+}
+
+.q2-changelog-hint {
+	margin: 0.25rem 0 0;
+	color: var(--q2-muted);
+	font-size: 0.85rem;
+}
+
+.q2-changelog-list {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+.q2-changelog-entry {
+	display: grid;
+	grid-template-columns: minmax(8rem, auto) 1fr auto;
+	gap: 0.5rem;
+	padding: 0.75rem 0;
+	border-bottom: 1px solid var(--q2-line);
+}
+
+.q2-changelog-form {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	gap: 0.5rem;
+	align-items: end;
+}
+
+/* stylelint-enable no-descending-specificity */
+

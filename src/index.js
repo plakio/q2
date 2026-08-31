@@ -22,6 +22,7 @@ import {
 } from '@wordpress/icons';
 import CommentsThread from './comments/CommentsThread';
 import usePostCollaboration from './collaboration/usePostCollaboration';
+import './blocks';
 import TagPicker from './components/TagPicker';
 import StateMessage from './components/StateMessage';
 import BlockContentEditor, { POST_BLOCKS } from './editor/BlockContentEditor';

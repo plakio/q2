@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
  * Creates and upgrades Q2-owned collaboration tables.
  */
 final class Installer {
-	private const DB_VERSION = '1';
+	private const DB_VERSION = '2';
 
 	/**
 	 * Runs pending schema migrations.
@@ -111,6 +111,27 @@ final class Installer {
 				UNIQUE KEY recipient_object (mentioned_user_id,object_type,object_id),
 				KEY recipient_mentions (mentioned_user_id,created_at),
 				KEY object_mentions (object_type,object_id)
+			) {$charset};"
+		);
+
+		dbDelta(
+			"CREATE TABLE {$prefix}tasks (
+				id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+				block_id varchar(64) NOT NULL,
+				parent_post_id bigint(20) unsigned NOT NULL,
+				actor_user_id bigint(20) unsigned NOT NULL DEFAULT 0,
+				title varchar(255) NOT NULL,
+				status varchar(20) NOT NULL DEFAULT 'todo',
+				due_date date NULL,
+				assignees longtext NULL,
+				version bigint(20) unsigned NOT NULL DEFAULT 1,
+				created_at datetime NOT NULL,
+				updated_at datetime NOT NULL,
+				PRIMARY KEY  (id),
+				UNIQUE KEY block_id (block_id),
+				KEY parent_post (parent_post_id,status,due_date),
+				KEY assignee_status (status,due_date),
+				KEY parent_due (parent_post_id,due_date)
 			) {$charset};"
 		);
 
