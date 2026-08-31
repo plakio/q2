@@ -1,0 +1,59 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          tools: composer:v2
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          composer install --no-interaction --prefer-dist
+
+      - name: Verify and build package
+        run: |
+          npm run check
+          npm run build
+
+      - name: Verify tag and plugin versions match
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          grep -q "Version:           $VERSION" q2.php
+          test -f "dist/q2-$VERSION.zip"
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          gh release create "$GITHUB_REF_NAME" \
+            "dist/q2-$VERSION.zip" \
+            "dist/q2-$VERSION.zip.sha256" \
+            "dist/q2-latest.zip" \
+            "dist/q2-latest.zip.sha256" \
+            --title "Q2 $VERSION" \
+            --generate-notes \
+            --verify-tag
+

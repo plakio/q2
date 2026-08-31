@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PLUGIN_SLUG="q2"
+DIST_DIR="$ROOT_DIR/dist"
+PLUGIN_FILE="$ROOT_DIR/q2.php"
+VERSION="$(php -r '$contents = file_get_contents($argv[1]); preg_match("/Version:\\s*([^\\s]+)/", $contents, $matches); echo $matches[1] ?? "";' "$PLUGIN_FILE")"
+
+if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+	printf 'Error: q2.php must contain a semantic x.y.z Version header.\n' >&2
+	exit 1
+fi
+
+cd "$ROOT_DIR"
+npm run build:assets
+
+STAGING_ROOT="$(mktemp -d)"
+trap 'rm -rf "$STAGING_ROOT"' EXIT
+PACKAGE_DIR="$STAGING_ROOT/$PLUGIN_SLUG"
+mkdir -p "$PACKAGE_DIR" "$DIST_DIR"
+rm -f "$DIST_DIR/$PLUGIN_SLUG-$VERSION.zip" \
+	"$DIST_DIR/$PLUGIN_SLUG-$VERSION.zip.sha256" \
+	"$DIST_DIR/$PLUGIN_SLUG-latest.zip" \
+	"$DIST_DIR/$PLUGIN_SLUG-latest.zip.sha256"
+
+for path in q2.php readme.txt README.md build includes templates; do
+	if [[ -e "$ROOT_DIR/$path" ]]; then
+		rsync -a --no-owner --no-group "$ROOT_DIR/$path" "$PACKAGE_DIR/"
+	fi
+done
+
+if [[ -d "$ROOT_DIR/languages" ]]; then
+	rsync -a --no-owner --no-group "$ROOT_DIR/languages" "$PACKAGE_DIR/"
+fi
+
+ZIP_FILE="$DIST_DIR/$PLUGIN_SLUG-$VERSION.zip"
+LATEST_ZIP_FILE="$DIST_DIR/$PLUGIN_SLUG-latest.zip"
+( cd "$STAGING_ROOT" && zip -qr "$ZIP_FILE" "$PLUGIN_SLUG" )
+cp "$ZIP_FILE" "$LATEST_ZIP_FILE"
+shasum -a 256 "$ZIP_FILE" > "$ZIP_FILE.sha256"
+shasum -a 256 "$LATEST_ZIP_FILE" > "$LATEST_ZIP_FILE.sha256"
+
+if unzip -Z1 "$ZIP_FILE" | rg -q '(^|/)(node_modules|vendor|src|scripts|docs|\.git|\.env)(/|$)'; then
+	printf 'Error: release ZIP contains development-only or sensitive files.\n' >&2
+	exit 1
+fi
+
+printf 'Built %s\n' "$ZIP_FILE"
+printf 'Built %s\n' "$LATEST_ZIP_FILE"
