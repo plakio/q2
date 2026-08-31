@@ -3,7 +3,7 @@
  * Plugin Name:       Q2
  * Plugin URI:        https://github.com/plakio/q2
  * Description:       A modern, self-hosted collaborative workspace for WordPress.
- * Version:           0.2.1
+ * Version:           0.2.2
  * Requires at least: 7.1
  * Requires PHP:      8.1
  * Author:            Plak
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'Q2_VERSION', '0.2.1' );
+define( 'Q2_VERSION', '0.2.2' );
 define( 'Q2_PATH', plugin_dir_path( __FILE__ ) );
 define( 'Q2_URL', plugin_dir_url( __FILE__ ) );
 
