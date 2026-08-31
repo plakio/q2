@@ -23,10 +23,15 @@ import {
 import CommentsThread from './comments/CommentsThread';
 import usePostCollaboration from './collaboration/usePostCollaboration';
 import TagPicker from './components/TagPicker';
+import StateMessage from './components/StateMessage';
 import BlockContentEditor, { POST_BLOCKS } from './editor/BlockContentEditor';
 import { buildFeedPath } from './feed/query';
+import MediaScreen from './media/MediaScreen';
 import NotificationsScreen from './notifications/NotificationsScreen';
+import PagesScreen from './pages/PagesScreen';
 import PeopleScreen from './people/PeopleScreen';
+import SearchScreen from './search/SearchScreen';
+import StartersScreen from './starters/StartersScreen';
 import './mentions/register';
 import { routeFromHash, routeFromPath } from './routes';
 import './style.scss';
@@ -38,10 +43,17 @@ apiFetch.use( apiFetch.createRootURLMiddleware( settings.restRoot ) );
 const routes = [
 	{ key: 'feed', label: __( 'Posts', 'q2' ), icon: postList, sidebar: true },
 	{ key: 'pages', label: __( 'Pages', 'q2' ), icon: pages, sidebar: true },
-	{ key: 'notifications', label: __( 'Notifications', 'q2' ), icon: bell },
-	{ key: 'search', label: __( 'Search', 'q2' ), icon: search },
+	{ key: 'media', label: __( 'Media', 'q2' ), icon: pages, sidebar: true },
+	{
+		key: 'notifications',
+		label: __( 'Notifications', 'q2' ),
+		icon: bell,
+		sidebar: true,
+	},
+	{ key: 'search', label: __( 'Search', 'q2' ), icon: search, sidebar: true },
+	{ key: 'people', label: __( 'People', 'q2' ), icon: people, sidebar: true },
 	{ key: 'projects', label: __( 'Projects', 'q2' ), icon: postList },
-	{ key: 'people', label: __( 'People', 'q2' ), icon: people },
+	{ key: 'starters', label: __( 'Starter Buttons', 'q2' ), icon: starEmpty },
 ];
 
 function routeFromLocation() {
@@ -111,6 +123,14 @@ function App() {
 		content = <Feed focusPostId={ focusPostId } />;
 	} else if ( route === 'people' ) {
 		content = <PeopleScreen />;
+	} else if ( route === 'pages' ) {
+		content = <PagesScreen />;
+	} else if ( route === 'media' ) {
+		content = <MediaScreen />;
+	} else if ( route === 'search' ) {
+		content = <SearchScreen />;
+	} else if ( route === 'starters' ) {
+		content = <StartersScreen />;
 	} else if ( route === 'notifications' ) {
 		content = (
 			<NotificationsScreen
@@ -829,14 +849,6 @@ function NotFound() {
 		</div>
 	);
 }
-function StateMessage( { children } ) {
-	return (
-		<div className="q2-state" role="status">
-			{ children }
-		</div>
-	);
-}
-
 const root = document.getElementById( 'q2-root' );
 if ( root ) {
 	createRoot( root ).render( <App /> );
