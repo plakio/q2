@@ -35,17 +35,17 @@ ZIP_FILE="$DIST_DIR/$PLUGIN_SLUG-$VERSION.zip"
 ( cd "$STAGING_ROOT" && zip -qr "$ZIP_FILE" "$PLUGIN_SLUG" )
 shasum -a 256 "$ZIP_FILE" > "$ZIP_FILE.sha256"
 
-if ! unzip -Z1 "$ZIP_FILE" | rg -qx "$PLUGIN_SLUG/q2.php"; then
+if ! unzip -Z1 "$ZIP_FILE" | grep -Fxq "$PLUGIN_SLUG/q2.php"; then
 	printf 'Error: release ZIP must contain %s/q2.php.\n' "$PLUGIN_SLUG" >&2
 	exit 1
 fi
 
-if unzip -Z1 "$ZIP_FILE" | rg -v "^$PLUGIN_SLUG/" | rg -q '.'; then
+if unzip -Z1 "$ZIP_FILE" | grep -Ev "^$PLUGIN_SLUG/" | grep -q '.'; then
 	printf 'Error: release ZIP must contain only the %s root directory.\n' "$PLUGIN_SLUG" >&2
 	exit 1
 fi
 
-if unzip -Z1 "$ZIP_FILE" | rg -q '(^|/)(node_modules|vendor|src|scripts|docs|\.git|\.env)(/|$)'; then
+if unzip -Z1 "$ZIP_FILE" | grep -Eq '(^|/)(node_modules|vendor|src|scripts|docs|\.git|\.env)(/|$)'; then
 	printf 'Error: release ZIP contains development-only or sensitive files.\n' >&2
 	exit 1
 fi
