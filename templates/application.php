@@ -15,6 +15,7 @@ do_action( 'wp_enqueue_scripts' );
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title><?php echo esc_html( wp_get_document_title() ); ?></title>
 	<?php
+	wp_site_icon();
 	wp_print_styles();
 	wp_print_head_scripts();
 	?>

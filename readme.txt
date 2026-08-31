@@ -23,6 +23,13 @@ Q2 is an independent project inspired by product lessons from P2. It is not an o
 
 == Changelog ==
 
+= 0.2.0 =
+* Add a modern P2-inspired responsive application design.
+* Add Gutenberg post creation and inline editing with tags.
+* Add incremental chronological feed loading.
+* Add rich native WordPress comments, threaded replies, inline editing, and deletion controls.
+* Add the authenticated people directory.
+
 = 0.1.3 =
 * Add automatic updates from public GitHub Releases and reproducible build/release tooling.
 

@@ -43,10 +43,12 @@ final class Bootstrap_Controller {
 	public function get_bootstrap(): \WP_REST_Response {
 		return new \WP_REST_Response(
 			array(
-				'name'    => 'Q2',
-				'version' => Q2_VERSION,
-				'userId'  => get_current_user_id(),
-				'links'   => array(
+				'name'        => get_bloginfo( 'name' ),
+				'description' => get_bloginfo( 'description' ),
+				'siteIconUrl' => get_site_icon_url( 96 ),
+				'version'     => Q2_VERSION,
+				'userId'      => get_current_user_id(),
+				'links'       => array(
 					'feed' => rest_url( 'wp/v2/posts' ),
 				),
 			),

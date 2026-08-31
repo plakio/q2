@@ -13,6 +13,8 @@ defined( 'ABSPATH' ) || exit;
 
 use Q2\Application\Application;
 use Q2\REST\Bootstrap_Controller;
+use Q2\REST\Comments_Controller;
+use Q2\REST\People_Controller;
 use Q2\Update\GitHub_Updater;
 
 /**
@@ -43,6 +45,8 @@ final class Plugin {
 	public function boot(): void {
 		( new Application() )->register();
 		( new Bootstrap_Controller() )->register();
+		( new Comments_Controller() )->register();
+		( new People_Controller() )->register();
 		( new GitHub_Updater( Q2_PATH . 'q2.php' ) )->register();
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 	}

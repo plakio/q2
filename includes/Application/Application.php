@@ -113,14 +113,15 @@ final class Application {
 	}
 
 	/**
-	 * Sets a stable application document title.
+	 * Uses the WordPress site title for the application document.
 	 *
 	 * @param array<string, string> $parts Title components.
 	 * @return array<string, string>
 	 */
 	public function document_title( array $parts ): array {
 		if ( $this->is_request() ) {
-			$parts['title'] = __( 'Q2 Workspace', 'q2' );
+			$parts['title'] = get_bloginfo( 'name' );
+			unset( $parts['site'], $parts['tagline'] );
 		}
 		return $parts;
 	}
@@ -132,6 +133,12 @@ final class Application {
 		if ( ! $this->is_request() ) {
 			return;
 		}
+
+		wp_enqueue_media();
+		wp_enqueue_style( 'wp-components' );
+		wp_enqueue_style( 'wp-block-library' );
+		wp_enqueue_style( 'wp-block-editor' );
+		wp_enqueue_style( 'wp-edit-blocks' );
 
 		$asset_file = Q2_PATH . 'build/index.asset.php';
 		$asset      = file_exists( $asset_file ) ? require $asset_file : array(
@@ -170,21 +177,25 @@ final class Application {
 		$user = wp_get_current_user();
 
 		return array(
-			'appUrl'       => home_url( '/q2/' ),
-			'homeUrl'      => home_url( '/' ),
-			'restNonce'    => wp_create_nonce( 'wp_rest' ),
-			'restRoot'     => esc_url_raw( rest_url() ),
-			'siteName'     => get_bloginfo( 'name' ),
-			'currentUser'  => array(
+			'appUrl'          => home_url( '/q2/' ),
+			'homeUrl'         => home_url( '/' ),
+			'restNonce'       => wp_create_nonce( 'wp_rest' ),
+			'restRoot'        => esc_url_raw( rest_url() ),
+			'siteName'        => get_bloginfo( 'name' ),
+			'siteDescription' => get_bloginfo( 'description' ),
+			'siteIconUrl'     => get_site_icon_url( 96 ),
+			'currentUser'     => array(
 				'id'        => $user->ID,
 				'name'      => $user->display_name,
 				'avatarUrl' => get_avatar_url( $user->ID, array( 'size' => 64 ) ),
 			),
-			'capabilities' => array(
-				'createPosts'  => current_user_can( 'edit_posts' ),
-				'publishPosts' => current_user_can( 'publish_posts' ),
-				'manageQ2'     => current_user_can( Capabilities::MANAGE ),
-				'mentionAll'   => current_user_can( Capabilities::MENTION_ALL ),
+			'capabilities'    => array(
+				'createPosts'      => current_user_can( 'edit_posts' ),
+				'publishPosts'     => current_user_can( 'publish_posts' ),
+				'editOthersPosts'  => current_user_can( 'edit_others_posts' ),
+				'moderateComments' => current_user_can( 'moderate_comments' ),
+				'manageQ2'         => current_user_can( Capabilities::MANAGE ),
+				'mentionAll'       => current_user_can( Capabilities::MENTION_ALL ),
 			),
 		);
 	}
