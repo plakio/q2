@@ -26,12 +26,111 @@ final class EditorFrame {
 	 * Wires the admin chrome stripping and the postMessage bridge.
 	 */
 	public function register(): void {
+		add_action( 'admin_init', array( $this, 'allow_iframe_request' ), 0 );
 		add_action( 'admin_init', array( $this, 'maybe_strip_chrome' ) );
 		add_action( 'admin_head', array( $this, 'print_embed_styles' ) );
 		add_action( 'admin_print_footer_scripts', array( $this, 'print_bridge_script' ) );
-		add_filter( 'wp_iframe_transport_send_headers', array( $this, 'allow_iframe_embedding' ) );
+		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_editor_assets' ) );
 		add_filter( 'admin_body_class', array( $this, 'add_body_class' ) );
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
+		add_filter( 'wp_insert_post_data', array( $this, 'derive_post_title_from_content' ), 10, 2 );
+	}
+
+	/**
+	 * When a post is saved without a title (the Q2 P2 editor hides the
+	 * title field), derive a short title from the first paragraph of
+	 * content so listings, feeds, and notifications have a label.
+	 *
+	 * @param array $data    Sanitized post data.
+	 * @param array $postarr Raw post array.
+	 * @return array
+	 */
+	public function derive_post_title_from_content( array $data, array $postarr ): array {
+		if ( isset( $postarr['post_type'] ) && 'post' !== $postarr['post_type'] ) {
+			return $data;
+		}
+
+		if ( isset( $postarr['post_status'] ) && in_array( $postarr['post_status'], array( 'auto-draft', 'trash' ), true ) ) {
+			return $data;
+		}
+
+		if ( '' !== trim( (string) $data['post_title'] ) ) {
+			return $data;
+		}
+
+		// P2 behaviour: the first line of the update becomes the post title
+		// and is removed from the content so the feed never renders it twice.
+		$blocks      = parse_blocks( (string) $data['post_content'] );
+		$first_index = null;
+		foreach ( $blocks as $index => $block ) {
+			if ( empty( $block['blockName'] ) && '' === trim( (string) ( $block['innerHTML'] ?? '' ) ) ) {
+				continue;
+			}
+			$first_index = $index;
+			break;
+		}
+
+		if ( null === $first_index ) {
+			return $data;
+		}
+
+		$first = $blocks[ $first_index ];
+		$text  = trim( wp_strip_all_tags( (string) ( $first['innerHTML'] ?? '' ) ) );
+
+		if ( '' === $text ) {
+			$text = trim(
+				wp_strip_all_tags(
+					(string) implode(
+						'',
+						array_map(
+							static function ( $inner ) {
+								return $inner['innerHTML'] ?? '';
+							},
+							(array) ( $first['innerBlocks'] ?? array() )
+						)
+					)
+				)
+			);
+		}
+
+		if ( '' === $text ) {
+			return $data;
+		}
+
+		$title = $text;
+		if ( function_exists( 'mb_strlen' ) && function_exists( 'mb_substr' ) ) {
+			if ( mb_strlen( $title ) > 80 ) {
+				$title = mb_substr( $title, 0, 80 ) . '…';
+			}
+		} elseif ( strlen( $title ) > 80 ) {
+			$title = substr( $title, 0, 80 ) . '…';
+		}
+
+		$data['post_title'] = $title;
+
+		if ( 'core/paragraph' === $first['blockName'] || 'core/heading' === $first['blockName'] ) {
+			array_splice( $blocks, $first_index, 1 );
+			$data['post_content'] = serialize_blocks( $blocks );
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Removes Core's frame denial only for a valid, same-site Q2 editor URL.
+	 */
+	public function allow_iframe_request(): void {
+		if ( ! $this->is_embed_request() ) {
+			return;
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- verified immediately below.
+		$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+		if ( ! wp_verify_nonce( $nonce, 'q2-embed' ) ) {
+			return;
+		}
+
+		remove_action( 'admin_init', 'send_frame_options_header', 10 );
 	}
 
 	/**
@@ -48,6 +147,15 @@ final class EditorFrame {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Returns the requested Q2 editor presentation.
+	 */
+	private function embed_mode(): string {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- presentation-only flag.
+		$mode = isset( $_GET['q2_mode'] ) ? sanitize_key( wp_unslash( $_GET['q2_mode'] ) ) : 'embedded';
+		return in_array( $mode, array( 'inline', 'full', 'embedded', 'p2' ), true ) ? $mode : 'embedded';
 	}
 
 	/**
@@ -72,13 +180,40 @@ final class EditorFrame {
 			return;
 		}
 
-		echo '<style id="q2-embed-shell">'
-			. '#wpadminbar,#adminmenuback,#adminmenuwrap,#wpfooter,.update-plugins,.notice,.error,.updated{display:none!important;}'
+		$inline = 'inline' === $this->embed_mode();
+		$p2     = 'p2' === $this->embed_mode();
+
+		$css = '#wpadminbar,#adminmenuback,#adminmenuwrap,#wpfooter,.update-plugins,.notice,.error,.updated{display:none!important;}'
 			. 'html.wp-toolbar{padding-top:0!important;}'
-			. 'body{q2-embed-body;margin:0!important;background:#fff!important;}'
+			. 'body.q2-embed{margin:0!important;background:#fff!important;}'
 			. '#wpcontent,#wpbody-content{margin-left:0!important;padding:0!important;}'
-			. '.edit-post-header,.edit-post-layout__header{position:sticky;top:0;z-index:30;}'
-			. '</style>';
+			. '.edit-post-header,.edit-post-layout__header{position:sticky;top:0;z-index:30;}';
+
+		if ( $inline ) {
+			$css .= '.editor-post-title,.editor-post-title__block,.editor-visual-editor__post-title-wrapper,.edit-post-sidebar,.interface-interface-skeleton__sidebar,.editor-post-publish-panel{display:none!important;}'
+				. '.interface-interface-skeleton__content{background:#fff!important;}.editor-styles-wrapper{padding-top:24px!important;}';
+		}
+
+		if ( $p2 ) {
+			$css .= '.q2-embed-p2 .editor-visual-editor__post-title-wrapper,.q2-embed-p2 .edit-post-fullscreen-mode-close,.q2-embed-p2 .edit-post-header__settings .editor-post-toggle-fullscreen-mode,.q2-embed-p2 .editor-post-publish-button,.q2-embed-p2 .editor-post-save-draft{display:none!important;}'
+				. '.q2-embed-p2 .edit-post-header{border-bottom:1px solid #e0e0e0;box-shadow:none;height:60px;padding:0 1rem;background:#fff;}'
+				. '.q2-embed-p2 .edit-post-header__toolbar .components-button{color:#1e1e1e;}'
+				. '.q2-embed-p2 .interface-interface-skeleton__content{background:#fff!important;}'
+				. '.q2-embed-p2 .edit-post-visual-editor__post-title-wrapper,.q2-embed-p2 .editor-styles-wrapper{max-width:720px!important;margin:0 auto!important;padding:2rem 1.5rem!important;}'
+				. '.q2-embed-p2 .editor-styles-wrapper .block-editor-block-list__layout{min-height:180px;}'
+				. '.q2-embed-p2 .block-editor-writing-flow{display:block!important;}'
+				. '.q2-embed-p2 .edit-post-sidebar,.q2-embed-p2 .interface-interface-skeleton__sidebar{display:none!important;}'
+				. '.q2-embed-p2 .q2-display-options{display:flex;align-items:center;justify-content:flex-end;padding:1rem 2rem;gap:0.5rem;max-width:760px;margin:0 auto;border-top:1px solid #e0e0e0;}'
+				. '.q2-embed-p2 .q2-display-options-toggle{font-size:0.85rem;color:#757575;background:none;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:0.4rem;}'
+				. '.q2-embed-p2 .q2-display-options-toggle:hover{color:#1e1e1e;}'
+				. '.q2-embed-p2 .q2-display-options-body{display:none;padding:1.5rem 2rem;max-width:760px;margin:0 auto;}'
+				. '.q2-embed-p2.q2-display-options-open .q2-display-options-body{display:block;}'
+				. '.q2-embed-p2 .q2-display-options-body .editor-post-format,.q2-embed-p2 .q2-display-options-body .edit-post-header__settings{display:none!important;}'
+				. '.q2-embed-p2 .q2-display-options-body .components-panel__body{border-top:1px solid #e0e0e0;}'
+				. '.q2-embed-p2 .q2-display-options-body .components-panel__body-title{padding:0.5rem 0;}';
+		}
+
+		echo '<style id="q2-embed-shell">' . $css . '</style>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static CSS above.
 	}
 
 	/**
@@ -104,33 +239,39 @@ final class EditorFrame {
 	 */
 	public function add_body_class( string $classes ): string {
 		if ( $this->is_embed_request() ) {
-			$classes .= ' q2-embed';
+			$classes .= ' q2-embed q2-embed-' . $this->embed_mode();
 		}
 		return $classes;
 	}
 
 	/**
-	 * Allows Q2's frontend to embed the admin post screen in an iframe
-	 * by overriding the X-Frame-Options denier on this specific screen.
-	 *
-	 * The check uses the same origin as the admin, so this only enables
-	 * framing from the same WordPress site that hosts Q2.
-	 *
-	 * @param bool $send Whether to send the X-Frame-Options header.
-	 * @return bool
+	 * Registers Q2 blocks and mention completion in the native editor.
 	 */
-	public function allow_iframe_embedding( bool $send ): bool {
-		if ( ! $this->is_embed_request() ) {
-			return $send;
-		}
+	public function enqueue_editor_assets(): void {
+		$asset_file = Q2_PATH . 'build/index.asset.php';
+		$asset      = file_exists( $asset_file ) ? require $asset_file : array(
+			'dependencies' => array( 'wp-blocks', 'wp-element', 'wp-i18n' ),
+			'version'      => Q2_VERSION,
+		);
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only flag.
-		$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
-		if ( '' !== $nonce && ! wp_verify_nonce( $nonce, 'q2-embed' ) ) {
-			return $send;
-		}
-
-		return false;
+		wp_enqueue_script(
+			'q2-editor-blocks',
+			Q2_URL . 'build/index.js',
+			$asset['dependencies'],
+			$asset['version'],
+			true
+		);
+		wp_add_inline_script(
+			'q2-editor-blocks',
+			'window.q2Settings = window.q2Settings || ' . wp_json_encode(
+				array(
+					'restNonce'   => wp_create_nonce( 'wp_rest' ),
+					'restRoot'    => esc_url_raw( rest_url() ),
+					'currentUser' => array( 'id' => get_current_user_id() ),
+				)
+			) . ';',
+			'before'
+		);
 	}
 
 	/**
@@ -142,35 +283,70 @@ final class EditorFrame {
 			return;
 		}
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only flag passed through.
-		$post_id = isset( $_GET['post'] ) ? absint( $_GET['post'] ) : 0;
+		$p2 = 'p2' === $this->embed_mode();
+
 		?>
 <script id="q2-embed-bridge">
 (function(){
 	if (window.parent === window) { return; }
+	var wasSaving = false;
 	function post(type, detail) {
-		window.parent.postMessage(Object.assign({ source: 'q2-embed', postId: <?php echo (int) $post_id; ?>, type: type }, detail || {}), window.location.origin);
+		var editor = window.wp && wp.data ? wp.data.select('core/editor') : null;
+		var postId = editor && editor.getCurrentPostId ? editor.getCurrentPostId() : 0;
+		window.parent.postMessage(Object.assign({ source: 'q2-embed', postId: postId || 0, type: type }, detail || {}), window.location.origin);
 	}
-	document.addEventListener('click', function(event){
-		var target = event.target;
-		while (target && target !== document) {
-			if (target.matches && target.matches('.editor-post-publish-button, .editor-post-publish-panel__toggle, .editor-post-save-draft')) {
-				post('save:requested');
-				return;
-			}
-			if (target.classList && (target.classList.contains('editor-post-publish-panel__header-cancel') || target.classList.contains('edit-post-header-toolbar__left') && target.closest && target.closest('.components-modal__header'))) {
-				post('close:requested');
-				return;
-			}
-			target = target.parentNode;
+	function connect() {
+		if (!window.wp || !wp.data || !wp.data.select('core/editor')) {
+			window.setTimeout(connect, 50);
+			return;
+		}
+		wp.data.subscribe(function(){
+			var editor = wp.data.select('core/editor');
+			var saving = editor.isSavingPost() && !editor.isAutosavingPost();
+			if (saving && !wasSaving) { post('save:requested'); }
+			if (!saving && wasSaving && editor.didPostSaveRequestSucceed()) { post('save:done'); }
+			wasSaving = saving;
+		});
+		post('ready');
+		<?php if ( $p2 ) : ?>
+		mountDisplayOptions();
+		<?php endif; ?>
+	}
+		<?php if ( $p2 ) : ?>
+	function mountDisplayOptions() {
+		var skeleton = document.querySelector('.interface-interface-skeleton__content');
+		if (!skeleton || document.querySelector('.q2-display-options')) {
+			window.setTimeout(mountDisplayOptions, 200);
+			return;
+		}
+		var wrap = document.createElement('div');
+		wrap.className = 'q2-display-options';
+		wrap.innerHTML = '<button type="button" class="q2-display-options-toggle" aria-expanded="false">' +
+			'<span>Display options</span><span aria-hidden="true">▾</span></button>';
+		skeleton.appendChild(wrap);
+		wrap.addEventListener('click', function(event){
+			if (!event.target.closest('.q2-display-options-toggle')) { return; }
+			var open = document.body.classList.toggle('q2-display-options-open');
+			event.currentTarget.setAttribute('aria-expanded', open ? 'true' : 'false');
+			var settings = document.querySelector('.edit-post-header__settings .components-button[aria-label]');
+			var toggle = document.querySelector('button[aria-label="Settings"], .edit-post-header__settings button');
+			if (toggle && toggle.click && !open) { /* keep sidebar closed */ }
+		});
+	}
+		<?php endif; ?>
+	document.addEventListener('click', function(event) {
+		var target = event.target.closest && event.target.closest('.edit-post-fullscreen-mode-close, a[href*="edit.php"]');
+		if (target) {
+			event.preventDefault();
+			post('close:requested');
 		}
 	}, true);
-	var observer = new MutationObserver(function(){
-		var saved = document.querySelector('.editor-post-saved-state.is-saved');
-		if (saved) { post('save:done'); observer.disconnect(); }
+	document.addEventListener('keydown', function(event) {
+		if (event.key === 'Escape' && (document.body.classList.contains('q2-embed-full') || document.body.classList.contains('q2-embed-p2'))) {
+			post('close:requested');
+		}
 	});
-	observer.observe(document.body, { childList: true, subtree: true });
-	post('ready');
+	connect();
 })();
 </script>
 		<?php
@@ -234,6 +410,12 @@ final class EditorFrame {
 						'sanitize_callback' => 'sanitize_key',
 						'default'           => 'post',
 					),
+					'mode'      => array(
+						'required'          => false,
+						'type'              => 'string',
+						'sanitize_callback' => 'sanitize_key',
+						'default'           => 'embedded',
+					),
 				),
 			)
 		);
@@ -253,9 +435,8 @@ final class EditorFrame {
 			return current_user_can( 'edit_post', $post_id );
 		}
 
-		return current_user_can( 'edit_posts' ) &&
-			post_type_exists( $post_type ) &&
-			current_user_can( 'edit_' . $post_type . 's' );
+		$type_object = get_post_type_object( $post_type );
+		return $type_object && current_user_can( $type_object->cap->create_posts );
 	}
 
 	/**
@@ -267,10 +448,11 @@ final class EditorFrame {
 	public function rest_editor_url( \WP_REST_Request $request ): \WP_REST_Response {
 		$post_id   = (int) $request->get_param( 'post_id' );
 		$post_type = (string) $request->get_param( 'post_type' );
+		$mode      = (string) $request->get_param( 'mode' );
 
 		if ( $post_id > 0 ) {
 			return new \WP_REST_Response(
-				array( 'url' => self::editor_url( $post_id ) )
+				array( 'url' => add_query_arg( 'q2_mode', $mode, self::editor_url( $post_id ) ) )
 			);
 		}
 
@@ -279,6 +461,7 @@ final class EditorFrame {
 			array(
 				'post_type'      => $post_type,
 				self::QUERY_FLAG => '1',
+				'q2_mode'        => $mode,
 				'_wpnonce'       => $nonce,
 			),
 			admin_url( 'post-new.php' )

@@ -11,12 +11,14 @@ import { __, sprintf } from '@wordpress/i18n';
 import {
 	Icon,
 	bell,
+	check,
 	chevronDown,
 	commentReplyLink,
 	cog as settingsIcon,
 	envelope,
 	external,
 	fullscreen,
+	link,
 	listView as tasksIcon,
 	media as mediaIcon,
 	menu,
@@ -33,10 +35,9 @@ import {
 import CommentsThread from './comments/CommentsThread';
 import usePostCollaboration from './collaboration/usePostCollaboration';
 import './blocks';
-import TagPicker from './components/TagPicker';
 import StateMessage from './components/StateMessage';
-import BlockContentEditor, { POST_BLOCKS } from './editor/BlockContentEditor';
 import PostEditorIframe from './editor/PostEditorIframe';
+import P2BlockEditor from './editor/P2BlockEditor';
 import { buildFeedPath } from './feed/query';
 import MediaScreen from './media/MediaScreen';
 import NotificationsScreen from './notifications/NotificationsScreen';
@@ -105,6 +106,14 @@ function App() {
 	const [ route, setRoute ] = useState( routeFromLocation );
 	const [ menuOpen, setMenuOpen ] = useState( false );
 	const [ focusPostId, setFocusPostId ] = useState( 0 );
+	const [ feedFilter, setFeedFilter ] = useState( 'all' );
+	const [ feedMeta, setFeedMeta ] = useState( {
+		newPostIds: [],
+		newCommentPostIds: [],
+		mentionPostIds: [],
+	} );
+	const [ editor, setEditor ] = useState( null );
+	const [ contentRevision, setContentRevision ] = useState( 0 );
 	const [ workspaceIconUrl, setWorkspaceIconUrl ] = useState(
 		settings.workspace?.iconUrl || ''
 	);
@@ -143,16 +152,68 @@ function App() {
 		[ goToRoute ]
 	);
 
+	useEffect( () => {
+		apiFetch( { path: '/q2/v1/collaboration/feed' } )
+			.then( setFeedMeta )
+			.catch( () => {} );
+	}, [ route ] );
+
+	useEffect( () => {
+		document.body.classList.toggle( 'q2-has-modal', Boolean( editor ) );
+		return () => document.body.classList.remove( 'q2-has-modal' );
+	}, [ editor ] );
+
+	const openEditor = useCallback( ( postType, postId = 0 ) => {
+		setEditor( { postType, postId, key: Date.now() } );
+	}, [] );
+
+	const chooseFeedFilter = useCallback(
+		( nextFilter ) => {
+			setFeedFilter( nextFilter );
+			setFocusPostId( 0 );
+			goToRoute( 'feed' );
+		},
+		[ goToRoute ]
+	);
+
+	const editorTitle = () => {
+		if ( ! editor ) {
+			return '';
+		}
+		if ( editor.postType === 'page' ) {
+			return editor.postId
+				? __( 'Edit page', 'q2' )
+				: __( 'New page', 'q2' );
+		}
+		return editor.postId ? __( 'Edit post', 'q2' ) : __( 'New post', 'q2' );
+	};
+
 	const known = routes.some( ( item ) => item.key === route );
 	let content = <ComingSoon route={ route } />;
 	if ( ! known ) {
 		content = <NotFound />;
 	} else if ( route === 'feed' ) {
-		content = <Feed focusPostId={ focusPostId } />;
+		content = (
+			<Feed
+				key={ contentRevision }
+				focusPostId={ focusPostId }
+				filter={ feedFilter }
+				feedMeta={ feedMeta }
+				onFilterChange={ chooseFeedFilter }
+				onOpenInFullEditor={ ( postId ) =>
+					openEditor( 'post', postId )
+				}
+			/>
+		);
 	} else if ( route === 'people' ) {
 		content = <PeopleScreen />;
 	} else if ( route === 'pages' ) {
-		content = <PagesScreen />;
+		content = (
+			<PagesScreen
+				key={ contentRevision }
+				onCreatePage={ () => openEditor( 'page' ) }
+			/>
+		);
 	} else if ( route === 'media' ) {
 		content = <MediaScreen />;
 	} else if ( route === 'search' ) {
@@ -173,12 +234,18 @@ function App() {
 	}
 
 	return (
-		<div className={ `q2-app${ menuOpen ? ' is-menu-open' : '' }` }>
+		<div
+			className={ `q2-app${ menuOpen ? ' is-menu-open' : '' }${
+				editor ? ' is-full-editor' : ''
+			}` }
+		>
 			<Topbar
 				route={ route }
 				workspaceIconUrl={ workspaceIconUrl }
 				onNavigate={ goToRoute }
 				onToggleMenu={ () => setMenuOpen( ( value ) => ! value ) }
+				onNewPost={ () => openEditor( 'post' ) }
+				onNewPage={ () => openEditor( 'page' ) }
 			/>
 			<aside
 				className="q2-sidebar"
@@ -187,6 +254,11 @@ function App() {
 				<WorkspaceSummary
 					iconUrl={ workspaceIconUrl }
 					onIconChange={ setWorkspaceIconUrl }
+				/>
+				<ActivityFilters
+					filter={ feedFilter }
+					feedMeta={ feedMeta }
+					onChange={ chooseFeedFilter }
 				/>
 				<nav className="q2-navigation">
 					{ routes
@@ -214,6 +286,7 @@ function App() {
 							</a>
 						) ) }
 				</nav>
+				<WorkspaceLinks />
 				<Team onNavigate={ goToRoute } />
 				<div className="q2-sidebar-footer">
 					{ __( 'Powered by', 'q2' ) }{ ' ' }
@@ -230,6 +303,28 @@ function App() {
 			<main id="q2-main" className="q2-main" tabIndex="-1">
 				{ content }
 			</main>
+			{ editor && (
+				<div
+					className="q2-full-editor-overlay"
+					role="dialog"
+					aria-modal="true"
+					aria-label={ editorTitle() }
+				>
+					<PostEditorIframe
+						key={ editor.key }
+						postType={ editor.postType }
+						postId={ editor.postId || 0 }
+						isNew={ ! editor.postId }
+						variant="full"
+						title={ editorTitle() }
+						onClose={ () => setEditor( null ) }
+						onSaved={ () => {
+							setEditor( null );
+							setContentRevision( ( value ) => value + 1 );
+						} }
+					/>
+				</div>
+			) }
 		</div>
 	);
 }
@@ -254,7 +349,14 @@ function SiteIcon( { className = '', iconUrl = '' } ) {
 	return <Q2Logo size={ 40 } className={ className } />;
 }
 
-function Topbar( { route, workspaceIconUrl, onNavigate, onToggleMenu } ) {
+function Topbar( {
+	route,
+	workspaceIconUrl,
+	onNavigate,
+	onToggleMenu,
+	onNewPost,
+	onNewPage,
+} ) {
 	const user = settings.currentUser || {};
 	const [ unreadCount, setUnreadCount ] = useState( 0 );
 
@@ -275,7 +377,7 @@ function Topbar( { route, workspaceIconUrl, onNavigate, onToggleMenu } ) {
 
 	return (
 		<header className="q2-topbar">
-			<a className="q2-product" href={ settings.homeUrl }>
+			<a className="q2-product" href={ settings.homeUrl } aria-label="Q2">
 				<strong>Q2</strong>
 			</a>
 			<WorkspaceSwitcher
@@ -283,6 +385,8 @@ function Topbar( { route, workspaceIconUrl, onNavigate, onToggleMenu } ) {
 				unreadCount={ unreadCount }
 				iconUrl={ workspaceIconUrl }
 				onNavigate={ onNavigate }
+				onNewPost={ onNewPost }
+				onNewPage={ onNewPage }
 			/>
 			<form
 				className="q2-global-search"
@@ -291,31 +395,13 @@ function Topbar( { route, workspaceIconUrl, onNavigate, onToggleMenu } ) {
 					onNavigate( 'search' );
 				} }
 			>
-				<Icon icon={ search } size={ 20 } />
 				<input
 					type="search"
 					aria-label={ __( 'Search workspace', 'q2' ) }
-					placeholder={ sprintf(
-						/* translators: %s: workspace name. */
-						__( 'Search in %s', 'q2' ),
-						settings.siteName || 'Q2'
-					) }
+					placeholder={ `Search in ${ settings.siteName || 'Q2' }` }
 				/>
+				<Icon icon={ search } size={ 24 } />
 			</form>
-			<button
-				className="q2-topbar-action"
-				type="button"
-				onClick={ () => onNavigate( 'notifications' ) }
-				aria-label={ __( 'Notifications', 'q2' ) }
-			>
-				<Icon icon={ bell } size={ 21 } />
-				{ unreadCount > 0 && (
-					<span className="q2-notification-badge">
-						{ unreadCount > 99 ? '99+' : unreadCount }
-					</span>
-				) }
-			</button>
-			<img className="q2-topbar-avatar" src={ user.avatarUrl } alt="" />
 			<button
 				className="q2-mobile-menu"
 				type="button"
@@ -328,7 +414,14 @@ function Topbar( { route, workspaceIconUrl, onNavigate, onToggleMenu } ) {
 	);
 }
 
-function WorkspaceSwitcher( { user, unreadCount, iconUrl, onNavigate } ) {
+function WorkspaceSwitcher( {
+	user,
+	unreadCount,
+	iconUrl,
+	onNavigate,
+	onNewPost,
+	onNewPage,
+} ) {
 	const [ open, setOpen ] = useState( false );
 	const wrapperRef = useRef( null );
 	const buttonRef = useRef( null );
@@ -414,17 +507,26 @@ function WorkspaceSwitcher( { user, unreadCount, iconUrl, onNavigate } ) {
 							className="q2-workspace-menu-item"
 							onClick={ () => {
 								closeMenu();
-								onNavigate( 'feed' );
-								window.requestAnimationFrame( () => {
-									document
-										.querySelector( '.q2-composer-prompt' )
-										?.focus();
-								} );
+								onNewPost();
 							} }
 						>
 							<Icon icon={ pencil } size={ 18 } />
 							<span>{ __( 'New post', 'q2' ) }</span>
 						</button>
+						{ settings.capabilities?.createPages && (
+							<button
+								role="menuitem"
+								type="button"
+								className="q2-workspace-menu-item"
+								onClick={ () => {
+									closeMenu();
+									onNewPage();
+								} }
+							>
+								<Icon icon={ pages } size={ 18 } />
+								<span>{ __( 'New page', 'q2' ) }</span>
+							</button>
+						) }
 						<button
 							role="menuitem"
 							type="button"
@@ -707,6 +809,196 @@ function WorkspaceSummary( { iconUrl, onIconChange } ) {
 	);
 }
 
+function ActivityFilters( { filter, feedMeta, onChange } ) {
+	const items = [
+		{
+			key: 'new-posts',
+			label: __( 'New posts', 'q2' ),
+			count: feedMeta.newPostIds.length,
+		},
+		{
+			key: 'new-comments',
+			label: __( 'New comments', 'q2' ),
+			count: feedMeta.newCommentPostIds.length,
+		},
+		{
+			key: 'mentions',
+			label: __( 'My mentions', 'q2' ),
+			count: feedMeta.mentionPostIds.length,
+		},
+		{
+			key: 'my-posts',
+			label: __( 'My posts', 'q2' ),
+			icon: people,
+		},
+	];
+
+	return (
+		<nav
+			className="q2-activity-filters"
+			aria-label={ __( 'Post filters', 'q2' ) }
+		>
+			{ items.map( ( item ) => (
+				<button
+					key={ item.key }
+					type="button"
+					className={ filter === item.key ? 'is-active' : '' }
+					aria-pressed={ filter === item.key }
+					onClick={ () => onChange( item.key ) }
+				>
+					<span
+						className={ `q2-activity-filter-icon${
+							item.count ? ' has-unread' : ''
+						}` }
+					>
+						<ActivityFilterIcon item={ item } />
+					</span>
+					<span>{ item.label }</span>
+				</button>
+			) ) }
+		</nav>
+	);
+}
+
+function ActivityFilterIcon( { item } ) {
+	if ( item.icon ) {
+		return <Icon icon={ item.icon } size={ 18 } />;
+	}
+	if ( item.count ) {
+		return item.count > 99 ? '99+' : item.count;
+	}
+	return <Icon icon={ check } size={ 16 } />;
+}
+
+function WorkspaceLinks() {
+	const [ links, setLinks ] = useState( settings.links || [] );
+	const [ editing, setEditing ] = useState( false );
+	const [ label, setLabel ] = useState( '' );
+	const [ url, setUrl ] = useState( '' );
+	const [ newTab, setNewTab ] = useState( false );
+	const [ error, setError ] = useState( '' );
+	const canManage = Boolean( settings.capabilities?.manageQ2 );
+
+	const addLink = async ( event ) => {
+		event.preventDefault();
+		setError( '' );
+		try {
+			const result = await apiFetch( {
+				path: '/q2/v1/workspace/links',
+				method: 'POST',
+				data: { label, url, newTab },
+			} );
+			setLinks( result );
+			setLabel( '' );
+			setUrl( '' );
+			setNewTab( false );
+			setEditing( false );
+		} catch ( reason ) {
+			setError(
+				reason.message || __( 'The link could not be added.', 'q2' )
+			);
+		}
+	};
+
+	const removeLink = async ( id ) => {
+		try {
+			const result = await apiFetch( {
+				path: `/q2/v1/workspace/links/${ id }`,
+				method: 'DELETE',
+			} );
+			setLinks( result );
+		} catch ( reason ) {
+			setError(
+				reason.message || __( 'The link could not be removed.', 'q2' )
+			);
+		}
+	};
+
+	return (
+		<section className="q2-workspace-links">
+			<header>
+				<h2>{ __( 'Links', 'q2' ) }</h2>
+				{ canManage && (
+					<button
+						type="button"
+						aria-label={ __( 'Add link', 'q2' ) }
+						aria-expanded={ editing }
+						onClick={ () => setEditing( ( value ) => ! value ) }
+					>
+						<span aria-hidden="true">+</span>
+					</button>
+				) }
+			</header>
+			{ editing && (
+				<form className="q2-workspace-links-form" onSubmit={ addLink }>
+					<input
+						type="text"
+						value={ label }
+						onChange={ ( event ) => setLabel( event.target.value ) }
+						placeholder={ __( 'Label', 'q2' ) }
+						required
+					/>
+					<input
+						type="url"
+						value={ url }
+						onChange={ ( event ) => setUrl( event.target.value ) }
+						placeholder="https://"
+						required
+					/>
+					<label
+						className="q2-workspace-link-target"
+						htmlFor="q2-workspace-link-new-tab"
+					>
+						<input
+							id="q2-workspace-link-new-tab"
+							type="checkbox"
+							checked={ newTab }
+							onChange={ ( event ) =>
+								setNewTab( event.target.checked )
+							}
+						/>
+						<span>{ __( 'Open in a new tab', 'q2' ) }</span>
+					</label>
+					<button type="submit">{ __( 'Add', 'q2' ) }</button>
+				</form>
+			) }
+			{ links.length > 0 ? (
+				<ul>
+					{ links.map( ( item ) => (
+						<li key={ item.id || item.url }>
+							<a
+								href={ item.url }
+								target={ item.newTab ? '_blank' : undefined }
+								rel={
+									item.newTab
+										? 'noopener noreferrer'
+										: undefined
+								}
+							>
+								<Icon icon={ link } size={ 16 } />
+								<span>{ item.label }</span>
+							</a>
+							{ canManage && (
+								<button
+									type="button"
+									className="q2-workspace-link-remove"
+									onClick={ () => removeLink( item.id ) }
+									aria-label={ __( 'Remove link', 'q2' ) }
+								>
+									×
+								</button>
+							) }
+						</li>
+					) ) }
+				</ul>
+			) : (
+				<p>{ __( 'No links yet.', 'q2' ) }</p>
+			) }
+			{ error && <p className="q2-workspace-links-error">{ error }</p> }
+		</section>
+	);
+}
+
 function Team( { onNavigate } ) {
 	const [ members, setMembers ] = useState( [] );
 
@@ -747,26 +1039,23 @@ function Team( { onNavigate } ) {
 	);
 }
 
-function Feed( { focusPostId = 0 } ) {
+function Feed( {
+	focusPostId = 0,
+	filter,
+	feedMeta,
+	onFilterChange,
+	onOpenInFullEditor,
+} ) {
 	const [ posts, setPosts ] = useState( [] );
 	const [ status, setStatus ] = useState( 'loading' );
 	const [ error, setError ] = useState( '' );
 	const [ refresh, setRefresh ] = useState( 0 );
 	const [ page, setPage ] = useState( 1 );
 	const [ hasMore, setHasMore ] = useState( true );
-	const [ filter, setFilter ] = useState( 'all' );
 	const [ view, setView ] = useState( 'default' );
-	const [ feedMeta, setFeedMeta ] = useState( {
-		newPostIds: [],
-		newCommentPostIds: [],
-		mentionPostIds: [],
-	} );
 	const perPage = 10;
 
 	useEffect( () => {
-		apiFetch( { path: '/q2/v1/collaboration/feed' } )
-			.then( setFeedMeta )
-			.catch( () => {} );
 		apiFetch( { path: '/q2/v1/preferences/feed-view' } )
 			.then( ( result ) => setView( result.view ) )
 			.catch( () => {} );
@@ -836,7 +1125,7 @@ function Feed( { focusPostId = 0 } ) {
 	const chooseFilter = ( nextFilter ) => {
 		setPosts( [] );
 		setPage( 1 );
-		setFilter( nextFilter );
+		onFilterChange( nextFilter );
 	};
 
 	const chooseView = async ( nextView ) => {
@@ -851,7 +1140,10 @@ function Feed( { focusPostId = 0 } ) {
 	return (
 		<div className={ `q2-feed is-${ view }-view` }>
 			{ settings.capabilities?.createPosts && (
-				<Composer onCreated={ reload } />
+				<Composer
+					onCreated={ reload }
+					onOpenFullEditor={ onOpenInFullEditor }
+				/>
 			) }
 			<div className="q2-feed-tools">
 				<label htmlFor="q2-feed-filter">
@@ -931,13 +1223,14 @@ function Feed( { focusPostId = 0 } ) {
 						</span>
 					</StateMessage>
 				) }
-				{ status === 'ready' &&
+				{ ( status === 'ready' || status === 'loading-more' ) &&
 					posts.map( ( post ) => (
 						<Post
 							key={ post.id }
 							post={ post }
 							onUpdated={ updatePost }
 							onRemoved={ removePost }
+							onOpenInFullEditor={ onOpenInFullEditor }
 							isUnread={
 								feedMeta.newPostIds.includes( post.id ) ||
 								feedMeta.newCommentPostIds.includes( post.id )
@@ -963,76 +1256,40 @@ function Feed( { focusPostId = 0 } ) {
 	);
 }
 
-function Composer( { onCreated } ) {
-	const [ message, setMessage ] = useState( '' );
+function Composer( { onCreated, onOpenFullEditor } ) {
 	const [ expanded, setExpanded ] = useState( false );
-	const [ tags, setTags ] = useState( [] );
-	const [ title, setTitle ] = useState( '' );
-	const [ contentReady, setContentReady ] = useState( false );
+	const [ editorKey, setEditorKey ] = useState( 0 );
+	const [ message, setMessage ] = useState( '' );
 	const avatar = settings.currentUser?.avatarUrl;
+	const canPublish = Boolean( settings.capabilities?.publishPosts );
 
-	const publish = async ( content ) => {
-		setMessage( '' );
-		await apiFetch( {
-			path: '/wp/v2/posts',
-			method: 'POST',
-			data: {
-				title: title.trim(),
-				content,
-				tags,
-				status: settings.capabilities?.publishPosts
-					? 'publish'
-					: 'pending',
-			},
-		} );
-		setTags( [] );
-		setTitle( '' );
-		setContentReady( false );
-		setExpanded( false );
+	const handleSaved = () => {
 		setMessage(
-			settings.capabilities?.publishPosts
+			canPublish
 				? __( 'Update published.', 'q2' )
 				: __( 'Update submitted for review.', 'q2' )
 		);
+		setEditorKey( ( value ) => value + 1 );
 		onCreated();
 	};
 
-	return (
-		<section
-			className={ `q2-composer${ expanded ? ' is-expanded' : '' }${
-				contentReady ? ' has-content' : ''
-			}` }
-		>
-			<div className="q2-composer-inner">
-				<img src={ avatar } alt="" />
-				<div className="q2-composer-field">
-					<span className="q2-composer-now">
-						{ __( 'Now', 'q2' ) }
-					</span>
-					{ expanded ? (
-						<>
-							<input
-								type="text"
-								className="q2-composer-title"
-								value={ title }
-								placeholder={ __( 'Post title', 'q2' ) }
-								onChange={ ( event ) =>
-									setTitle( event.target.value )
-								}
-							/>
-							<BlockContentEditor
-								allowedBlocks={ POST_BLOCKS }
-								onSave={ publish }
-								onCancel={ () => {
-									setExpanded( false );
-									setContentReady( false );
-								} }
-								onContentChange={ setContentReady }
-								submitLabel={ __( 'Post', 'q2' ) }
-							/>
-							<TagPicker value={ tags } onChange={ setTags } />
-						</>
-					) : (
+	const closeComposer = () => {
+		setExpanded( false );
+		setEditorKey( ( value ) => value + 1 );
+	};
+
+	if ( ! expanded ) {
+		return (
+			<section
+				className="q2-composer"
+				aria-label={ __( 'Create a post', 'q2' ) }
+			>
+				<div className="q2-composer-inner">
+					<img src={ avatar } alt="" />
+					<div className="q2-composer-field">
+						<span className="q2-composer-now">
+							{ __( 'Now', 'q2' ) }
+						</span>
 						<button
 							type="button"
 							className="q2-composer-prompt"
@@ -1041,16 +1298,14 @@ function Composer( { onCreated } ) {
 							{ sprintf(
 								/* translators: %s: current user's display name. */
 								__(
-									'Hi, %s! Post an update, ask a question, or brainstorm ideas.',
+									'Hi, %s! Post an update, ask a question, or share ideas.',
 									'q2'
 								),
 								settings.currentUser?.name ||
 									__( 'there', 'q2' )
 							) }
 						</button>
-					) }
-				</div>
-				{ ! expanded && (
+					</div>
 					<button
 						type="button"
 						className="q2-composer-submit"
@@ -1058,16 +1313,44 @@ function Composer( { onCreated } ) {
 					>
 						{ __( 'Post', 'q2' ) }
 					</button>
-				) }
-			</div>
-			<footer>
-				<span aria-live="polite">{ message }</span>
-			</footer>
+				</div>
+				<p className="q2-composer-message" aria-live="polite">
+					{ message }
+				</p>
+			</section>
+		);
+	}
+
+	return (
+		<section
+			className="q2-composer is-expanded"
+			aria-label={ __( 'Create a post', 'q2' ) }
+		>
+			<P2BlockEditor
+				key={ editorKey }
+				onSaved={ handleSaved }
+				onClose={ closeComposer }
+				onOpenFullEditor={ onOpenFullEditor }
+				submitLabel={
+					canPublish
+						? __( 'Publish', 'q2' )
+						: __( 'Submit for review', 'q2' )
+				}
+			/>
+			<p className="q2-composer-message" aria-live="polite">
+				{ message }
+			</p>
 		</section>
 	);
 }
 
-function Post( { post, onUpdated, onRemoved, isUnread = false } ) {
+function Post( {
+	post,
+	onUpdated,
+	onRemoved,
+	onOpenInFullEditor,
+	isUnread = false,
+} ) {
 	const author = post._embedded?.author?.[ 0 ];
 	const articleRef = useRef( null );
 	const contentRef = useRef( null );
@@ -1271,23 +1554,23 @@ function Post( { post, onUpdated, onRemoved, isUnread = false } ) {
 			</header>
 			{ editing && (
 				<div
-					className="q2-post-editor-overlay"
+					className="q2-post-editor-overlay is-p2"
 					role="dialog"
 					aria-modal="true"
 					aria-label={ __( 'Edit post', 'q2' ) }
 				>
-					<PostEditorIframe
+					<P2BlockEditor
 						postId={ post.id }
-						title={ __( 'Edit post', 'q2' ) }
 						onClose={ () => setEditing( false ) }
-						onSaved={ async () => {
+						onOpenFullEditor={ onOpenInFullEditor }
+						onSaved={ async ( updated ) => {
 							try {
 								const refreshed = await apiFetch( {
-									path: `/wp/v2/posts/${ post.id }?context=edit&_embed=author,wp:term,replies`,
+									path: `/wp/v2/posts/${ updated.id }?context=edit&_embed=author,wp:term,replies`,
 								} );
 								onUpdated( refreshed );
 							} catch {
-								// Ignore refresh errors; the iframe already saved.
+								onUpdated( updated );
 							}
 							setEditing( false );
 						} }

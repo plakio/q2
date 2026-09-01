@@ -68,7 +68,7 @@ function TreeNode( { node, onSelect, activeId, expanded, onToggle } ) {
 	);
 }
 
-export default function PagesScreen() {
+export default function PagesScreen( { onCreatePage } ) {
 	const [ tree, setTree ] = useState( [] );
 	const [ recents, setRecents ] = useState( [] );
 	const [ status, setStatus ] = useState( 'loading' );
@@ -176,6 +176,10 @@ export default function PagesScreen() {
 	};
 
 	const startCreate = () => {
+		if ( onCreatePage ) {
+			onCreatePage();
+			return;
+		}
 		setSelectedId( 0 );
 		setEditing( false );
 		setCreating( true );
@@ -190,7 +194,11 @@ export default function PagesScreen() {
 	);
 
 	return (
-		<div className="q2-pages-screen">
+		<div
+			className={ `q2-pages-screen${
+				selectedId || creating ? ' has-selection' : ''
+			}` }
+		>
 			<aside className="q2-pages-side">
 				<header className="q2-page-header">
 					<div>
@@ -283,10 +291,24 @@ export default function PagesScreen() {
 				) }
 			</aside>
 			<section className="q2-pages-reader">
+				{ ( selectedId || creating ) && (
+					<button
+						type="button"
+						className="q2-pages-mobile-back"
+						onClick={ () => {
+							setSelectedId( 0 );
+							setCreating( false );
+							setEditing( false );
+						} }
+					>
+						{ __( 'Back to pages', 'q2' ) }
+					</button>
+				) }
 				{ creating && (
 					<PostEditorIframe
 						postType="page"
 						isNew
+						variant="full"
 						title={ __( 'New page', 'q2' ) }
 						onClose={ () => setCreating( null ) }
 						onSaved={ () => {
@@ -391,6 +413,7 @@ export default function PagesScreen() {
 							<PostEditorIframe
 								postId={ selectedId }
 								postType="page"
+								variant="full"
 								title={ __( 'Edit page', 'q2' ) }
 								onClose={ () => setEditing( false ) }
 								onSaved={ () => {

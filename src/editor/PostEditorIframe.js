@@ -3,11 +3,13 @@ import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Spinner } from '@wordpress/components';
 
-async function fetchEditorUrl( { postId, postType } ) {
+async function fetchEditorUrl( { postId, postType, variant } ) {
 	const path =
 		postId > 0
-			? `/q2/v1/editor-url?post_id=${ postId }`
-			: `/q2/v1/editor-url?post_type=${ postType || 'post' }`;
+			? `/q2/v1/editor-url?post_id=${ postId }&mode=${ variant }`
+			: `/q2/v1/editor-url?post_type=${
+					postType || 'post'
+			  }&mode=${ variant }`;
 	const response = await apiFetch( { path } );
 	return response?.url || '';
 }
@@ -19,6 +21,7 @@ export default function PostEditorIframe( {
 	onClose,
 	onSaved,
 	title,
+	variant = 'embedded',
 } ) {
 	const [ ready, setReady ] = useState( false );
 	const [ url, setUrl ] = useState( '' );
@@ -30,7 +33,7 @@ export default function PostEditorIframe( {
 		setReady( false );
 		setError( '' );
 		setUrl( '' );
-		fetchEditorUrl( { postId, postType } )
+		fetchEditorUrl( { postId, postType, variant } )
 			.then( ( resolved ) => {
 				if ( ! cancelled ) {
 					setUrl( resolved );
@@ -47,7 +50,7 @@ export default function PostEditorIframe( {
 		return () => {
 			cancelled = true;
 		};
-	}, [ postId, postType ] );
+	}, [ postId, postType, variant ] );
 
 	useEffect( () => {
 		function handleMessage( event ) {
@@ -92,23 +95,12 @@ export default function PostEditorIframe( {
 	return (
 		<div
 			ref={ wrapperRef }
-			className="q2-post-editor-iframe"
+			className={ `q2-post-editor-iframe is-${ variant }` }
 			role="dialog"
 			aria-modal="true"
 			aria-label={ heading }
 			tabIndex="-1"
 		>
-			<header className="q2-post-editor-iframe-bar">
-				<strong>{ heading }</strong>
-				<button
-					type="button"
-					className="q2-post-editor-iframe-close"
-					onClick={ onClose }
-					aria-label={ __( 'Close editor', 'q2' ) }
-				>
-					{ __( 'Close', 'q2' ) }
-				</button>
-			</header>
 			{ error && (
 				<div className="q2-post-editor-iframe-error" role="alert">
 					{ error }

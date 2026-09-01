@@ -142,6 +142,8 @@ final class Application {
 		wp_enqueue_style( 'wp-edit-blocks' );
 		wp_enqueue_style( 'wp-editor' );
 		wp_enqueue_style( 'wp-edit-post' );
+		wp_enqueue_style( 'wp-format-library' );
+		wp_enqueue_script( 'wp-format-library' );
 
 		$asset_file = Q2_PATH . 'build/index.asset.php';
 		$asset      = file_exists( $asset_file ) ? require $asset_file : array(
@@ -169,10 +171,6 @@ final class Application {
 			'before'
 		);
 		wp_set_script_translations( self::SCRIPT_HANDLE, 'q2' );
-
-		if ( function_exists( 'wp_print_media_templates' ) ) {
-			wp_print_media_templates();
-		}
 	}
 
 	/**
@@ -190,6 +188,7 @@ final class Application {
 			'adminUrl'         => admin_url(),
 			'profileUrl'       => admin_url( 'profile.php' ),
 			'logoutUrl'        => wp_logout_url( home_url( '/' ) ),
+			'links'            => $this->workspace_links(),
 			'newPostEditorUrl' => EditorFrame::new_post_url(),
 			'workspace'        => array(
 				'coverUrl' => $this->workspace_cover_url(),
@@ -209,12 +208,24 @@ final class Application {
 			'capabilities'     => array(
 				'createPosts'      => current_user_can( 'edit_posts' ),
 				'publishPosts'     => current_user_can( 'publish_posts' ),
+				'createPages'      => current_user_can( 'edit_pages' ),
+				'publishPages'     => current_user_can( 'publish_pages' ),
 				'editOthersPosts'  => current_user_can( 'edit_others_posts' ),
 				'moderateComments' => current_user_can( 'moderate_comments' ),
 				'manageQ2'         => current_user_can( Capabilities::MANAGE ),
 				'mentionAll'       => current_user_can( Capabilities::MENTION_ALL ),
 			),
 		);
+	}
+
+	/**
+	 * Returns the first configured navigation menu as workspace links.
+	 *
+	 * @return array<int, array<string, mixed>>
+	 */
+	private function workspace_links(): array {
+		$links = get_option( 'q2_workspace_links', array() );
+		return is_array( $links ) ? array_values( $links ) : array();
 	}
 
 	/**

@@ -85,6 +85,7 @@ function Comment( {
 				</header>
 				{ editing ? (
 					<BlockContentEditor
+						variant="p2"
 						initialContent={ comment.content }
 						allowedBlocks={ COMMENT_BLOCKS }
 						onSave={ saveEdit }
@@ -131,6 +132,7 @@ function Comment( {
 				{ replying && (
 					<div className="q2-comment-reply-editor">
 						<BlockContentEditor
+							variant="p2"
 							allowedBlocks={ COMMENT_BLOCKS }
 							onSave={ saveReply }
 							onCancel={ () => setReplying( false ) }
@@ -233,6 +235,7 @@ export default function CommentsThread( { postId, onCountChange } ) {
 				<h4>{ __( 'Add to the discussion', 'q2' ) }</h4>
 				<BlockContentEditor
 					key={ revision }
+					variant="p2"
 					allowedBlocks={ COMMENT_BLOCKS }
 					onSave={ create }
 					submitLabel={ __( 'Comment', 'q2' ) }

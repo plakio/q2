@@ -26,6 +26,11 @@ do_action( 'wp_enqueue_scripts' );
 		<p class="q2-boot-status" role="status"><?php esc_html_e( 'Loading Q2…', 'q2' ); ?></p>
 	</div>
 	<noscript><p><?php esc_html_e( 'Q2 requires JavaScript for its application interface.', 'q2' ); ?></p></noscript>
+	<?php
+	if ( function_exists( 'wp_print_media_templates' ) ) {
+		wp_print_media_templates();
+	}
+	?>
 	<?php wp_print_footer_scripts(); ?>
 </body>
 </html>

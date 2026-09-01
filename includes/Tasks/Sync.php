@@ -9,7 +9,7 @@ declare( strict_types=1 );
 
 namespace Q2\Tasks;
 
-use Q2\Collaboration\Repository;
+use Q2\Collaboration\Repository as Collaboration_Repository;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -27,16 +27,16 @@ final class Sync {
 	/**
 	 * Collaboration persistence gateway.
 	 *
-	 * @var Repository
+	 * @var Collaboration_Repository
 	 */
-	private Repository $collaboration;
+	private Collaboration_Repository $collaboration;
 
 	/**
 	 * Creates the sync service.
 	 */
 	public function __construct() {
 		$this->tasks         = new Repository();
-		$this->collaboration = new Repository();
+		$this->collaboration = new Collaboration_Repository();
 	}
 
 	/**

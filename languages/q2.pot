@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Q2 0.2.4\n"
+"Project-Id-Version: Q2 0.2.5\n"
 "Report-Msgid-Bugs-To: https://github.com/plakio/q2/issues\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-01T04:02:33+00:00\n"
+"POT-Creation-Date: 2026-09-01T16:41:57+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: q2\n"
@@ -40,11 +40,11 @@ msgstr ""
 msgid "https://plak.io/"
 msgstr ""
 
-#: includes/Application/Application.php:76
+#: includes/Application/Application.php:77
 msgid "You do not have permission to access Q2."
 msgstr ""
 
-#: includes/Application/Application.php:77
+#: includes/Application/Application.php:78
 msgid "Q2 access denied"
 msgstr ""
 
@@ -157,7 +157,11 @@ msgstr ""
 msgid "You do not have permission to view that task."
 msgstr ""
 
-#: includes/REST/Workspace_Controller.php:118
+#: includes/REST/Workspace_Controller.php:147
+msgid "Enter a label and a valid URL."
+msgstr ""
+
+#: includes/REST/Workspace_Controller.php:201
 msgid "That image could not be found."
 msgstr ""
 
@@ -429,427 +433,577 @@ msgstr ""
 msgid "to %s"
 msgstr ""
 
-#: src/comments/CommentsThread.js:92
+#: src/comments/CommentsThread.js:93
 msgid "Save comment"
 msgstr ""
 
-#: src/comments/CommentsThread.js:108
-#: src/comments/CommentsThread.js:137
-#: src/index.js:1348
+#: src/comments/CommentsThread.js:109
+#: src/comments/CommentsThread.js:139
+#: src/index.js:1603
 msgid "Reply"
 msgstr ""
 
-#: src/comments/CommentsThread.js:115
-#: src/pages/PagesScreen.js:433
+#: src/comments/CommentsThread.js:116
+#: src/pages/PagesScreen.js:376
 msgid "Edit"
 msgstr ""
 
-#: src/comments/CommentsThread.js:125
+#: src/comments/CommentsThread.js:126
 msgid "Deleting…"
 msgstr ""
 
-#: src/comments/CommentsThread.js:126
+#: src/comments/CommentsThread.js:127
 #: src/media/MediaScreen.js:400
-#: src/pages/PagesScreen.js:463
+#: src/pages/PagesScreen.js:406
 msgid "Delete"
 msgstr ""
 
-#: src/comments/CommentsThread.js:186
+#: src/comments/CommentsThread.js:188
 msgid "Comments could not be loaded."
 msgstr ""
 
-#: src/comments/CommentsThread.js:206
+#: src/comments/CommentsThread.js:208
 #: src/notifications/NotificationsScreen.js:138
 #: src/search/SearchScreen.js:10
 msgid "Comments"
 msgstr ""
 
 #. translators: %d: comment count.
-#: src/comments/CommentsThread.js:210
+#: src/comments/CommentsThread.js:212
 #, js-format
 msgid "Discussion (%d)"
 msgstr ""
 
-#: src/comments/CommentsThread.js:215
+#: src/comments/CommentsThread.js:217
 msgid "Loading comments…"
 msgstr ""
 
-#: src/comments/CommentsThread.js:233
+#: src/comments/CommentsThread.js:235
 msgid "Add to the discussion"
 msgstr ""
 
-#: src/comments/CommentsThread.js:238
+#: src/comments/CommentsThread.js:241
 msgid "Comment"
 msgstr ""
 
 #: src/components/TagPicker.js:25
-#: src/index.js:1326
+#: src/editor/P2BlockEditor.js:161
+#: src/index.js:1581
 #: src/search/SearchScreen.js:12
 msgid "Tags"
 msgstr ""
 
-#: src/editor/BlockContentEditor.js:60
-#: src/pages/PagesScreen.js:443
+#: src/editor/BlockContentEditor.js:91
+#: src/editor/P2BlockEditor.js:109
+#: src/index.js:1336
+#: src/pages/PagesScreen.js:386
 msgid "Publish"
 msgstr ""
 
-#: src/editor/BlockContentEditor.js:88
-msgid "Write something before saving."
-msgstr ""
-
-#: src/editor/BlockContentEditor.js:99
-msgid "The content could not be saved."
-msgstr ""
-
-#: src/editor/BlockContentEditor.js:120
+#: src/editor/BlockContentEditor.js:163
+#: src/editor/BlockContentEditor.js:275
 msgid "Add block"
 msgstr ""
 
-#: src/editor/BlockContentEditor.js:141
+#: src/editor/BlockContentEditor.js:203
 msgid "Mention teammates with @username or @all."
 msgstr ""
 
-#: src/editor/BlockContentEditor.js:145
+#: src/editor/BlockContentEditor.js:207
 msgid "Mention teammates with @username."
 msgstr ""
 
-#: src/editor/BlockContentEditor.js:157
+#: src/editor/BlockContentEditor.js:212
+#: src/editor/BlockContentEditor.js:452
 msgid "Cancel"
 msgstr ""
 
-#: src/editor/BlockContentEditor.js:166
+#: src/editor/BlockContentEditor.js:301
+msgid "Undo"
+msgstr ""
+
+#: src/editor/BlockContentEditor.js:307
+msgid "Redo"
+msgstr ""
+
+#: src/editor/BlockContentEditor.js:324
+msgid "Block info"
+msgstr ""
+
+#: src/editor/BlockContentEditor.js:337
+msgid "Write in blocks"
+msgstr ""
+
+#: src/editor/BlockContentEditor.js:340
+msgid "Type / to insert a block. Use the + button to browse available blocks."
+msgstr ""
+
+#: src/editor/BlockContentEditor.js:355
+#: src/editor/BlockContentEditor.js:359
+msgid "Open full editor"
+msgstr ""
+
+#: src/editor/BlockContentEditor.js:374
+msgid "Settings"
+msgstr ""
+
+#: src/editor/BlockContentEditor.js:384
+msgid "More options"
+msgstr ""
+
+#: src/editor/BlockContentEditor.js:390
+msgid "Toggle screen settings"
+msgstr ""
+
+#: src/editor/BlockContentEditor.js:423
+msgid "Display options"
+msgstr ""
+
+#: src/editor/P2BlockEditor.js:14
+#: src/pages/PagesScreen.js:43
+msgid "Draft"
+msgstr ""
+
+#: src/editor/P2BlockEditor.js:15
+msgid "Pending review"
+msgstr ""
+
+#: src/editor/P2BlockEditor.js:16
+#: src/pages/PagesScreen.js:48
+msgid "Private"
+msgstr ""
+
+#: src/editor/P2BlockEditor.js:17
+msgid "Published"
+msgstr ""
+
+#: src/editor/P2BlockEditor.js:62
+msgid "The post could not be loaded."
+msgstr ""
+
+#: src/editor/P2BlockEditor.js:94
+#: src/editor/P2BlockEditor.js:141
+msgid "The post could not be saved."
+msgstr ""
+
+#: src/editor/P2BlockEditor.js:106
+msgid "Update"
+msgstr ""
+
+#: src/editor/P2BlockEditor.js:110
+#: src/index.js:1337
+msgid "Submit for review"
+msgstr ""
+
+#: src/editor/P2BlockEditor.js:150
+msgid "Status & visibility"
+msgstr ""
+
+#: src/editor/P2BlockEditor.js:152
+msgid "Visibility"
+msgstr ""
+
+#: src/editor/P2BlockEditor.js:171
+#: src/editor/PostEditorIframe.js:115
+msgid "Loading editor…"
+msgstr ""
+
+#: src/editor/P2BlockEditor.js:181
+msgid "Close"
+msgstr ""
+
+#: src/editor/P2BlockEditor.js:194
 #: src/starters/StartersScreen.js:118
 msgid "Saving…"
 msgstr ""
 
-#: src/index.js:56
+#: src/editor/PostEditorIframe.js:46
+msgid "The editor could not be loaded."
+msgstr ""
+
+#: src/editor/PostEditorIframe.js:93
+#: src/index.js:188
+#: src/index.js:514
+msgid "New post"
+msgstr ""
+
+#: src/editor/PostEditorIframe.js:93
+#: src/index.js:188
+#: src/index.js:1526
+#: src/index.js:1560
+msgid "Edit post"
+msgstr ""
+
+#: src/index.js:59
 #: src/search/SearchScreen.js:8
 msgid "Posts"
 msgstr ""
 
-#: src/index.js:57
-#: src/pages/PagesScreen.js:261
+#: src/index.js:60
+#: src/pages/PagesScreen.js:208
 #: src/search/SearchScreen.js:9
 msgid "Pages"
 msgstr ""
 
-#: src/index.js:58
+#: src/index.js:63
 #: src/media/MediaScreen.js:156
 msgid "Media"
 msgstr ""
 
-#: src/index.js:61
-#: src/index.js:297
-#: src/index.js:426
+#: src/index.js:69
+#: src/index.js:540
 #: src/notifications/NotificationsScreen.js:160
 msgid "Notifications"
 msgstr ""
 
-#: src/index.js:65
+#: src/index.js:73
 #: src/search/SearchScreen.js:73
 msgid "Search"
 msgstr ""
 
-#: src/index.js:66
+#: src/index.js:76
 #: src/tasks/TasksScreen.js:97
 msgid "Tasks"
 msgstr ""
 
-#: src/index.js:67
+#: src/index.js:80
 #: src/people/PeopleScreen.js:48
 #: src/search/SearchScreen.js:11
 msgid "People"
 msgstr ""
 
-#: src/index.js:68
+#: src/index.js:81
 msgid "Projects"
 msgstr ""
 
-#: src/index.js:69
+#: src/index.js:82
 #: src/starters/StartersScreen.js:109
 msgid "Starter Buttons"
 msgstr ""
 
-#: src/index.js:173
+#: src/index.js:185
+#: src/pages/PagesScreen.js:417
+msgid "Edit page"
+msgstr ""
+
+#: src/index.js:186
+#: src/index.js:527
+#: src/pages/PagesScreen.js:215
+#: src/pages/PagesScreen.js:312
+msgid "New page"
+msgstr ""
+
+#: src/index.js:252
 msgid "Workspace navigation"
 msgstr ""
 
-#: src/index.js:207
+#: src/index.js:292
 msgid "Powered by"
 msgstr ""
 
-#: src/index.js:285
+#: src/index.js:400
 #: src/search/SearchScreen.js:77
 msgid "Search workspace"
 msgstr ""
 
-#. translators: %s: workspace name.
-#: src/index.js:288
-#, js-format
-msgid "Search in %s"
-msgstr ""
-
-#: src/index.js:311
+#: src/index.js:409
 msgid "Toggle navigation"
 msgstr ""
 
-#: src/index.js:355
-#: src/index.js:684
+#: src/index.js:460
+#: src/index.js:800
 msgid "A collaborative workspace."
 msgstr ""
 
-#: src/index.js:386
+#: src/index.js:491
 msgid "Workspace actions"
 msgstr ""
 
-#: src/index.js:414
-msgid "New post"
-msgstr ""
-
-#: src/index.js:441
+#: src/index.js:555
 msgid "My profile"
 msgstr ""
 
-#: src/index.js:453
+#: src/index.js:567
 msgid "Workspace settings"
 msgstr ""
 
-#: src/index.js:469
+#: src/index.js:583
 msgid "Signed in"
 msgstr ""
 
-#: src/index.js:481
+#: src/index.js:595
 msgid "Sign out"
 msgstr ""
 
-#: src/index.js:522
+#: src/index.js:636
 msgid "The workspace image could not be saved."
 msgstr ""
 
-#: src/index.js:535
+#: src/index.js:649
 msgid "The media library is still loading. Please try again in a moment."
 msgstr ""
 
-#: src/index.js:545
+#: src/index.js:659
 msgid "Select cover image"
 msgstr ""
 
-#: src/index.js:546
+#: src/index.js:660
 msgid "Select workspace icon"
 msgstr ""
 
-#: src/index.js:550
+#: src/index.js:664
 msgid "Use as cover"
 msgstr ""
 
-#: src/index.js:551
+#: src/index.js:665
 msgid "Use as icon"
 msgstr ""
 
-#: src/index.js:612
+#: src/index.js:727
 msgid "Change cover"
 msgstr ""
 
-#: src/index.js:613
+#: src/index.js:728
 msgid "Add cover"
 msgstr ""
 
-#: src/index.js:624
+#: src/index.js:739
 msgid "Remove cover"
 msgstr ""
 
-#: src/index.js:658
+#: src/index.js:774
 msgid "Change workspace icon"
 msgstr ""
 
-#: src/index.js:659
+#: src/index.js:775
 msgid "Add workspace icon"
 msgstr ""
 
-#: src/index.js:670
+#: src/index.js:786
 msgid "Remove workspace icon"
 msgstr ""
 
-#: src/index.js:710
-#: src/index.js:712
+#: src/index.js:816
+msgid "New posts"
+msgstr ""
+
+#: src/index.js:821
+msgid "New comments"
+msgstr ""
+
+#: src/index.js:826
+msgid "My mentions"
+msgstr ""
+
+#: src/index.js:831
+msgid "My posts"
+msgstr ""
+
+#: src/index.js:839
+msgid "Post filters"
+msgstr ""
+
+#: src/index.js:898
+msgid "The link could not be added."
+msgstr ""
+
+#: src/index.js:912
+msgid "The link could not be removed."
+msgstr ""
+
+#: src/index.js:920
+msgid "Links"
+msgstr ""
+
+#: src/index.js:924
+msgid "Add link"
+msgstr ""
+
+#: src/index.js:938
+msgid "Label"
+msgstr ""
+
+#: src/index.js:960
+msgid "Open in a new tab"
+msgstr ""
+
+#: src/index.js:962
+msgid "Add"
+msgstr ""
+
+#: src/index.js:986
+msgid "Remove link"
+msgstr ""
+
+#: src/index.js:995
+msgid "No links yet."
+msgstr ""
+
+#: src/index.js:1016
+#: src/index.js:1018
 msgid "Team"
 msgstr ""
 
-#: src/index.js:717
+#: src/index.js:1023
 msgid "View all team members"
 msgstr ""
 
-#: src/index.js:795
+#: src/index.js:1098
 msgid "The feed could not be loaded."
 msgstr ""
 
-#: src/index.js:845
+#: src/index.js:1151
 msgid "Filter feed"
 msgstr ""
 
-#: src/index.js:854
+#: src/index.js:1160
 msgid "All posts"
 msgstr ""
 
-#: src/index.js:856
+#: src/index.js:1162
 msgid "New Posts"
 msgstr ""
 
-#: src/index.js:859
+#: src/index.js:1165
 msgid "New Comments"
 msgstr ""
 
-#: src/index.js:862
+#: src/index.js:1168
 msgid "My Posts"
 msgstr ""
 
-#: src/index.js:865
+#: src/index.js:1171
 msgid "My Mentions"
 msgstr ""
 
-#: src/index.js:871
+#: src/index.js:1177
 msgid "Feed view"
 msgstr ""
 
-#: src/index.js:881
+#: src/index.js:1187
 msgid "Default view"
 msgstr ""
 
-#: src/index.js:884
+#: src/index.js:1190
 msgid "Expanded view"
 msgstr ""
 
-#: src/index.js:887
+#: src/index.js:1193
 msgid "Compact view"
 msgstr ""
 
-#: src/index.js:895
+#: src/index.js:1201
 msgid "Loading updates…"
 msgstr ""
 
-#: src/index.js:900
+#: src/index.js:1206
 msgid "Something went wrong"
 msgstr ""
 
-#: src/index.js:903
+#: src/index.js:1209
 msgid "Try again"
 msgstr ""
 
-#: src/index.js:910
+#: src/index.js:1216
 msgid "Start the conversation"
 msgstr ""
 
-#: src/index.js:913
+#: src/index.js:1219
 msgid "Publish the first update for this workspace."
 msgstr ""
 
-#: src/index.js:935
+#: src/index.js:1242
 msgid "Loading more…"
 msgstr ""
 
-#: src/index.js:944
+#: src/index.js:1251
 msgid "Load more updates"
 msgstr ""
 
-#: src/index.js:980
+#: src/index.js:1269
 msgid "Update published."
 msgstr ""
 
-#: src/index.js:981
+#: src/index.js:1270
 msgid "Update submitted for review."
 msgstr ""
 
-#: src/index.js:996
+#: src/index.js:1285
+#: src/index.js:1327
+msgid "Create a post"
+msgstr ""
+
+#: src/index.js:1291
 msgid "Now"
 msgstr ""
 
-#: src/index.js:1004
-#: src/index.js:1304
-msgid "Post title"
-msgstr ""
-
-#: src/index.js:1017
-#: src/index.js:1045
-msgid "Post"
-msgstr ""
-
 #. translators: %s: current user's display name.
-#: src/index.js:1029
+#: src/index.js:1300
 #, js-format
-msgid "Hi, %s! Post an update, ask a question, or brainstorm ideas."
+msgid "Hi, %s! Post an update, ask a question, or share ideas."
 msgstr ""
 
-#: src/index.js:1034
+#: src/index.js:1305
 msgid "there"
 msgstr ""
 
-#: src/index.js:1144
+#: src/index.js:1314
+msgid "Post"
+msgstr ""
+
+#: src/index.js:1417
 msgid "Delete this post? This moves it to the trash."
 msgstr ""
 
-#: src/index.js:1163
+#: src/index.js:1436
 msgid "The post could not be deleted."
 msgstr ""
 
-#: src/index.js:1236
+#: src/index.js:1509
 msgid "Post actions"
 msgstr ""
 
-#: src/index.js:1253
-#: src/index.js:1287
-#: src/index.js:1290
-msgid "Edit post"
-msgstr ""
-
-#: src/index.js:1262
+#: src/index.js:1535
 msgid "Delete post"
 msgstr ""
 
-#: src/index.js:1277
+#: src/index.js:1550
 msgid "Unknown author"
 msgstr ""
 
-#: src/index.js:1294
-msgid "Close editor"
-msgstr ""
-
-#: src/index.js:1316
-msgid "Save update"
-msgstr ""
-
-#: src/index.js:1364
+#: src/index.js:1619
 msgid "Following"
 msgstr ""
 
-#: src/index.js:1365
+#: src/index.js:1620
 msgid "Follow"
 msgstr ""
 
-#: src/index.js:1385
+#: src/index.js:1640
 msgid "Liked"
 msgstr ""
 
-#: src/index.js:1386
+#: src/index.js:1641
 msgid "Like"
 msgstr ""
 
-#: src/index.js:1408
+#: src/index.js:1663
 msgid "Q2 foundation"
 msgstr ""
 
-#: src/index.js:1415
+#: src/index.js:1670
 msgid "This area is architected and coming next."
 msgstr ""
 
-#: src/index.js:1418
+#: src/index.js:1673
 msgid "The foundation milestone establishes navigation without pretending unfinished collaboration features are complete."
 msgstr ""
 
-#: src/index.js:1432
+#: src/index.js:1687
 msgid "Page not found"
 msgstr ""
 
-#: src/index.js:1434
+#: src/index.js:1689
 msgid "Return to the feed"
 msgstr ""
 
@@ -892,7 +1046,7 @@ msgid "The file could not be deleted."
 msgstr ""
 
 #: src/media/MediaScreen.js:154
-#: src/pages/PagesScreen.js:259
+#: src/pages/PagesScreen.js:206
 #: src/people/PeopleScreen.js:46
 #: src/search/SearchScreen.js:71
 #: src/starters/StartersScreen.js:107
@@ -954,13 +1108,12 @@ msgid "Uploaded by %1$s on %2$s · %3$s"
 msgstr ""
 
 #: src/media/MediaScreen.js:324
-#: src/pages/PagesScreen.js:335
-#: src/pages/PagesScreen.js:422
+#: src/pages/PagesScreen.js:282
+#: src/pages/PagesScreen.js:365
 msgid "Unknown"
 msgstr ""
 
 #: src/media/MediaScreen.js:356
-#: src/pages/PagesScreen.js:354
 msgid "Title"
 msgstr ""
 
@@ -1064,113 +1217,87 @@ msgstr ""
 msgid "sent an update"
 msgstr ""
 
-#: src/pages/PagesScreen.js:37
+#: src/pages/PagesScreen.js:24
 msgid "Collapse"
 msgstr ""
 
-#: src/pages/PagesScreen.js:38
+#: src/pages/PagesScreen.js:25
 msgid "Expand"
 msgstr ""
 
-#: src/pages/PagesScreen.js:53
-#: src/pages/PagesScreen.js:328
-#: src/pages/PagesScreen.js:413
+#: src/pages/PagesScreen.js:40
+#: src/pages/PagesScreen.js:275
+#: src/pages/PagesScreen.js:356
 msgid "(Untitled)"
 msgstr ""
 
-#: src/pages/PagesScreen.js:56
-msgid "Draft"
-msgstr ""
-
-#: src/pages/PagesScreen.js:61
-msgid "Private"
-msgstr ""
-
-#: src/pages/PagesScreen.js:115
+#: src/pages/PagesScreen.js:99
 msgid "Pages could not be loaded."
 msgstr ""
 
-#: src/pages/PagesScreen.js:143
+#: src/pages/PagesScreen.js:127
 msgid "The page could not be loaded."
 msgstr ""
 
-#: src/pages/PagesScreen.js:198
+#: src/pages/PagesScreen.js:166
 msgid "Move this page to trash?"
 msgstr ""
 
-#: src/pages/PagesScreen.js:240
-msgid "The page could not be created."
-msgstr ""
-
-#: src/pages/PagesScreen.js:268
-#: src/pages/PagesScreen.js:349
-msgid "New page"
-msgstr ""
-
-#: src/pages/PagesScreen.js:273
-#: src/pages/PagesScreen.js:282
+#: src/pages/PagesScreen.js:220
+#: src/pages/PagesScreen.js:229
 msgid "Search pages"
 msgstr ""
 
-#: src/pages/PagesScreen.js:286
+#: src/pages/PagesScreen.js:233
 msgid "Loading pages…"
 msgstr ""
 
-#: src/pages/PagesScreen.js:291
+#: src/pages/PagesScreen.js:238
 msgid "No pages yet"
 msgstr ""
 
-#: src/pages/PagesScreen.js:293
+#: src/pages/PagesScreen.js:240
 msgid "Create durable documents, plans, and onboarding guides."
 msgstr ""
 
-#: src/pages/PagesScreen.js:316
+#: src/pages/PagesScreen.js:263
 msgid "Recently edited"
 msgstr ""
 
 #. translators: 1: author display name, 2: modified date.
-#: src/pages/PagesScreen.js:333
+#: src/pages/PagesScreen.js:280
 #, js-format
 msgid "%1$s · %2$s"
 msgstr ""
 
-#: src/pages/PagesScreen.js:365
-#: src/pages/PagesScreen.js:475
-msgid "Page title"
+#: src/pages/PagesScreen.js:304
+msgid "Back to pages"
 msgstr ""
 
-#: src/pages/PagesScreen.js:372
-msgid "Create page"
-msgstr ""
-
-#: src/pages/PagesScreen.js:379
+#: src/pages/PagesScreen.js:322
 msgid "Select a page"
 msgstr ""
 
-#: src/pages/PagesScreen.js:381
+#: src/pages/PagesScreen.js:324
 msgid "Pick a document from the tree to read or edit it."
 msgstr ""
 
-#: src/pages/PagesScreen.js:391
+#: src/pages/PagesScreen.js:334
 msgid "Loading page…"
 msgstr ""
 
-#: src/pages/PagesScreen.js:399
+#: src/pages/PagesScreen.js:342
 msgid "Breadcrumb"
 msgstr ""
 
 #. translators: 1: author display name, 2: creation date.
-#: src/pages/PagesScreen.js:420
+#: src/pages/PagesScreen.js:363
 #, js-format
 msgid "By %1$s on %2$s"
 msgstr ""
 
-#: src/pages/PagesScreen.js:454
+#: src/pages/PagesScreen.js:397
 msgid "Move to draft"
-msgstr ""
-
-#: src/pages/PagesScreen.js:494
-msgid "Save page"
 msgstr ""
 
 #: src/people/PeopleScreen.js:28
