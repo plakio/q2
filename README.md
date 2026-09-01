@@ -4,7 +4,7 @@ Q2 is a modern, self-hosted collaborative workspace built natively on WordPress 
 
 The authenticated homepage becomes a theme-independent workspace for posts, threaded discussions, pages, media, search, notifications, people, projects, and tasks. Content stays in native WordPress posts, pages, comments, users, media, tags, revisions, and blocks. Q2 includes workspace cover and icon controls plus Task, Project Status, Changelog, Survey, and Files blocks.
 
-Try Q2 in your browser with the [WordPress Playground demo](https://playground.wordpress.net/?plugin=https://github.com/plakio/q2/archive/refs/heads/main.zip).
+Try Q2 in your browser with the <a href="https://playground.wordpress.net/?plugin=https://github.com/plakio/q2/archive/refs/heads/main.zip" target="_blank" rel="noopener noreferrer">WordPress Playground demo</a>.
 
 ## Requirements
 
