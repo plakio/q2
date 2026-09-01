@@ -12,6 +12,7 @@ namespace Q2\Application;
 defined( 'ABSPATH' ) || exit;
 
 use Q2\Core\Capabilities;
+use Q2\Editor\EditorFrame;
 
 /**
  * Serves and bootstraps the private, theme-independent application document.
@@ -139,6 +140,8 @@ final class Application {
 		wp_enqueue_style( 'wp-block-library' );
 		wp_enqueue_style( 'wp-block-editor' );
 		wp_enqueue_style( 'wp-edit-blocks' );
+		wp_enqueue_style( 'wp-editor' );
+		wp_enqueue_style( 'wp-edit-post' );
 
 		$asset_file = Q2_PATH . 'build/index.asset.php';
 		$asset      = file_exists( $asset_file ) ? require $asset_file : array(
@@ -181,28 +184,29 @@ final class Application {
 		$user = wp_get_current_user();
 
 		return array(
-			'appUrl'          => home_url( '/q2/' ),
-			'homeUrl'         => home_url( '/' ),
-			'pluginUrl'       => Q2_URL,
-			'adminUrl'        => admin_url(),
-			'profileUrl'      => admin_url( 'profile.php' ),
-			'logoutUrl'       => wp_logout_url( home_url( '/' ) ),
-			'workspace'       => array(
+			'appUrl'           => home_url( '/q2/' ),
+			'homeUrl'          => home_url( '/' ),
+			'pluginUrl'        => Q2_URL,
+			'adminUrl'         => admin_url(),
+			'profileUrl'       => admin_url( 'profile.php' ),
+			'logoutUrl'        => wp_logout_url( home_url( '/' ) ),
+			'newPostEditorUrl' => EditorFrame::new_post_url(),
+			'workspace'        => array(
 				'coverUrl' => $this->workspace_cover_url(),
 				'iconUrl'  => $this->workspace_icon_url(),
 				'canEdit'  => current_user_can( Capabilities::MANAGE ),
 			),
-			'restNonce'       => wp_create_nonce( 'wp_rest' ),
-			'restRoot'        => esc_url_raw( rest_url() ),
-			'siteName'        => get_bloginfo( 'name' ),
-			'siteDescription' => get_bloginfo( 'description' ),
-			'siteIconUrl'     => get_site_icon_url( 96 ),
-			'currentUser'     => array(
+			'restNonce'        => wp_create_nonce( 'wp_rest' ),
+			'restRoot'         => esc_url_raw( rest_url() ),
+			'siteName'         => get_bloginfo( 'name' ),
+			'siteDescription'  => get_bloginfo( 'description' ),
+			'siteIconUrl'      => get_site_icon_url( 96 ),
+			'currentUser'      => array(
 				'id'        => $user->ID,
 				'name'      => $user->display_name,
 				'avatarUrl' => get_avatar_url( $user->ID, array( 'size' => 64 ) ),
 			),
-			'capabilities'    => array(
+			'capabilities'     => array(
 				'createPosts'      => current_user_can( 'edit_posts' ),
 				'publishPosts'     => current_user_can( 'publish_posts' ),
 				'editOthersPosts'  => current_user_can( 'edit_others_posts' ),

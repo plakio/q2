@@ -1,11 +1,64 @@
 :root {
-	--q2-ink: #101517;
-	--q2-muted: #687076;
-	--q2-line: #dcdcde;
-	--q2-soft: #f3f4f4;
-	--q2-topbar: #202629;
+
+	/* P2 design tokens — see https://p2help.wordpress.com/ */
+	--p2-color-text: #00101c;
+	--p2-color-text-light: #767676;
+	--p2-color-link: #0267ff;
+	--p2-color-link-dark: #004cbf;
+	--p2-color-link-bg: #dfeafb;
+	--p2-color-accent: #0267ff;
+	--p2-color-accent-dark: #004cbf;
+	--p2-color-mentions: #0267ff;
+	--p2-color-mentions-bg: #0267ff1a;
+	--p2-color-pink: #ee0083;
+	--p2-color-red: #f71619;
+	--p2-color-red-dark: #d4070a;
+	--p2-color-green: #00db41;
+	--p2-color-yellow: #f6fa53;
+	--p2-color-topbar: #23282d;
+	--p2-color-bg: #fff;
+	--p2-color-bg-very-light: #f9f9f9;
+	--p2-color-bg-light: #f3f3f3;
+	--p2-color-bg-medium: #eaeaea;
+	--p2-color-bg-light-red: #f3dddd;
+	--p2-color-border: #d8dbdd;
+	--p2-color-border-light: #e7e9ea;
+	--p2-color-border-medium: #9ea4a8;
+	--p2-color-sidebar-bg: #fff;
+	--p2-color-sidebar-border: var(--p2-color-border-light);
+	--p2-elevation-s: 0 1px 0 #0000000d;
+	--p2-elevation-m: 0 2px 6px #00000014;
+	--p2-bezier-sharp: cubic-bezier(0.63, 0, 0.54, 0.995);
+	--p2-transition-quick: 150ms;
+	--p2-transition-slow: 300ms;
+	--p2-font-body:
+		inter,
+		-apple-system,
+		system-ui,
+		blinkmacsystemfont,
+		"Segoe UI",
+		roboto,
+		"Oxygen-Sans",
+		ubuntu,
+		cantarell,
+		"Helvetica Neue",
+		sans-serif;
+	--p2-font-mono:
+		monaco,
+		consolas,
+		"Andale Mono",
+		"DejaVu Sans Mono",
+		"Courier New",
+		monospace;
+
+	/* Q2 aliases preserved for backward compatibility */
+	--q2-ink: var(--p2-color-text);
+	--q2-muted: var(--p2-color-text-light);
+	--q2-line: var(--p2-color-border);
+	--q2-soft: var(--p2-color-bg-light);
+	--q2-topbar: var(--p2-color-topbar);
 	--q2-topbar-field: #2c3438;
-	--q2-accent: #0675e8;
+	--q2-accent: var(--p2-color-accent);
 	--q2-sidebar: clamp(18rem, 25vw, 25rem);
 	--q2-topbar-height: 4.5rem;
 }
@@ -18,19 +71,11 @@ html,
 body.q2-document {
 	margin: 0;
 	min-height: 100%;
-	background: #fff;
+	background: var(--p2-color-bg);
 	color: var(--q2-ink);
-	font-family:
-		-apple-system,
-		BlinkMacSystemFont,
-		"Segoe UI",
-		Roboto,
-		Oxygen-Sans,
-		Ubuntu,
-		Cantarell,
-		"Helvetica Neue",
-		sans-serif;
+	font-family: var(--p2-font-body);
 	font-size: 16px;
+	line-height: 1.8;
 }
 
 button,
@@ -402,8 +447,8 @@ a {
 	display: flex;
 	flex-direction: column;
 	overflow-y: auto;
-	background: var(--q2-soft);
-	border-right: 1px solid var(--q2-line);
+	background: var(--p2-color-sidebar-bg);
+	border-right: 1px solid var(--p2-color-sidebar-border);
 }
 
 .q2-workspace-summary {
@@ -413,7 +458,7 @@ a {
 .q2-workspace-cover {
 	position: relative;
 	height: 12.75rem;
-	background: var(--q2-accent);
+	background: var(--p2-color-accent);
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
@@ -434,10 +479,10 @@ a {
 	width: 5.8rem;
 	height: 5.8rem;
 	object-fit: cover;
-	background: var(--q2-accent);
+	background: var(--p2-color-accent);
 	color: #fff;
 	border: 4px solid #fff;
-	border-radius: 0.25rem;
+	border-radius: 4px;
 	font-size: 2.2rem;
 }
 
@@ -463,33 +508,35 @@ a {
 .q2-navigation {
 	display: grid;
 	gap: 0.25rem;
-	padding: 2.3rem 2.25rem;
-	border-bottom: 1px solid #fff;
+	padding: 2rem 1.75rem;
+	border-bottom: 1px solid var(--p2-color-border-light);
 }
 
 .q2-navigation a {
 	display: flex;
 	align-items: center;
 	gap: 0.85rem;
-	min-height: 3rem;
-	padding: 0 1rem;
-	color: #192025;
+	min-height: 2.5rem;
+	padding: 0 0.85rem;
+	color: var(--p2-color-text);
 	text-decoration: none;
 	font-weight: 500;
+	border-radius: 4px;
+	transition: background var(--p2-transition-quick) ease-in-out;
 }
 
 .q2-navigation a:hover,
 .q2-navigation a:focus-visible {
-	background: #e4e6e7;
+	background: var(--p2-color-bg-medium);
 }
 
 .q2-navigation a.is-active {
-	background: var(--q2-accent);
+	background: var(--p2-color-link);
 	color: #fff;
 }
 
 .q2-team {
-	padding: 2.3rem 2.25rem;
+	padding: 2rem 1.75rem;
 }
 
 .q2-team header {
@@ -500,7 +547,8 @@ a {
 
 .q2-team h2 {
 	margin: 0;
-	font-size: 1.2rem;
+	font-size: 1rem;
+	font-weight: 600;
 }
 
 .q2-team-more {
@@ -512,12 +560,12 @@ a {
 	font: inherit;
 	cursor: pointer;
 	letter-spacing: 0.1em;
-	border-radius: 0.25rem;
+	border-radius: 4px;
 }
 
 .q2-team-more:hover,
 .q2-team-more:focus-visible {
-	background: rgba(0, 0, 0, 0.06);
+	background: var(--p2-color-bg-medium);
 	color: var(--q2-ink);
 }
 
@@ -570,9 +618,9 @@ a {
 
 .q2-composer {
 	min-height: 10.2rem;
-	padding: 2.15rem max(2rem, calc((100% - 56rem) / 2));
-	border-bottom: 1px solid var(--q2-line);
-	background: #fff;
+	padding: 2rem 2rem;
+	border-bottom: 1px solid var(--p2-color-border-light);
+	background: var(--p2-color-bg);
 }
 
 .q2-composer-inner {
@@ -620,10 +668,16 @@ a {
 	min-width: 5.75rem;
 	padding: 0.75rem 1.35rem;
 	border: 0;
-	border-radius: 999px;
-	background: var(--q2-accent);
+	border-radius: 100px;
+	background: var(--p2-color-link);
 	color: #fff;
 	font-weight: 600;
+	transition: background var(--p2-transition-quick) ease-in-out;
+}
+
+.q2-composer-submit:hover,
+.q2-composer-submit:focus-visible {
+	background: var(--p2-color-link-dark);
 }
 
 .q2-composer-submit:disabled {
@@ -659,10 +713,11 @@ a {
 	min-width: 6.75rem;
 	padding: 0.75rem 1.4rem;
 	border: 0;
-	border-radius: 999px;
-	background: var(--q2-accent);
+	border-radius: 100px;
+	background: var(--p2-color-link);
 	color: #fff;
 	font-weight: 600;
+	transition: background var(--p2-transition-quick) ease-in-out;
 }
 
 .q2-composer footer {
@@ -699,8 +754,8 @@ a {
 
 .q2-post {
 	position: relative;
-	padding: 4.25rem 0 4.75rem;
-	border-bottom: 1px solid var(--q2-line);
+	padding: 3rem 0 3.5rem;
+	border-bottom: 1px solid var(--p2-color-border-light);
 }
 
 .q2-post.is-unread::before {
@@ -929,6 +984,52 @@ a {
 	background: #fff;
 }
 
+.q2-post-editor-iframe {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-height: 0;
+	background: #fff;
+}
+
+.q2-post-editor-iframe-bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 3.25rem;
+	padding: 0 1.5rem;
+	border-bottom: 1px solid var(--q2-line);
+	background: var(--q2-soft);
+}
+
+.q2-post-editor-iframe-close {
+	padding: 0.45rem 0.9rem;
+	border: 1px solid var(--q2-line);
+	border-radius: 0.35rem;
+	background: #fff;
+	color: var(--q2-ink);
+	font-weight: 600;
+}
+
+.q2-post-editor-iframe-loading,
+.q2-post-editor-iframe-error {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.6rem;
+	padding: 2rem;
+	color: var(--q2-muted);
+	font-size: 0.9rem;
+}
+
+.q2-post-editor-iframe-frame {
+	flex: 1;
+	width: 100%;
+	min-height: 0;
+	border: 0;
+	background: #fff;
+}
+
 .q2-post-editor-header {
 	display: flex;
 	align-items: center;
@@ -951,9 +1052,9 @@ a {
 }
 
 .q2-post-editor {
-	width: min(100% - 3rem, 58rem);
-	margin: 0 auto;
-	padding: 3rem 0 5rem;
+	width: 100%;
+	margin: 0;
+	padding: 3rem 3rem 5rem;
 	overflow-y: auto;
 }
 
@@ -987,8 +1088,21 @@ a {
 	display: flex;
 	align-items: center;
 	min-height: 2.75rem;
-	padding: 0 0.35rem;
+	padding: 0 0.5rem;
 	border-bottom: 1px solid var(--q2-line);
+	gap: 0.5rem;
+}
+
+.q2-block-editor-toolbar-blocks {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	align-items: center;
+}
+
+.q2-block-editor-toolbar-settings {
+	display: flex;
+	align-items: center;
 }
 
 .q2-block-editor-canvas {
@@ -1561,11 +1675,17 @@ a {
 
 .q2-pages-create {
 	padding: 0.55rem 1rem;
-	border: 1px solid var(--q2-accent);
-	border-radius: 999px;
-	background: var(--q2-accent);
+	border: 0;
+	border-radius: 100px;
+	background: var(--p2-color-link);
 	color: #fff;
 	font-weight: 600;
+	transition: background var(--p2-transition-quick) ease-in-out;
+}
+
+.q2-pages-create:hover,
+.q2-pages-create:focus-visible {
+	background: var(--p2-color-link-dark);
 }
 
 .q2-pages-search {
@@ -1696,7 +1816,7 @@ a {
 
 .q2-pages-reader {
 	min-width: 0;
-	padding: 3rem 3rem 4rem;
+	padding: 2rem 2rem 4rem;
 }
 
 .q2-pages-composer h2 {
@@ -1748,11 +1868,18 @@ a {
 
 .q2-page-actions button {
 	padding: 0.4rem 0.95rem;
-	border: 1px solid var(--q2-line);
-	border-radius: 999px;
+	border: 1px solid var(--p2-color-border);
+	border-radius: 0;
 	background: #fff;
 	color: var(--q2-ink);
-	font-size: 0.85rem;
+	font-size: 0.8125rem;
+	font-weight: 500;
+	transition: background var(--p2-transition-quick) ease-in-out;
+}
+
+.q2-page-actions button:hover,
+.q2-page-actions button:focus-visible {
+	background: var(--p2-color-bg-light);
 }
 
 .q2-page-actions .q2-page-delete {
@@ -1880,10 +2007,11 @@ a {
 .q2-survey-vote {
 	padding: 0.55rem 1.15rem;
 	border: 0;
-	border-radius: 999px;
-	background: var(--q2-accent);
+	border-radius: 100px;
+	background: var(--p2-color-link);
 	color: #fff;
 	font-weight: 600;
+	transition: background var(--p2-transition-quick) ease-in-out;
 }
 
 .q2-survey-vote:disabled {
@@ -2045,11 +2173,12 @@ a {
 /* stylelint-disable no-descending-specificity */
 .q2-starters-save {
 	padding: 0.6rem 1.1rem;
-	border: 1px solid var(--q2-accent);
-	border-radius: 999px;
-	background: var(--q2-accent);
+	border: 0;
+	border-radius: 100px;
+	background: var(--p2-color-link);
 	color: #fff;
 	font-weight: 600;
+	transition: background var(--p2-transition-quick) ease-in-out;
 }
 
 .q2-starters-help {
@@ -2172,11 +2301,17 @@ a {
 
 .q2-media-upload {
 	padding: 0.55rem 1rem;
-	border: 1px solid var(--q2-accent);
-	border-radius: 999px;
-	background: var(--q2-accent);
+	border: 0;
+	border-radius: 100px;
+	background: var(--p2-color-link);
 	color: #fff;
 	font-weight: 600;
+	transition: background var(--p2-transition-quick) ease-in-out;
+}
+
+.q2-media-upload:hover,
+.q2-media-upload:focus-visible {
+	background: var(--p2-color-link-dark);
 }
 
 .q2-media-search input {
@@ -2798,10 +2933,10 @@ a {
 
 .q2-workspace-icon-actions {
 	position: absolute;
-	bottom: 0.4rem;
-	right: 0.4rem;
+	bottom: 0.35rem;
+	right: 0.35rem;
 	display: flex;
-	gap: 0.35rem;
+	gap: 0.2rem;
 	opacity: 0;
 	pointer-events: none;
 	transition: opacity 0.18s ease-out;
@@ -2810,20 +2945,15 @@ a {
 .q2-workspace-icon-actions button {
 	display: grid;
 	place-items: center;
-	width: 2rem;
-	height: 2rem;
+	width: 1.4rem;
+	height: 1.4rem;
 	padding: 0;
 	background: rgba(0, 0, 0, 0.85);
-	border: 2px solid #fff;
+	border: 1.5px solid #fff;
 	border-radius: 999px;
 	color: #fff;
 	cursor: pointer;
 	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-}
-
-.q2-workspace-icon-actions .q2-workspace-icon-edit {
-	width: 1.75rem;
-	height: 1.75rem;
 }
 
 .q2-workspace-icon-actions button:hover,

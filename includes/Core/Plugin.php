@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit;
 
 use Q2\Application\Application;
 use Q2\Collaboration\Activity;
+use Q2\Editor\EditorFrame;
 use Q2\REST\Bootstrap_Controller;
 use Q2\REST\Collaboration_Controller;
 use Q2\REST\Comments_Controller;
@@ -55,6 +56,7 @@ final class Plugin {
 	public function boot(): void {
 		Installer::maybe_upgrade();
 		( new Application() )->register();
+		( new EditorFrame() )->register();
 		( new Activity() )->register();
 		( new Bootstrap_Controller() )->register();
 		( new Collaboration_Controller() )->register();

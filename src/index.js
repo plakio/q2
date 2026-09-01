@@ -12,12 +12,13 @@ import {
 	Icon,
 	bell,
 	chevronDown,
-	closeSmall,
 	commentReplyLink,
 	cog as settingsIcon,
 	envelope,
 	external,
 	fullscreen,
+	listView as tasksIcon,
+	media as mediaIcon,
 	menu,
 	moreHorizontal,
 	pages,
@@ -35,6 +36,7 @@ import './blocks';
 import TagPicker from './components/TagPicker';
 import StateMessage from './components/StateMessage';
 import BlockContentEditor, { POST_BLOCKS } from './editor/BlockContentEditor';
+import PostEditorIframe from './editor/PostEditorIframe';
 import { buildFeedPath } from './feed/query';
 import MediaScreen from './media/MediaScreen';
 import NotificationsScreen from './notifications/NotificationsScreen';
@@ -55,7 +57,12 @@ apiFetch.use( apiFetch.createRootURLMiddleware( settings.restRoot ) );
 const routes = [
 	{ key: 'feed', label: __( 'Posts', 'q2' ), icon: postList, sidebar: true },
 	{ key: 'pages', label: __( 'Pages', 'q2' ), icon: pages, sidebar: true },
-	{ key: 'media', label: __( 'Media', 'q2' ), icon: pages, sidebar: true },
+	{
+		key: 'media',
+		label: __( 'Media', 'q2' ),
+		icon: mediaIcon,
+		sidebar: true,
+	},
 	{
 		key: 'notifications',
 		label: __( 'Notifications', 'q2' ),
@@ -63,7 +70,12 @@ const routes = [
 		sidebar: true,
 	},
 	{ key: 'search', label: __( 'Search', 'q2' ), icon: search, sidebar: true },
-	{ key: 'tasks', label: __( 'Tasks', 'q2' ), icon: postList, sidebar: true },
+	{
+		key: 'tasks',
+		label: __( 'Tasks', 'q2' ),
+		icon: tasksIcon,
+		sidebar: true,
+	},
 	{ key: 'people', label: __( 'People', 'q2' ), icon: people, sidebar: true },
 	{ key: 'projects', label: __( 'Projects', 'q2' ), icon: postList },
 	{ key: 'starters', label: __( 'Starter Buttons', 'q2' ), icon: starEmpty },
@@ -661,7 +673,7 @@ function WorkspaceSummary( { iconUrl, onIconChange } ) {
 										: __( 'Add workspace icon', 'q2' )
 								}
 							>
-								<Icon icon={ pencil } size={ 14 } />
+								<Icon icon={ pencil } size={ 12 } />
 							</button>
 							{ iconUrl && (
 								<button
@@ -674,7 +686,7 @@ function WorkspaceSummary( { iconUrl, onIconChange } ) {
 										'q2'
 									) }
 								>
-									<Icon icon={ trash } size={ 18 } />
+									<Icon icon={ trash } size={ 14 } />
 								</button>
 							) }
 						</div>
@@ -1078,12 +1090,6 @@ function Post( { post, onUpdated, onRemoved, isUnread = false } ) {
 		settings.capabilities?.editOthersPosts;
 	const terms = ( post._embedded?.[ 'wp:term' ] || [] ).flat();
 	const tagTerms = terms.filter( ( term ) => term.taxonomy === 'post_tag' );
-	const [ selectedTags, setSelectedTags ] = useState(
-		post.tags || tagTerms.map( ( term ) => term.id )
-	);
-	const [ selectedTitle, setSelectedTitle ] = useState(
-		post.title?.raw || post.title?.rendered || ''
-	);
 	useSurveyRuntime( post.id, contentRef, ! editing );
 	const date = useMemo(
 		() =>
@@ -1120,24 +1126,6 @@ function Post( { post, onUpdated, onRemoved, isUnread = false } ) {
 		isUnread,
 		updateCollaboration,
 	] );
-
-	const saveEdit = async ( content ) => {
-		await apiFetch( {
-			path: `/wp/v2/posts/${ post.id }?context=edit`,
-			method: 'PATCH',
-			data: {
-				title: selectedTitle.trim(),
-				content,
-				tags: selectedTags,
-			},
-		} );
-		const refreshed = await apiFetch( {
-			path: `/wp/v2/posts/${ post.id }?context=edit&_embed=author,wp:term,replies`,
-		} );
-		onUpdated( refreshed );
-		setEditing( false );
-		setMenuOpen( false );
-	};
 
 	const deletePost = async () => {
 		setMenuOpen( false );
@@ -1288,40 +1276,22 @@ function Post( { post, onUpdated, onRemoved, isUnread = false } ) {
 					aria-modal="true"
 					aria-label={ __( 'Edit post', 'q2' ) }
 				>
-					<header className="q2-post-editor-header">
-						<strong>{ __( 'Edit post', 'q2' ) }</strong>
-						<button
-							type="button"
-							onClick={ () => setEditing( false ) }
-							aria-label={ __( 'Close editor', 'q2' ) }
-						>
-							<Icon icon={ closeSmall } size={ 26 } />
-						</button>
-					</header>
-					<div className="q2-post-editor">
-						<input
-							type="text"
-							className="q2-post-title-input"
-							value={ selectedTitle }
-							placeholder={ __( 'Post title', 'q2' ) }
-							onChange={ ( event ) =>
-								setSelectedTitle( event.target.value )
+					<PostEditorIframe
+						postId={ post.id }
+						title={ __( 'Edit post', 'q2' ) }
+						onClose={ () => setEditing( false ) }
+						onSaved={ async () => {
+							try {
+								const refreshed = await apiFetch( {
+									path: `/wp/v2/posts/${ post.id }?context=edit&_embed=author,wp:term,replies`,
+								} );
+								onUpdated( refreshed );
+							} catch {
+								// Ignore refresh errors; the iframe already saved.
 							}
-						/>
-						<BlockContentEditor
-							initialContent={
-								post.content.raw || post.content.rendered
-							}
-							allowedBlocks={ POST_BLOCKS }
-							onSave={ saveEdit }
-							onCancel={ () => setEditing( false ) }
-							submitLabel={ __( 'Save update', 'q2' ) }
-						/>
-						<TagPicker
-							value={ selectedTags }
-							onChange={ setSelectedTags }
-						/>
-					</div>
+							setEditing( false );
+						} }
+					/>
 				</div>
 			) }
 			{ tagTerms.length > 0 && ! editing && (

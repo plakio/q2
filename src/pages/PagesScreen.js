@@ -1,21 +1,8 @@
 import apiFetch from '@wordpress/api-fetch';
 import { useEffect, useId, useMemo, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
-import BlockContentEditor, { POST_BLOCKS } from '../editor/BlockContentEditor';
+import PostEditorIframe from '../editor/PostEditorIframe';
 import StateMessage from '../components/StateMessage';
-
-const PAGE_BLOCKS = [
-	...POST_BLOCKS,
-	'core/table',
-	'core/separator',
-	'core/spacer',
-	'core/columns',
-	'core/column',
-	'core/buttons',
-	'core/file',
-	'core/cover',
-	'core/group',
-];
 
 function TreeNode( { node, onSelect, activeId, expanded, onToggle } ) {
 	const hasChildren = node.children && node.children.length > 0;
@@ -91,12 +78,9 @@ export default function PagesScreen() {
 	const [ pageData, setPageData ] = useState( null );
 	const [ pageStatus, setPageStatus ] = useState( 'idle' );
 	const [ editing, setEditing ] = useState( false );
-	const [ creating, setCreating ] = useState( null );
-	const [ createError, setCreateError ] = useState( '' );
+	const [ creating, setCreating ] = useState( false );
 	const [ expanded, setExpanded ] = useState( () => new Set() );
 	const searchId = useId();
-	const titleId = useId();
-	const pageTitleId = useId();
 
 	const reload = () => {
 		setStatus( 'loading' );
@@ -167,22 +151,6 @@ export default function PagesScreen() {
 		} );
 	};
 
-	const saveEdit = async ( content ) => {
-		await apiFetch( {
-			path: `/q2/v1/pages/${ selectedId }`,
-			method: 'PATCH',
-			data: {
-				title: pageData.title,
-				content,
-				status: pageData.status,
-				parent: pageData.parent,
-			},
-		} );
-		setEditing( false );
-		setPageData( ( prev ) => ( prev ? { ...prev, content } : prev ) );
-		reload();
-	};
-
 	const publish = async ( next ) => {
 		await apiFetch( {
 			path: `/q2/v1/pages/${ selectedId }`,
@@ -210,36 +178,7 @@ export default function PagesScreen() {
 	const startCreate = () => {
 		setSelectedId( 0 );
 		setEditing( false );
-		setCreating( {
-			title: '',
-			parent: 0,
-			content: '',
-		} );
-		setCreateError( '' );
-	};
-
-	const submitCreate = async ( content ) => {
-		setCreateError( '' );
-		try {
-			const created = await apiFetch( {
-				path: '/q2/v1/pages',
-				method: 'POST',
-				data: {
-					title: creating.title,
-					parent: creating.parent,
-					content,
-				},
-			} );
-			setCreating( null );
-			setSelectedId( created.id );
-			setPageData( created );
-			setPageStatus( 'ready' );
-			reload();
-		} catch ( reason ) {
-			setCreateError(
-				reason.message || __( 'The page could not be created.', 'q2' )
-			);
-		}
+		setCreating( true );
 	};
 
 	const dated = useMemo(
@@ -345,34 +284,16 @@ export default function PagesScreen() {
 			</aside>
 			<section className="q2-pages-reader">
 				{ creating && (
-					<div className="q2-pages-composer">
-						<h2>{ __( 'New page', 'q2' ) }</h2>
-						<label
-							className="q2-pages-composer-title"
-							htmlFor={ titleId }
-						>
-							<span>{ __( 'Title', 'q2' ) }</span>
-							<input
-								id={ titleId }
-								type="text"
-								value={ creating.title }
-								onChange={ ( event ) =>
-									setCreating( {
-										...creating,
-										title: event.target.value,
-									} )
-								}
-								placeholder={ __( 'Page title', 'q2' ) }
-							/>
-						</label>
-						<BlockContentEditor
-							allowedBlocks={ PAGE_BLOCKS }
-							onSave={ submitCreate }
-							onCancel={ () => setCreating( null ) }
-							submitLabel={ __( 'Create page', 'q2' ) }
-						/>
-						{ createError && <p role="alert">{ createError }</p> }
-					</div>
+					<PostEditorIframe
+						postType="page"
+						isNew
+						title={ __( 'New page', 'q2' ) }
+						onClose={ () => setCreating( null ) }
+						onSaved={ () => {
+							setCreating( null );
+							reload();
+						} }
+					/>
 				) }
 				{ ! creating && ! selectedId && (
 					<StateMessage>
@@ -467,33 +388,22 @@ export default function PagesScreen() {
 							) }
 						</header>
 						{ editing ? (
-							<div>
-								<label
-									className="screen-reader-text"
-									htmlFor={ pageTitleId }
-								>
-									{ __( 'Page title', 'q2' ) }
-								</label>
-								<input
-									id={ pageTitleId }
-									type="text"
-									className="q2-page-title-input"
-									value={ pageData.title }
-									onChange={ ( event ) =>
-										setPageData( {
-											...pageData,
-											title: event.target.value,
-										} )
-									}
-								/>
-								<BlockContentEditor
-									initialContent={ pageData.content || '' }
-									allowedBlocks={ PAGE_BLOCKS }
-									onSave={ saveEdit }
-									onCancel={ () => setEditing( false ) }
-									submitLabel={ __( 'Save page', 'q2' ) }
-								/>
-							</div>
+							<PostEditorIframe
+								postId={ selectedId }
+								postType="page"
+								title={ __( 'Edit page', 'q2' ) }
+								onClose={ () => setEditing( false ) }
+								onSaved={ () => {
+									setEditing( false );
+									reload();
+									apiFetch( {
+										path: `/q2/v1/pages/${ selectedId }`,
+									} ).then( ( next ) => {
+										setPageData( next );
+										setPageStatus( 'ready' );
+									} );
+								} }
+							/>
 						) : (
 							<div
 								className="q2-page-content"

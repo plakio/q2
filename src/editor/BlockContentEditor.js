@@ -9,11 +9,22 @@ import {
 } from '@wordpress/block-editor';
 import { registerCoreBlocks } from '@wordpress/block-library';
 import { createBlock, getBlockType, parse, serialize } from '@wordpress/blocks';
-import { Button, Spinner } from '@wordpress/components';
+import {
+	Button,
+	Spinner,
+	ToolbarGroup,
+	ToolbarButton,
+} from '@wordpress/components';
 import { mediaUpload } from '@wordpress/editor';
-import { useEffect, useMemo, useState } from '@wordpress/element';
+import {
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { plus } from '@wordpress/icons';
+import { plus, undo as undoIcon, redo as redoIcon } from '@wordpress/icons';
 import { serializedContentIsMeaningful } from './content';
 
 export const POST_BLOCKS = [
@@ -51,6 +62,23 @@ function initialBlocks( content ) {
 	return parsed.length > 0 ? parsed : [ createBlock( 'core/paragraph' ) ];
 }
 
+function arraysEqual( a, b ) {
+	if ( a === b ) {
+		return true;
+	}
+	if ( ! a || ! b || a.length !== b.length ) {
+		return false;
+	}
+	for ( let i = 0; i < a.length; i++ ) {
+		const left = serialize( a[ i ] );
+		const right = serialize( b[ i ] );
+		if ( left !== right ) {
+			return false;
+		}
+	}
+	return true;
+}
+
 export default function BlockContentEditor( {
 	initialContent = '',
 	allowedBlocks = POST_BLOCKS,
@@ -63,8 +91,63 @@ export default function BlockContentEditor( {
 	const [ blocks, setBlocks ] = useState( () =>
 		initialBlocks( initialContent )
 	);
+	const [ history, setHistory ] = useState( () => [ blocks ] );
+	const [ historyIndex, setHistoryIndex ] = useState( 0 );
 	const [ busy, setBusy ] = useState( false );
 	const [ message, setMessage ] = useState( '' );
+	const lastCommittedRef = useRef( blocks );
+
+	const commitBlocks = useCallback(
+		( next ) => {
+			setBlocks( ( current ) => {
+				if ( arraysEqual( current, next ) ) {
+					return current;
+				}
+				return next;
+			} );
+			setHistory( ( past ) => {
+				const trimmed = past.slice( 0, historyIndex + 1 );
+				const last = trimmed[ trimmed.length - 1 ];
+				if ( last && arraysEqual( last, next ) ) {
+					return past;
+				}
+				return [ ...trimmed, next ];
+			} );
+			setHistoryIndex( ( value ) => value + 1 );
+		},
+		[ historyIndex ]
+	);
+
+	const canUndo = historyIndex > 0;
+	const canRedo = historyIndex < history.length - 1;
+
+	const undo = useCallback( () => {
+		if ( ! canUndo ) {
+			return;
+		}
+		const nextIndex = historyIndex - 1;
+		setHistoryIndex( nextIndex );
+		setBlocks( history[ nextIndex ] );
+		lastCommittedRef.current = history[ nextIndex ];
+	}, [ canUndo, history, historyIndex ] );
+
+	const redo = useCallback( () => {
+		if ( ! canRedo ) {
+			return;
+		}
+		const nextIndex = historyIndex + 1;
+		setHistoryIndex( nextIndex );
+		setBlocks( history[ nextIndex ] );
+		lastCommittedRef.current = history[ nextIndex ];
+	}, [ canRedo, history, historyIndex ] );
+
+	const handleInput = useCallback(
+		( next ) => {
+			commitBlocks( next );
+		},
+		[ commitBlocks ]
+	);
+
 	const canSave = useMemo(
 		() => serializedContentIsMeaningful( serialize( blocks ).trim() ),
 		[ blocks ]
@@ -107,8 +190,8 @@ export default function BlockContentEditor( {
 		<div className={ `q2-block-editor${ compact ? ' is-compact' : '' }` }>
 			<BlockEditorProvider
 				value={ blocks }
-				onInput={ setBlocks }
-				onChange={ setBlocks }
+				onInput={ handleInput }
+				onChange={ handleInput }
 				settings={ editorSettings }
 			>
 				<BlockTools>
@@ -123,7 +206,25 @@ export default function BlockContentEditor( {
 								/>
 							) }
 						/>
-						<BlockToolbar hideDragHandle />
+						<ToolbarGroup>
+							<ToolbarButton
+								icon={ undoIcon }
+								label={ __( 'Undo' ) }
+								shortcut="Ctrl+Z"
+								disabled={ ! canUndo }
+								onClick={ undo }
+							/>
+							<ToolbarButton
+								icon={ redoIcon }
+								label={ __( 'Redo' ) }
+								shortcut="Ctrl+Shift+Z"
+								disabled={ ! canRedo }
+								onClick={ redo }
+							/>
+						</ToolbarGroup>
+						<div className="q2-block-editor-toolbar-blocks">
+							<BlockToolbar hideDragHandle />
+						</div>
 					</div>
 					<div className="q2-block-editor-canvas">
 						<WritingFlow>
