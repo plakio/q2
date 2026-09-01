@@ -13,8 +13,11 @@ import {
 	bell,
 	chevronDown,
 	comment,
+	cog as settingsIcon,
+	external,
 	menu,
 	pages,
+	pencil,
 	people,
 	postList,
 	search,
@@ -185,15 +188,35 @@ function App() {
 							</a>
 						) ) }
 				</nav>
-				<Team />
+				<Team onNavigate={ goToRoute } />
 				<div className="q2-sidebar-footer">
-					{ __( 'Powered by Q2', 'q2' ) }
+					{ __( 'Powered by', 'q2' ) }{ ' ' }
+					<a
+						className="q2-sidebar-footer-link"
+						href="https://github.com/plakio/q2"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						Q2
+					</a>
 				</div>
 			</aside>
 			<main id="q2-main" className="q2-main" tabIndex="-1">
 				{ content }
 			</main>
 		</div>
+	);
+}
+
+function Q2Logo( { size = 24, className = '' } ) {
+	return (
+		<img
+			src={ `${ settings.pluginUrl }assets/images/q2-logo.png` }
+			alt=""
+			width={ size }
+			height={ size }
+			className={ className }
+		/>
 	);
 }
 
@@ -233,16 +256,13 @@ function Topbar( { route, onNavigate, onToggleMenu } ) {
 	return (
 		<header className="q2-topbar">
 			<a className="q2-product" href={ settings.homeUrl }>
-				<span className="q2-product-symbol" aria-hidden="true">
-					Q
-				</span>
 				<strong>Q2</strong>
 			</a>
-			<button className="q2-workspace-switcher" type="button">
-				<SiteIcon className="q2-topbar-site-icon" />
-				<strong>{ settings.siteName || 'Q2' }</strong>
-				<Icon icon={ chevronDown } size={ 18 } />
-			</button>
+			<WorkspaceSwitcher
+				user={ user }
+				unreadCount={ unreadCount }
+				onNavigate={ onNavigate }
+			/>
 			<form
 				className="q2-global-search"
 				onSubmit={ ( event ) => {
@@ -287,23 +307,373 @@ function Topbar( { route, onNavigate, onToggleMenu } ) {
 	);
 }
 
+function WorkspaceSwitcher( { user, unreadCount, onNavigate } ) {
+	const [ open, setOpen ] = useState( false );
+	const wrapperRef = useRef( null );
+	const buttonRef = useRef( null );
+	const menuId = 'q2-workspace-menu';
+
+	useEffect( () => {
+		if ( ! open ) {
+			return undefined;
+		}
+
+		const handleClick = ( event ) => {
+			if (
+				wrapperRef.current &&
+				! wrapperRef.current.contains( event.target )
+			) {
+				setOpen( false );
+			}
+		};
+		const handleKey = ( event ) => {
+			if ( event.key === 'Escape' ) {
+				setOpen( false );
+				buttonRef.current?.focus();
+			}
+		};
+
+		document.addEventListener( 'mousedown', handleClick );
+		document.addEventListener( 'keydown', handleKey );
+		return () => {
+			document.removeEventListener( 'mousedown', handleClick );
+			document.removeEventListener( 'keydown', handleKey );
+		};
+	}, [ open ] );
+
+	const canManage = !! settings.capabilities?.manageQ2;
+	const description =
+		settings.siteDescription || __( 'A collaborative workspace.', 'q2' );
+
+	const closeMenu = () => setOpen( false );
+
+	return (
+		<div
+			ref={ wrapperRef }
+			className={ `q2-workspace-switcher${ open ? ' is-open' : '' }` }
+		>
+			<button
+				ref={ buttonRef }
+				type="button"
+				className="q2-workspace-switcher-button"
+				aria-haspopup="menu"
+				aria-expanded={ open }
+				aria-controls={ menuId }
+				onClick={ () => setOpen( ( value ) => ! value ) }
+			>
+				<SiteIcon className="q2-topbar-site-icon" />
+				<strong>{ settings.siteName || 'Q2' }</strong>
+				<Icon
+					icon={ chevronDown }
+					size={ 18 }
+					className="q2-workspace-switcher-chevron"
+				/>
+			</button>
+			{ open && (
+				<div
+					className="q2-workspace-menu"
+					id={ menuId }
+					role="menu"
+					aria-label={ __( 'Workspace actions', 'q2' ) }
+				>
+					<div className="q2-workspace-menu-header">
+						<SiteIcon className="q2-workspace-menu-icon" />
+						<div className="q2-workspace-menu-meta">
+							<strong>{ settings.siteName || 'Q2' }</strong>
+							<span>{ description }</span>
+						</div>
+					</div>
+					<div className="q2-workspace-menu-list" role="none">
+						<button
+							role="menuitem"
+							type="button"
+							className="q2-workspace-menu-item"
+							onClick={ () => {
+								closeMenu();
+								onNavigate( 'feed' );
+								window.requestAnimationFrame( () => {
+									document
+										.querySelector( '.q2-composer-prompt' )
+										?.focus();
+								} );
+							} }
+						>
+							<Icon icon={ pencil } size={ 18 } />
+							<span>{ __( 'New post', 'q2' ) }</span>
+						</button>
+						<button
+							role="menuitem"
+							type="button"
+							className="q2-workspace-menu-item"
+							onClick={ () => {
+								closeMenu();
+								onNavigate( 'notifications' );
+							} }
+						>
+							<Icon icon={ bell } size={ 18 } />
+							<span>{ __( 'Notifications', 'q2' ) }</span>
+							{ unreadCount > 0 && (
+								<span className="q2-workspace-menu-badge">
+									{ unreadCount > 99 ? '99+' : unreadCount }
+								</span>
+							) }
+						</button>
+						{ settings.profileUrl && (
+							<a
+								role="menuitem"
+								href={ settings.profileUrl }
+								className="q2-workspace-menu-item"
+								onClick={ closeMenu }
+							>
+								<Icon icon={ external } size={ 18 } />
+								<span>{ __( 'My profile', 'q2' ) }</span>
+							</a>
+						) }
+						{ canManage && settings.adminUrl && (
+							<a
+								role="menuitem"
+								href={ settings.adminUrl }
+								className="q2-workspace-menu-item"
+								onClick={ closeMenu }
+							>
+								<Icon icon={ settingsIcon } size={ 18 } />
+								<span>
+									{ __( 'Workspace settings', 'q2' ) }
+								</span>
+							</a>
+						) }
+						{ user.name && (
+							<div
+								className="q2-workspace-menu-user"
+								role="presentation"
+							>
+								<img
+									src={ user.avatarUrl }
+									alt=""
+									className="q2-workspace-menu-avatar"
+								/>
+								<div>
+									<strong>{ user.name }</strong>
+									<span>{ __( 'Signed in', 'q2' ) }</span>
+								</div>
+							</div>
+						) }
+						{ settings.logoutUrl && (
+							<a
+								role="menuitem"
+								href={ settings.logoutUrl }
+								className="q2-workspace-menu-item q2-workspace-menu-signout"
+								onClick={ closeMenu }
+							>
+								<Icon icon={ external } size={ 18 } />
+								<span>{ __( 'Sign out', 'q2' ) }</span>
+							</a>
+						) }
+					</div>
+				</div>
+			) }
+		</div>
+	);
+}
+
 function WorkspaceSummary() {
+	const initial = settings.workspace || {};
+	const [ coverUrl, setCoverUrl ] = useState( initial.coverUrl || '' );
+	const [ iconUrl, setIconUrl ] = useState( initial.iconUrl || '' );
+	const [ saving, setSaving ] = useState( '' );
+	const [ error, setError ] = useState( '' );
+	const canEdit = !! initial.canEdit;
+
+	const persist = async ( field, attachmentId ) => {
+		setSaving( field );
+		setError( '' );
+		try {
+			const payload =
+				field === 'cover'
+					? { coverId: attachmentId }
+					: { iconId: attachmentId };
+			const result = await apiFetch( {
+				path: '/q2/v1/workspace',
+				method: 'PATCH',
+				data: payload,
+			} );
+			setCoverUrl( result.coverUrl || '' );
+			setIconUrl( result.iconUrl || '' );
+		} catch ( reason ) {
+			setError(
+				reason.message ||
+					__( 'The workspace image could not be saved.', 'q2' )
+			);
+		} finally {
+			setSaving( '' );
+		}
+	};
+
+	const openMedia = ( field ) => {
+		if ( ! canEdit ) {
+			return;
+		}
+		if ( ! window.wp || ! window.wp.media ) {
+			setError(
+				__(
+					'The media library is still loading. Please try again in a moment.',
+					'q2'
+				)
+			);
+			return;
+		}
+		const frame = window.wp.media( {
+			title:
+				field === 'cover'
+					? __( 'Select cover image', 'q2' )
+					: __( 'Select workspace icon', 'q2' ),
+			button: {
+				text:
+					field === 'cover'
+						? __( 'Use as cover', 'q2' )
+						: __( 'Use as icon', 'q2' ),
+			},
+			library: { type: 'image' },
+			multiple: false,
+		} );
+		frame.on( 'select', () => {
+			const attachment = frame
+				.state()
+				.get( 'selection' )
+				.first()
+				.toJSON();
+			if ( field === 'cover' ) {
+				setCoverUrl(
+					attachment.sizes?.large?.url ||
+						attachment.sizes?.medium?.url ||
+						attachment.url ||
+						''
+				);
+			} else {
+				setIconUrl(
+					attachment.sizes?.medium?.url ||
+						attachment.sizes?.thumbnail?.url ||
+						attachment.url ||
+						''
+				);
+			}
+			persist( field, attachment.id );
+		} );
+		frame.open();
+	};
+
+	const clearImage = ( field ) => {
+		if ( field === 'cover' ) {
+			setCoverUrl( '' );
+			persist( 'cover', null );
+		} else {
+			setIconUrl( '' );
+			persist( 'icon', null );
+		}
+	};
+
 	return (
 		<div className="q2-workspace-summary">
-			<div className="q2-workspace-cover" />
+			<div
+				className={ `q2-workspace-cover${
+					canEdit ? ' is-editable' : ''
+				}${ coverUrl ? ' has-image' : '' }` }
+				style={
+					coverUrl
+						? { backgroundImage: `url(${ coverUrl })` }
+						: undefined
+				}
+			>
+				{ canEdit && (
+					<div className="q2-workspace-cover-actions">
+						<button
+							type="button"
+							onClick={ () => openMedia( 'cover' ) }
+							disabled={ saving === 'cover' }
+						>
+							{ coverUrl
+								? __( 'Change cover', 'q2' )
+								: __( 'Add cover', 'q2' ) }
+						</button>
+						{ coverUrl && (
+							<button
+								type="button"
+								className="q2-workspace-cover-remove"
+								onClick={ () => clearImage( 'cover' ) }
+								disabled={ saving === 'cover' }
+							>
+								{ __( 'Remove', 'q2' ) }
+							</button>
+						) }
+					</div>
+				) }
+			</div>
 			<div className="q2-workspace-details">
-				<SiteIcon className="q2-workspace-icon" />
+				<div
+					className={ `q2-workspace-icon-wrapper${
+						iconUrl ? ' has-image' : ''
+					}` }
+				>
+					{ iconUrl ? (
+						<img
+							className="q2-workspace-icon"
+							src={ iconUrl }
+							alt=""
+						/>
+					) : (
+						<Q2Logo
+							size={ 64 }
+							className="q2-workspace-icon q2-workspace-icon-default"
+						/>
+					) }
+					{ canEdit && (
+						<div className="q2-workspace-icon-actions">
+							<button
+								type="button"
+								onClick={ () => openMedia( 'icon' ) }
+								disabled={ saving === 'icon' }
+								aria-label={ __(
+									'Change workspace icon',
+									'q2'
+								) }
+							>
+								{ iconUrl
+									? __( 'Change', 'q2' )
+									: __( 'Add icon', 'q2' ) }
+							</button>
+							{ iconUrl && (
+								<button
+									type="button"
+									className="q2-workspace-icon-remove"
+									onClick={ () => clearImage( 'icon' ) }
+									disabled={ saving === 'icon' }
+									aria-label={ __(
+										'Remove workspace icon',
+										'q2'
+									) }
+								>
+									{ __( 'Remove', 'q2' ) }
+								</button>
+							) }
+						</div>
+					) }
+				</div>
 				<h1>{ settings.siteName || 'Q2' }</h1>
 				<p>
 					{ settings.siteDescription ||
 						__( 'A collaborative workspace.', 'q2' ) }
 				</p>
+				{ error && (
+					<p className="q2-workspace-error" role="alert">
+						{ error }
+					</p>
+				) }
 			</div>
 		</div>
 	);
 }
 
-function Team() {
+function Team( { onNavigate } ) {
 	const [ members, setMembers ] = useState( [] );
 
 	useEffect( () => {
@@ -320,7 +690,14 @@ function Team() {
 		<section className="q2-team" aria-label={ __( 'Team', 'q2' ) }>
 			<header>
 				<h2>{ __( 'Team', 'q2' ) }</h2>
-				<span aria-hidden="true">•••</span>
+				<button
+					type="button"
+					className="q2-team-more"
+					onClick={ () => onNavigate && onNavigate( 'people' ) }
+					aria-label={ __( 'View all team members', 'q2' ) }
+				>
+					<span aria-hidden="true">•••</span>
+				</button>
 			</header>
 			<div className="q2-team-avatars">
 				{ members.map( ( member ) => (
@@ -416,6 +793,10 @@ function Feed( { focusPostId = 0 } ) {
 				item.id === updated.id ? updated : item
 			)
 		);
+	}, [] );
+
+	const removePost = useCallback( ( id ) => {
+		setPosts( ( current ) => current.filter( ( item ) => item.id !== id ) );
 	}, [] );
 
 	const chooseFilter = ( nextFilter ) => {
@@ -522,6 +903,7 @@ function Feed( { focusPostId = 0 } ) {
 							key={ post.id }
 							post={ post }
 							onUpdated={ updatePost }
+							onRemoved={ removePost }
 							isUnread={
 								feedMeta.newPostIds.includes( post.id ) ||
 								feedMeta.newCommentPostIds.includes( post.id )
@@ -620,7 +1002,7 @@ function Composer( { onCreated } ) {
 	);
 }
 
-function Post( { post, onUpdated, isUnread = false } ) {
+function Post( { post, onUpdated, onRemoved, isUnread = false } ) {
 	const author = post._embedded?.author?.[ 0 ];
 	const articleRef = useRef( null );
 	const {
@@ -698,7 +1080,67 @@ function Post( { post, onUpdated, isUnread = false } ) {
 			_embedded: post._embedded,
 		} );
 		setEditing( false );
+		setMenuOpen( false );
 	};
+
+	const deletePost = async () => {
+		setMenuOpen( false );
+		// eslint-disable-next-line no-alert
+		const confirmed = window.confirm(
+			__( 'Delete this post? This moves it to the trash.', 'q2' )
+		);
+		if ( ! confirmed ) {
+			return;
+		}
+		setDeleting( true );
+		try {
+			await apiFetch( {
+				path: `/wp/v2/posts/${ post.id }`,
+				method: 'DELETE',
+				data: { force: false },
+			} );
+			if ( onRemoved ) {
+				onRemoved( post.id );
+			}
+		} catch ( reason ) {
+			setDeleting( false );
+			// eslint-disable-next-line no-alert
+			window.alert(
+				reason.message || __( 'The post could not be deleted.', 'q2' )
+			);
+		}
+	};
+
+	const [ menuOpen, setMenuOpen ] = useState( false );
+	const [ deleting, setDeleting ] = useState( false );
+	const menuRef = useRef( null );
+	const menuButtonRef = useRef( null );
+
+	useEffect( () => {
+		if ( ! menuOpen ) {
+			return undefined;
+		}
+		const handleClick = ( event ) => {
+			if (
+				menuRef.current &&
+				! menuRef.current.contains( event.target )
+			) {
+				setMenuOpen( false );
+			}
+		};
+		const handleKey = ( event ) => {
+			if ( event.key === 'Escape' ) {
+				setMenuOpen( false );
+				menuButtonRef.current?.focus();
+			}
+		};
+		document.addEventListener( 'mousedown', handleClick );
+		document.addEventListener( 'keydown', handleKey );
+		return () => {
+			document.removeEventListener( 'mousedown', handleClick );
+			document.removeEventListener( 'keydown', handleKey );
+		};
+	}, [ menuOpen ] );
 
 	return (
 		<article
@@ -708,13 +1150,49 @@ function Post( { post, onUpdated, isUnread = false } ) {
 			}` }
 		>
 			{ canEdit && ! editing && (
-				<button
-					className="q2-post-menu"
-					type="button"
-					onClick={ () => setEditing( true ) }
+				<div
+					ref={ menuRef }
+					className={ `q2-post-menu-wrapper${
+						menuOpen ? ' is-open' : ''
+					}` }
 				>
-					{ __( 'Edit', 'q2' ) }
-				</button>
+					<button
+						ref={ menuButtonRef }
+						className="q2-post-menu"
+						type="button"
+						aria-haspopup="menu"
+						aria-expanded={ menuOpen }
+						aria-label={ __( 'Post actions', 'q2' ) }
+						disabled={ deleting }
+						onClick={ () => setMenuOpen( ( value ) => ! value ) }
+					>
+						{ deleting
+							? __( 'Deleting…', 'q2' )
+							: __( 'Edit', 'q2' ) }
+					</button>
+					{ menuOpen && (
+						<div className="q2-post-menu-dropdown" role="menu">
+							<button
+								role="menuitem"
+								type="button"
+								onClick={ () => {
+									setMenuOpen( false );
+									setEditing( true );
+								} }
+							>
+								{ __( 'Edit post', 'q2' ) }
+							</button>
+							<button
+								role="menuitem"
+								type="button"
+								className="q2-post-menu-danger"
+								onClick={ deletePost }
+							>
+								{ __( 'Delete post', 'q2' ) }
+							</button>
+						</div>
+					) }
+				</div>
 			) }
 			{ post.title?.rendered && (
 				<h2

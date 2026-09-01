@@ -149,7 +149,7 @@ final class Application {
 		wp_enqueue_script(
 			self::SCRIPT_HANDLE,
 			Q2_URL . 'build/index.js',
-			$asset['dependencies'],
+			array_merge( $asset['dependencies'], array( 'media-editor' ) ),
 			$asset['version'],
 			true
 		);
@@ -166,6 +166,10 @@ final class Application {
 			'before'
 		);
 		wp_set_script_translations( self::SCRIPT_HANDLE, 'q2' );
+
+		if ( function_exists( 'wp_print_media_templates' ) ) {
+			wp_print_media_templates();
+		}
 	}
 
 	/**
@@ -179,6 +183,15 @@ final class Application {
 		return array(
 			'appUrl'          => home_url( '/q2/' ),
 			'homeUrl'         => home_url( '/' ),
+			'pluginUrl'       => Q2_URL,
+			'adminUrl'        => admin_url(),
+			'profileUrl'      => admin_url( 'profile.php' ),
+			'logoutUrl'       => wp_logout_url( home_url( '/' ) ),
+			'workspace'       => array(
+				'coverUrl' => $this->workspace_cover_url(),
+				'iconUrl'  => $this->workspace_icon_url(),
+				'canEdit'  => current_user_can( Capabilities::MANAGE ),
+			),
 			'restNonce'       => wp_create_nonce( 'wp_rest' ),
 			'restRoot'        => esc_url_raw( rest_url() ),
 			'siteName'        => get_bloginfo( 'name' ),
@@ -198,5 +211,29 @@ final class Application {
 				'mentionAll'       => current_user_can( Capabilities::MENTION_ALL ),
 			),
 		);
+	}
+
+	/**
+	 * Returns the configured workspace cover image URL.
+	 */
+	private function workspace_cover_url(): ?string {
+		$attachment_id = (int) get_option( 'q2_workspace_cover_id', 0 );
+		if ( $attachment_id <= 0 ) {
+			return null;
+		}
+		$url = wp_get_attachment_image_url( $attachment_id, 'large' );
+		return $url ? $url : null;
+	}
+
+	/**
+	 * Returns the configured workspace icon URL.
+	 */
+	private function workspace_icon_url(): ?string {
+		$attachment_id = (int) get_option( 'q2_workspace_icon_id', 0 );
+		if ( $attachment_id <= 0 ) {
+			return null;
+		}
+		$url = wp_get_attachment_image_url( $attachment_id, 'medium' );
+		return $url ? $url : null;
 	}
 }

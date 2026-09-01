@@ -21,7 +21,7 @@ PACKAGE_DIR="$STAGING_ROOT/$PLUGIN_SLUG"
 rm -rf "$DIST_DIR"
 mkdir -p "$PACKAGE_DIR" "$DIST_DIR"
 
-for path in q2.php readme.txt README.md build includes templates; do
+for path in q2.php readme.txt README.md build includes templates assets; do
 	if [[ -e "$ROOT_DIR/$path" ]]; then
 		rsync -a --no-owner --no-group "$ROOT_DIR/$path" "$PACKAGE_DIR/"
 	fi
