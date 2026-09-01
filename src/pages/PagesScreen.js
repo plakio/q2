@@ -385,10 +385,12 @@ export default function PagesScreen() {
 						</span>
 					</StateMessage>
 				) }
-				{ ! creating && selectedId && pageStatus === 'loading' && (
-					<p>{ __( 'Loading page…', 'q2' ) }</p>
-				) }
-				{ ! creating && selectedId && pageData && (
+				{ ! creating &&
+					Boolean( selectedId ) &&
+					pageStatus === 'loading' && (
+						<p>{ __( 'Loading page…', 'q2' ) }</p>
+					) }
+				{ ! creating && Boolean( selectedId ) && pageData && (
 					<article className="q2-page-article">
 						<header>
 							{ pageData.parents?.length > 0 && (

@@ -16,12 +16,25 @@ Q2 provides a theme-independent workspace application while keeping posts, pages
 
 Q2 is an independent project inspired by product lessons from P2. It is not an official continuation, fork, or compatibility layer.
 
+The private workspace includes a post feed and Gutenberg composer, threaded comments, pages, search, media, notifications, people, projects, tasks, workspace branding, and the Q2 Task, Project Status, Changelog, Survey, and Files blocks.
+
+Q2 follows the WordPress site language. English (en_US) is the source language, and Spanish (es_ES) translations are included.
+
 == Installation ==
 
-1. Upload and activate Q2.
-2. Sign in and visit the site homepage. All Q2 sections stay within `/`; `/q2/` remains available only as a compatibility route.
+1. Download the latest versioned Q2 ZIP from GitHub Releases.
+2. In WordPress, go to Plugins > Add New Plugin > Upload Plugin.
+3. Select the ZIP, install it, and activate Q2.
+4. Sign in and visit the site homepage. Q2 uses the homepage as the private workspace; `/q2/` remains available as a compatibility entry.
+5. To use Spanish, choose Español under Settings > General > Site Language.
 
 == Changelog ==
+
+= 0.2.4 =
+
+* Add workspace cover and icon controls shared by the header and workspace card.
+* Improve post and page editing, navigation actions, and task-block synchronization.
+* Add English and Spanish locale support.
 
 = 0.2.2 =
 * Allow opt-in task state mutations through PATCH /q2/v1/tasks/(block_id) so members can mark a task done without re-saving the full post.

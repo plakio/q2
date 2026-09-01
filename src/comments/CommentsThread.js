@@ -1,12 +1,19 @@
 import apiFetch from '@wordpress/api-fetch';
 import { useEffect, useMemo, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
+import { Icon, commentReplyLink } from '@wordpress/icons';
 import BlockContentEditor, {
 	COMMENT_BLOCKS,
 } from '../editor/BlockContentEditor';
 import { buildCommentTree } from './tree';
 
-function Comment( { comment, childrenMap, onChanged, depth = 0 } ) {
+function Comment( {
+	comment,
+	childrenMap,
+	onChanged,
+	parentAuthorName = '',
+	depth = 0,
+} ) {
 	const [ replying, setReplying ] = useState( false );
 	const [ editing, setEditing ] = useState( false );
 	const [ deleting, setDeleting ] = useState( false );
@@ -60,7 +67,19 @@ function Comment( { comment, childrenMap, onChanged, depth = 0 } ) {
 				<header>
 					<img src={ comment.avatarUrl } alt="" />
 					<div>
-						<strong>{ comment.authorName }</strong>
+						<span>
+							<strong>{ comment.authorName }</strong>
+							{ parentAuthorName && (
+								<small>
+									{ ' ' }
+									{ sprintf(
+										/* translators: %s: parent comment author. */
+										__( 'to %s', 'q2' ),
+										parentAuthorName
+									) }
+								</small>
+							) }
+						</span>
 						<time dateTime={ comment.dateGmt }>{ date }</time>
 					</div>
 				</header>
@@ -85,6 +104,7 @@ function Comment( { comment, childrenMap, onChanged, depth = 0 } ) {
 							type="button"
 							onClick={ () => setReplying( true ) }
 						>
+							<Icon icon={ commentReplyLink } size={ 16 } />
 							{ __( 'Reply', 'q2' ) }
 						</button>
 						{ comment.canEdit && (
@@ -128,6 +148,7 @@ function Comment( { comment, childrenMap, onChanged, depth = 0 } ) {
 							comment={ reply }
 							childrenMap={ childrenMap }
 							onChanged={ onChanged }
+							parentAuthorName={ comment.authorName }
 							depth={ depth + 1 }
 						/>
 					) ) }

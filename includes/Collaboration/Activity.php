@@ -120,12 +120,14 @@ final class Activity {
 		$this->repository->mark_read( $actor, 'post', $post_id );
 		$this->index_mentions( 'comment', $comment_id, $post_id, $actor, $comment->comment_content );
 
-		$recipients   = $this->repository->follower_ids( $post_id );
-		$recipients[] = (int) get_post_field( 'post_author', $post_id );
+		$recipients    = $this->repository->follower_ids( $post_id );
+		$recipients[]  = (int) get_post_field( 'post_author', $post_id );
+		$parent_author = 0;
 		if ( (int) $comment->comment_parent > 0 ) {
 			$parent = get_comment( (int) $comment->comment_parent );
 			if ( $parent instanceof \WP_Comment ) {
-				$recipients[] = (int) $parent->user_id;
+				$parent_author = (int) $parent->user_id;
+				$recipients[]  = $parent_author;
 			}
 		}
 
@@ -139,6 +141,7 @@ final class Activity {
 					'object_id'             => $post_id,
 					'secondary_object_type' => 'comment',
 					'secondary_object_id'   => $comment_id,
+					'payload'               => array( 'source' => $recipient === $parent_author ? 'reply' : 'follow' ),
 					'dedupe_key'            => 'comment:' . $comment_id . ':' . $recipient,
 				)
 			);

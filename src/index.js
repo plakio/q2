@@ -7,21 +7,27 @@ import {
 	useRef,
 	useState,
 } from '@wordpress/element';
-import { __, _n, sprintf } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import {
 	Icon,
 	bell,
 	chevronDown,
-	comment,
+	closeSmall,
+	commentReplyLink,
 	cog as settingsIcon,
+	envelope,
 	external,
+	fullscreen,
 	menu,
+	moreHorizontal,
 	pages,
 	pencil,
 	people,
 	postList,
 	search,
 	starEmpty,
+	starFilled,
+	trash,
 } from '@wordpress/icons';
 import CommentsThread from './comments/CommentsThread';
 import usePostCollaboration from './collaboration/usePostCollaboration';
@@ -37,6 +43,7 @@ import PagesScreen from './pages/PagesScreen';
 import PeopleScreen from './people/PeopleScreen';
 import SearchScreen from './search/SearchScreen';
 import StartersScreen from './starters/StartersScreen';
+import useSurveyRuntime from './surveys/useSurveyRuntime';
 import './mentions/register';
 import { routeFromHash, routeFromPath } from './routes';
 import './style.scss';
@@ -86,6 +93,9 @@ function App() {
 	const [ route, setRoute ] = useState( routeFromLocation );
 	const [ menuOpen, setMenuOpen ] = useState( false );
 	const [ focusPostId, setFocusPostId ] = useState( 0 );
+	const [ workspaceIconUrl, setWorkspaceIconUrl ] = useState(
+		settings.workspace?.iconUrl || ''
+	);
 
 	useEffect( () => {
 		const onPopState = () => setRoute( routeFromLocation() );
@@ -154,6 +164,7 @@ function App() {
 		<div className={ `q2-app${ menuOpen ? ' is-menu-open' : '' }` }>
 			<Topbar
 				route={ route }
+				workspaceIconUrl={ workspaceIconUrl }
 				onNavigate={ goToRoute }
 				onToggleMenu={ () => setMenuOpen( ( value ) => ! value ) }
 			/>
@@ -161,7 +172,10 @@ function App() {
 				className="q2-sidebar"
 				aria-label={ __( 'Workspace navigation', 'q2' ) }
 			>
-				<WorkspaceSummary />
+				<WorkspaceSummary
+					iconUrl={ workspaceIconUrl }
+					onIconChange={ setWorkspaceIconUrl }
+				/>
 				<nav className="q2-navigation">
 					{ routes
 						.filter( ( item ) => item.sidebar )
@@ -220,21 +234,15 @@ function Q2Logo( { size = 24, className = '' } ) {
 	);
 }
 
-function SiteIcon( { className = '' } ) {
-	if ( settings.siteIconUrl ) {
-		return (
-			<img className={ className } src={ settings.siteIconUrl } alt="" />
-		);
+function SiteIcon( { className = '', iconUrl = '' } ) {
+	if ( iconUrl ) {
+		return <img className={ className } src={ iconUrl } alt="" />;
 	}
 
-	return (
-		<span className={ className } aria-hidden="true">
-			{ settings.siteName?.trim().charAt( 0 ) || 'Q' }
-		</span>
-	);
+	return <Q2Logo size={ 40 } className={ className } />;
 }
 
-function Topbar( { route, onNavigate, onToggleMenu } ) {
+function Topbar( { route, workspaceIconUrl, onNavigate, onToggleMenu } ) {
 	const user = settings.currentUser || {};
 	const [ unreadCount, setUnreadCount ] = useState( 0 );
 
@@ -261,6 +269,7 @@ function Topbar( { route, onNavigate, onToggleMenu } ) {
 			<WorkspaceSwitcher
 				user={ user }
 				unreadCount={ unreadCount }
+				iconUrl={ workspaceIconUrl }
 				onNavigate={ onNavigate }
 			/>
 			<form
@@ -307,7 +316,7 @@ function Topbar( { route, onNavigate, onToggleMenu } ) {
 	);
 }
 
-function WorkspaceSwitcher( { user, unreadCount, onNavigate } ) {
+function WorkspaceSwitcher( { user, unreadCount, iconUrl, onNavigate } ) {
 	const [ open, setOpen ] = useState( false );
 	const wrapperRef = useRef( null );
 	const buttonRef = useRef( null );
@@ -361,7 +370,7 @@ function WorkspaceSwitcher( { user, unreadCount, onNavigate } ) {
 				aria-controls={ menuId }
 				onClick={ () => setOpen( ( value ) => ! value ) }
 			>
-				<SiteIcon className="q2-topbar-site-icon" />
+				<SiteIcon className="q2-topbar-site-icon" iconUrl={ iconUrl } />
 				<strong>{ settings.siteName || 'Q2' }</strong>
 				<Icon
 					icon={ chevronDown }
@@ -377,7 +386,10 @@ function WorkspaceSwitcher( { user, unreadCount, onNavigate } ) {
 					aria-label={ __( 'Workspace actions', 'q2' ) }
 				>
 					<div className="q2-workspace-menu-header">
-						<SiteIcon className="q2-workspace-menu-icon" />
+						<SiteIcon
+							className="q2-workspace-menu-icon"
+							iconUrl={ iconUrl }
+						/>
 						<div className="q2-workspace-menu-meta">
 							<strong>{ settings.siteName || 'Q2' }</strong>
 							<span>{ description }</span>
@@ -476,15 +488,15 @@ function WorkspaceSwitcher( { user, unreadCount, onNavigate } ) {
 	);
 }
 
-function WorkspaceSummary() {
+function WorkspaceSummary( { iconUrl, onIconChange } ) {
 	const initial = settings.workspace || {};
 	const [ coverUrl, setCoverUrl ] = useState( initial.coverUrl || '' );
-	const [ iconUrl, setIconUrl ] = useState( initial.iconUrl || '' );
 	const [ saving, setSaving ] = useState( '' );
 	const [ error, setError ] = useState( '' );
 	const canEdit = !! initial.canEdit;
 
 	const persist = async ( field, attachmentId ) => {
+		const previousIconUrl = iconUrl;
 		setSaving( field );
 		setError( '' );
 		try {
@@ -498,8 +510,13 @@ function WorkspaceSummary() {
 				data: payload,
 			} );
 			setCoverUrl( result.coverUrl || '' );
-			setIconUrl( result.iconUrl || '' );
+			if ( field === 'icon' ) {
+				onIconChange( result.iconUrl || '' );
+			}
 		} catch ( reason ) {
+			if ( field === 'icon' ) {
+				onIconChange( previousIconUrl );
+			}
 			setError(
 				reason.message ||
 					__( 'The workspace image could not be saved.', 'q2' )
@@ -550,7 +567,7 @@ function WorkspaceSummary() {
 						''
 				);
 			} else {
-				setIconUrl(
+				onIconChange(
 					attachment.sizes?.medium?.url ||
 						attachment.sizes?.thumbnail?.url ||
 						attachment.url ||
@@ -567,7 +584,7 @@ function WorkspaceSummary() {
 			setCoverUrl( '' );
 			persist( 'cover', null );
 		} else {
-			setIconUrl( '' );
+			onIconChange( '' );
 			persist( 'icon', null );
 		}
 	};
@@ -588,12 +605,16 @@ function WorkspaceSummary() {
 					<div className="q2-workspace-cover-actions">
 						<button
 							type="button"
+							className="q2-workspace-cover-edit"
 							onClick={ () => openMedia( 'cover' ) }
 							disabled={ saving === 'cover' }
+							aria-label={
+								coverUrl
+									? __( 'Change cover', 'q2' )
+									: __( 'Add cover', 'q2' )
+							}
 						>
-							{ coverUrl
-								? __( 'Change cover', 'q2' )
-								: __( 'Add cover', 'q2' ) }
+							<Icon icon={ pencil } size={ 14 } />
 						</button>
 						{ coverUrl && (
 							<button
@@ -601,8 +622,9 @@ function WorkspaceSummary() {
 								className="q2-workspace-cover-remove"
 								onClick={ () => clearImage( 'cover' ) }
 								disabled={ saving === 'cover' }
+								aria-label={ __( 'Remove cover', 'q2' ) }
 							>
-								{ __( 'Remove', 'q2' ) }
+								<Icon icon={ trash } size={ 18 } />
 							</button>
 						) }
 					</div>
@@ -630,16 +652,16 @@ function WorkspaceSummary() {
 						<div className="q2-workspace-icon-actions">
 							<button
 								type="button"
+								className="q2-workspace-icon-edit"
 								onClick={ () => openMedia( 'icon' ) }
 								disabled={ saving === 'icon' }
-								aria-label={ __(
-									'Change workspace icon',
-									'q2'
-								) }
+								aria-label={
+									iconUrl
+										? __( 'Change workspace icon', 'q2' )
+										: __( 'Add workspace icon', 'q2' )
+								}
 							>
-								{ iconUrl
-									? __( 'Change', 'q2' )
-									: __( 'Add icon', 'q2' ) }
+								<Icon icon={ pencil } size={ 14 } />
 							</button>
 							{ iconUrl && (
 								<button
@@ -652,7 +674,7 @@ function WorkspaceSummary() {
 										'q2'
 									) }
 								>
-									{ __( 'Remove', 'q2' ) }
+									<Icon icon={ trash } size={ 18 } />
 								</button>
 							) }
 						</div>
@@ -933,6 +955,8 @@ function Composer( { onCreated } ) {
 	const [ message, setMessage ] = useState( '' );
 	const [ expanded, setExpanded ] = useState( false );
 	const [ tags, setTags ] = useState( [] );
+	const [ title, setTitle ] = useState( '' );
+	const [ contentReady, setContentReady ] = useState( false );
 	const avatar = settings.currentUser?.avatarUrl;
 
 	const publish = async ( content ) => {
@@ -941,6 +965,7 @@ function Composer( { onCreated } ) {
 			path: '/wp/v2/posts',
 			method: 'POST',
 			data: {
+				title: title.trim(),
 				content,
 				tags,
 				status: settings.capabilities?.publishPosts
@@ -949,6 +974,8 @@ function Composer( { onCreated } ) {
 			},
 		} );
 		setTags( [] );
+		setTitle( '' );
+		setContentReady( false );
 		setExpanded( false );
 		setMessage(
 			settings.capabilities?.publishPosts
@@ -959,7 +986,11 @@ function Composer( { onCreated } ) {
 	};
 
 	return (
-		<section className={ `q2-composer${ expanded ? ' is-expanded' : '' }` }>
+		<section
+			className={ `q2-composer${ expanded ? ' is-expanded' : '' }${
+				contentReady ? ' has-content' : ''
+			}` }
+		>
 			<div className="q2-composer-inner">
 				<img src={ avatar } alt="" />
 				<div className="q2-composer-field">
@@ -968,10 +999,23 @@ function Composer( { onCreated } ) {
 					</span>
 					{ expanded ? (
 						<>
+							<input
+								type="text"
+								className="q2-composer-title"
+								value={ title }
+								placeholder={ __( 'Post title', 'q2' ) }
+								onChange={ ( event ) =>
+									setTitle( event.target.value )
+								}
+							/>
 							<BlockContentEditor
 								allowedBlocks={ POST_BLOCKS }
 								onSave={ publish }
-								onCancel={ () => setExpanded( false ) }
+								onCancel={ () => {
+									setExpanded( false );
+									setContentReady( false );
+								} }
+								onContentChange={ setContentReady }
 								submitLabel={ __( 'Post', 'q2' ) }
 							/>
 							<TagPicker value={ tags } onChange={ setTags } />
@@ -994,6 +1038,15 @@ function Composer( { onCreated } ) {
 						</button>
 					) }
 				</div>
+				{ ! expanded && (
+					<button
+						type="button"
+						className="q2-composer-submit"
+						disabled
+					>
+						{ __( 'Post', 'q2' ) }
+					</button>
+				) }
 			</div>
 			<footer>
 				<span aria-live="polite">{ message }</span>
@@ -1005,6 +1058,7 @@ function Composer( { onCreated } ) {
 function Post( { post, onUpdated, onRemoved, isUnread = false } ) {
 	const author = post._embedded?.author?.[ 0 ];
 	const articleRef = useRef( null );
+	const contentRef = useRef( null );
 	const {
 		state: collaborationState,
 		ready: collaborationReady,
@@ -1027,11 +1081,10 @@ function Post( { post, onUpdated, onRemoved, isUnread = false } ) {
 	const [ selectedTags, setSelectedTags ] = useState(
 		post.tags || tagTerms.map( ( term ) => term.id )
 	);
-	const replyLabel = sprintf(
-		/* translators: %d: number of replies to a post. */
-		_n( '%d reply', '%d replies', replyCount, 'q2' ),
-		replyCount
+	const [ selectedTitle, setSelectedTitle ] = useState(
+		post.title?.raw || post.title?.rendered || ''
 	);
+	useSurveyRuntime( post.id, contentRef, ! editing );
 	const date = useMemo(
 		() =>
 			new Intl.DateTimeFormat( undefined, {
@@ -1069,16 +1122,19 @@ function Post( { post, onUpdated, onRemoved, isUnread = false } ) {
 	] );
 
 	const saveEdit = async ( content ) => {
-		const updated = await apiFetch( {
+		await apiFetch( {
 			path: `/wp/v2/posts/${ post.id }?context=edit`,
 			method: 'PATCH',
-			data: { content, tags: selectedTags },
+			data: {
+				title: selectedTitle.trim(),
+				content,
+				tags: selectedTags,
+			},
 		} );
-		onUpdated( {
-			...post,
-			...updated,
-			_embedded: post._embedded,
+		const refreshed = await apiFetch( {
+			path: `/wp/v2/posts/${ post.id }?context=edit&_embed=author,wp:term,replies`,
 		} );
+		onUpdated( refreshed );
 		setEditing( false );
 		setMenuOpen( false );
 	};
@@ -1142,6 +1198,23 @@ function Post( { post, onUpdated, onRemoved, isUnread = false } ) {
 		};
 	}, [ menuOpen ] );
 
+	useEffect( () => {
+		if ( ! editing ) {
+			return undefined;
+		}
+		document.body.classList.add( 'q2-has-modal' );
+		const closeOnEscape = ( event ) => {
+			if ( 'Escape' === event.key ) {
+				setEditing( false );
+			}
+		};
+		document.addEventListener( 'keydown', closeOnEscape );
+		return () => {
+			document.body.classList.remove( 'q2-has-modal' );
+			document.removeEventListener( 'keydown', closeOnEscape );
+		};
+	}, [ editing ] );
+
 	return (
 		<article
 			ref={ articleRef }
@@ -1166,9 +1239,7 @@ function Post( { post, onUpdated, onRemoved, isUnread = false } ) {
 						disabled={ deleting }
 						onClick={ () => setMenuOpen( ( value ) => ! value ) }
 					>
-						{ deleting
-							? __( 'Deleting…', 'q2' )
-							: __( 'Edit', 'q2' ) }
+						<Icon icon={ moreHorizontal } size={ 24 } />
 					</button>
 					{ menuOpen && (
 						<div className="q2-post-menu-dropdown" role="menu">
@@ -1180,7 +1251,8 @@ function Post( { post, onUpdated, onRemoved, isUnread = false } ) {
 									setEditing( true );
 								} }
 							>
-								{ __( 'Edit post', 'q2' ) }
+								<Icon icon={ fullscreen } size={ 19 } />
+								<span>{ __( 'Edit post', 'q2' ) }</span>
 							</button>
 							<button
 								role="menuitem"
@@ -1188,7 +1260,8 @@ function Post( { post, onUpdated, onRemoved, isUnread = false } ) {
 								className="q2-post-menu-danger"
 								onClick={ deletePost }
 							>
-								{ __( 'Delete post', 'q2' ) }
+								<Icon icon={ trash } size={ 19 } />
+								<span>{ __( 'Delete post', 'q2' ) }</span>
 							</button>
 						</div>
 					) }
@@ -1208,36 +1281,64 @@ function Post( { post, onUpdated, onRemoved, isUnread = false } ) {
 					<time dateTime={ post.date_gmt + 'Z' }>{ date }</time>
 				</div>
 			</header>
-			{ editing ? (
-				<div className="q2-post-editor">
-					<BlockContentEditor
-						initialContent={
-							post.content.raw || post.content.rendered
-						}
-						allowedBlocks={ POST_BLOCKS }
-						onSave={ saveEdit }
-						onCancel={ () => setEditing( false ) }
-						submitLabel={ __( 'Save update', 'q2' ) }
-					/>
-					<TagPicker
-						value={ selectedTags }
-						onChange={ setSelectedTags }
-					/>
-				</div>
-			) : (
+			{ editing && (
 				<div
+					className="q2-post-editor-overlay"
+					role="dialog"
+					aria-modal="true"
+					aria-label={ __( 'Edit post', 'q2' ) }
+				>
+					<header className="q2-post-editor-header">
+						<strong>{ __( 'Edit post', 'q2' ) }</strong>
+						<button
+							type="button"
+							onClick={ () => setEditing( false ) }
+							aria-label={ __( 'Close editor', 'q2' ) }
+						>
+							<Icon icon={ closeSmall } size={ 26 } />
+						</button>
+					</header>
+					<div className="q2-post-editor">
+						<input
+							type="text"
+							className="q2-post-title-input"
+							value={ selectedTitle }
+							placeholder={ __( 'Post title', 'q2' ) }
+							onChange={ ( event ) =>
+								setSelectedTitle( event.target.value )
+							}
+						/>
+						<BlockContentEditor
+							initialContent={
+								post.content.raw || post.content.rendered
+							}
+							allowedBlocks={ POST_BLOCKS }
+							onSave={ saveEdit }
+							onCancel={ () => setEditing( false ) }
+							submitLabel={ __( 'Save update', 'q2' ) }
+						/>
+						<TagPicker
+							value={ selectedTags }
+							onChange={ setSelectedTags }
+						/>
+					</div>
+				</div>
+			) }
+			{ tagTerms.length > 0 && ! editing && (
+				<ul className="q2-post-tags" aria-label={ __( 'Tags', 'q2' ) }>
+					{ tagTerms.map( ( term ) => (
+						<li key={ term.id }>+{ term.name }</li>
+					) ) }
+				</ul>
+			) }
+			{ ! editing && (
+				<div
+					ref={ contentRef }
 					className="q2-post-content"
 					dangerouslySetInnerHTML={ {
 						__html: post.content.rendered,
 					} }
 				/>
-			) }
-			{ tagTerms.length > 0 && ! editing && (
-				<ul className="q2-post-tags" aria-label={ __( 'Tags', 'q2' ) }>
-					{ tagTerms.map( ( term ) => (
-						<li key={ term.id }>{ term.name }</li>
-					) ) }
-				</ul>
 			) }
 			<footer>
 				<button
@@ -1245,8 +1346,9 @@ function Post( { post, onUpdated, onRemoved, isUnread = false } ) {
 					onClick={ () => setCommentsOpen( ( value ) => ! value ) }
 					aria-expanded={ commentsOpen }
 				>
-					<Icon icon={ comment } size={ 18 } />
-					{ replyLabel }
+					<Icon icon={ commentReplyLink } size={ 18 } />
+					{ __( 'Reply', 'q2' ) }
+					{ replyCount > 0 && ` (${ replyCount })` }
 				</button>
 				<button
 					type="button"
@@ -1259,7 +1361,7 @@ function Post( { post, onUpdated, onRemoved, isUnread = false } ) {
 						)
 					}
 				>
-					<Icon icon={ bell } size={ 18 } />
+					<Icon icon={ envelope } size={ 18 } />
 					{ collaborationState.following
 						? __( 'Following', 'q2' )
 						: __( 'Follow', 'q2' ) }
@@ -1275,7 +1377,12 @@ function Post( { post, onUpdated, onRemoved, isUnread = false } ) {
 						)
 					}
 				>
-					<Icon icon={ starEmpty } size={ 18 } />
+					<Icon
+						icon={
+							collaborationState.liked ? starFilled : starEmpty
+						}
+						size={ 18 }
+					/>
 					{ collaborationState.liked
 						? __( 'Liked', 'q2' )
 						: __( 'Like', 'q2' ) }

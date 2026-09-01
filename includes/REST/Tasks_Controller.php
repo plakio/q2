@@ -255,13 +255,13 @@ final class Tasks_Controller {
 		if ( false === $open ) {
 			return $content;
 		}
-		$close = strpos( $content, '/-->', $open );
+		$close = strpos( $content, '-->', $open );
 		if ( false === $close ) {
 			return $content;
 		}
-		$segment = substr( $content, $open, $close - $open + 4 );
 
-		$new_attrs = array();
+		$new_attrs            = array();
+		$new_attrs['blockId'] = $block_id;
 		if ( isset( $attrs['title'] ) ) {
 			$new_attrs['title'] = (string) $attrs['title'];
 		}
@@ -281,7 +281,7 @@ final class Tasks_Controller {
 		}
 
 		$updated_segment = '<!-- wp:q2/task ' . $encoded . ' -->';
-		return substr( $content, 0, $open ) . $updated_segment . substr( $content, $close + 4 );
+		return substr( $content, 0, $open ) . $updated_segment . substr( $content, $close + 3 );
 	}
 
 	/**
@@ -396,6 +396,15 @@ final class Tasks_Controller {
 
 		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		if ( 'mine' === $scope ) {
+			if ( '' !== $overdue ) {
+				$rows = $wpdb->get_results(
+					$wpdb->prepare(
+						"SELECT id, block_id, parent_post_id, title, status, due_date, assignees FROM {$table} WHERE (JSON_CONTAINS(assignees, %d) OR actor_user_id = %d) AND due_date IS NOT NULL AND due_date <= %s AND status <> %s ORDER BY due_date ASC, updated_at DESC LIMIT %d OFFSET %d",
+						array( $user_id_safe, $user_id_safe, $overdue_safe, 'done', $per_page, $offset )
+					)
+				);
+				return is_array( $rows ) ? $rows : array();
+			}
 			$rows = $wpdb->get_results(
 				$wpdb->prepare(
 					"SELECT id, block_id, parent_post_id, title, status, due_date, assignees FROM {$table} WHERE JSON_CONTAINS(assignees, %d) OR actor_user_id = %d ORDER BY CASE WHEN due_date IS NULL THEN 1 ELSE 0 END, due_date ASC, updated_at DESC LIMIT %d OFFSET %d",
@@ -440,6 +449,14 @@ final class Tasks_Controller {
 
 		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		if ( 'mine' === $scope ) {
+			if ( '' !== $overdue ) {
+				return (int) $wpdb->get_var(
+					$wpdb->prepare(
+						"SELECT COUNT(*) FROM {$table} WHERE (JSON_CONTAINS(assignees, %d) OR actor_user_id = %d) AND due_date IS NOT NULL AND due_date <= %s AND status <> %s",
+						array( $user_id_safe, $user_id_safe, $overdue_safe, 'done' )
+					)
+				);
+			}
 			return (int) $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT COUNT(*) FROM {$table} WHERE JSON_CONTAINS(assignees, %d) OR actor_user_id = %d",

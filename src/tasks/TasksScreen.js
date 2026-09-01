@@ -8,7 +8,7 @@ const SCOPE_OPTIONS = [
 	{ key: 'all', label: __( 'All tasks', 'q2' ) },
 ];
 
-function toggleLabel( task, busyId ) {
+export function toggleLabel( task, busyId ) {
 	if ( busyId === task.blockId ) {
 		return __( 'Updating…', 'q2' );
 	}

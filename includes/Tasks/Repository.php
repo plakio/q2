@@ -71,7 +71,7 @@ final class Repository {
 		$wpdb->insert(
 			$wpdb->prefix . 'q2_tasks',
 			$payload,
-			array( '%s', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%d', '%s' )
+			array( '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s' )
 		);
 		return (int) $wpdb->insert_id;
 	}

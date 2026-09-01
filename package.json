@@ -14,6 +14,8 @@
 		"release": "bash scripts/release.sh",
 		"check": "npm run test:unit -- --runInBand && npm run lint:js && npm run lint:style && composer lint",
 		"start": "wp-scripts start",
+		"i18n:update": "wp i18n make-pot . languages/q2.pot --domain=q2 --exclude=build,dist,node_modules,vendor --headers='{\"Report-Msgid-Bugs-To\":\"https://github.com/plakio/q2/issues\"}' && wp i18n update-po languages/q2.pot languages/q2-es_ES.po",
+		"i18n:build": "wp i18n make-mo languages && wp i18n make-json languages languages --no-purge --use-map=scripts/i18n-map.json",
 		"format": "wp-scripts format",
 		"lint:js": "wp-scripts lint-js src",
 		"lint:style": "wp-scripts lint-style 'src/**/*.scss'",

@@ -2,13 +2,9 @@
  * Q2 Task block — assigns + due date + status.
  */
 import apiFetch from '@wordpress/api-fetch';
-import {
-	InnerBlocks,
-	InspectorControls,
-	useBlockProps,
-} from '@wordpress/block-editor';
-import { PanelBody, SelectControl, TextControl } from '@wordpress/components';
-import { useEffect, useMemo, useState } from '@wordpress/element';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
+import { SelectControl, TextControl } from '@wordpress/components';
+import { useEffect, useId, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 
 function generateBlockId() {
@@ -20,7 +16,7 @@ function generateBlockId() {
 	);
 }
 
-function AssigneeSelector( { members, value, onChange } ) {
+function AssigneeSelector( { members, value, onChange, idPrefix } ) {
 	const toggle = ( id ) => {
 		const next = value.includes( id )
 			? value.filter( ( item ) => item !== id )
@@ -33,7 +29,7 @@ function AssigneeSelector( { members, value, onChange } ) {
 				<p>{ __( 'Loading members…', 'q2' ) }</p>
 			) }
 			{ members.map( ( member ) => {
-				const inputId = `q2-task-assignee-${ member.id }`;
+				const inputId = `${ idPrefix }-${ member.id }`;
 				return (
 					<div key={ member.id } className="q2-task-assignee-row">
 						<input
@@ -64,6 +60,7 @@ export default function Edit( { attributes, setAttributes } ) {
 	const blockProps = useBlockProps( { className: 'q2-task' } );
 	const [ members, setMembers ] = useState( [] );
 	const [ search, setSearch ] = useState( '' );
+	const assigneeIdPrefix = useId();
 
 	useEffect( () => {
 		if ( ! blockId ) {
@@ -87,27 +84,16 @@ export default function Edit( { attributes, setAttributes } ) {
 		};
 	}, [ search ] );
 
-	const statusLabel = useMemo(
-		() =>
-			( {
-				todo: __( 'To do', 'q2' ),
-				in_progress: __( 'In progress', 'q2' ),
-				done: __( 'Done', 'q2' ),
-			} )[ status ] || __( 'To do', 'q2' ),
-		[ status ]
-	);
-
 	return (
-		<>
-			<InspectorControls>
-				<PanelBody title={ __( 'Task', 'q2' ) }>
-					<TextControl
-						label={ __( 'Title', 'q2' ) }
-						value={ title }
-						onChange={ ( next ) =>
-							setAttributes( { title: next } )
-						}
-					/>
+		<div { ...blockProps }>
+			<div className="q2-task-fields">
+				<TextControl
+					label={ __( 'Task title', 'q2' ) }
+					value={ title }
+					placeholder={ __( 'What needs to be done?', 'q2' ) }
+					onChange={ ( next ) => setAttributes( { title: next } ) }
+				/>
+				<div className="q2-task-fields-row">
 					<SelectControl
 						label={ __( 'Status', 'q2' ) }
 						value={ status }
@@ -124,67 +110,57 @@ export default function Edit( { attributes, setAttributes } ) {
 						}
 					/>
 					<TextControl
-						type="date"
 						label={ __( 'Due date', 'q2' ) }
+						type="date"
 						value={ dueDate || '' }
 						onChange={ ( next ) =>
 							setAttributes( { dueDate: next || '' } )
 						}
 					/>
-				</PanelBody>
-				<PanelBody
-					title={ __( 'Assignees', 'q2' ) }
-					initialOpen={ false }
-				>
-					<TextControl
-						label={ __( 'Search people', 'q2' ) }
-						value={ search }
-						onChange={ setSearch }
-					/>
-					<AssigneeSelector
-						members={ members }
-						value={ assignees }
-						onChange={ ( next ) =>
-							setAttributes( { assignees: next } )
-						}
-					/>
-				</PanelBody>
-			</InspectorControls>
-			<div { ...blockProps }>
-				<div className="q2-task-summary">
-					<span className={ `q2-task-status is-${ status }` }>
-						{ statusLabel }
-					</span>
-					<strong>{ title || __( 'Untitled task', 'q2' ) }</strong>
-					{ dueDate && (
-						<span className="q2-task-due">
-							{ sprintf(
-								/* translators: %s: due date (ISO). */
-								__( 'Due %s', 'q2' ),
-								dueDate
-							) }
-						</span>
-					) }
-					{ assignees.length > 0 && (
-						<span className="q2-task-assigned">
-							{ sprintf(
-								/* translators: %d: number of assignees. */
-								_n(
-									'%d assignee',
-									'%d assignees',
-									assignees.length,
-									'q2'
-								),
-								assignees.length
-							) }
-						</span>
-					) }
 				</div>
-				<div className="q2-task-detail">
-					<InnerBlocks allowedBlocks={ [ 'core/paragraph' ] } />
-				</div>
+				<details className="q2-task-assignee-picker">
+					<summary>
+						{ assignees.length > 0
+							? sprintf(
+									/* translators: %d: number of assignees. */
+									_n(
+										'%d assignee',
+										'%d assignees',
+										assignees.length,
+										'q2'
+									),
+									assignees.length
+							  )
+							: __( 'Add assignees', 'q2' ) }
+					</summary>
+					<div className="q2-task-assignee-picker-content">
+						<TextControl
+							label={ __( 'Search people', 'q2' ) }
+							value={ search }
+							onChange={ setSearch }
+						/>
+						<AssigneeSelector
+							members={ members }
+							value={ assignees }
+							idPrefix={ assigneeIdPrefix }
+							onChange={ ( next ) =>
+								setAttributes( { assignees: next } )
+							}
+						/>
+					</div>
+				</details>
 			</div>
-		</>
+			<div className="q2-task-detail">
+				<p className="q2-task-detail-label">
+					{ __( 'Details', 'q2' ) }
+				</p>
+				<InnerBlocks
+					allowedBlocks={ [ 'core/paragraph' ] }
+					template={ [ [ 'core/paragraph' ] ] }
+					templateLock={ false }
+				/>
+			</div>
+		</div>
 	);
 }
 

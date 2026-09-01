@@ -163,6 +163,12 @@ final class Sync {
 				$attrs    = (array) ( $block['attrs'] ?? array() );
 				$block_id = isset( $attrs['blockId'] ) ? (string) $attrs['blockId'] : '';
 				if ( '' === $block_id ) {
+					$inner_html = (string) ( $block['innerHTML'] ?? '' );
+					if ( preg_match( '/\bdata-block-id=["\']([a-zA-Z0-9_-]+)["\']/', $inner_html, $matches ) ) {
+						$block_id = (string) $matches[1];
+					}
+				}
+				if ( '' === $block_id ) {
 					continue;
 				}
 				$tasks[] = array(

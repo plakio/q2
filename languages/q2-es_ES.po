@@ -1,0 +1,1335 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Q2 0.2.4\n"
+"Report-Msgid-Bugs-To: https://github.com/plakio/q2/issues\n"
+"Last-Translator: Plak <hola@plak.io>\n"
+"Language-Team: Spanish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-09-01T03:37:53+00:00\n"
+"PO-Revision-Date: 2026-08-31 22:45-0500\n"
+"Language: es_ES\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: q2\n"
+
+#. Plugin Name of the plugin
+#: q2.php
+msgid "Q2"
+msgstr "Q2"
+
+#. Plugin URI of the plugin
+#: q2.php
+msgid "https://github.com/plakio/q2"
+msgstr "https://github.com/plakio/q2"
+
+#. Description of the plugin
+#: q2.php
+#: includes/Update/GitHub_Updater.php:223
+msgid "A modern, self-hosted collaborative workspace for WordPress."
+msgstr "Un espacio de trabajo colaborativo, moderno y autoalojado para WordPress."
+
+#. Author of the plugin
+#: q2.php
+msgid "Plak"
+msgstr "Plak"
+
+#. Author URI of the plugin
+#: q2.php
+msgid "https://plak.io/"
+msgstr "https://plak.io/"
+
+#: includes/Application/Application.php:76
+msgid "You do not have permission to access Q2."
+msgstr "No tienes permiso para acceder a Q2."
+
+#: includes/Application/Application.php:77
+msgid "Q2 access denied"
+msgstr "Acceso a Q2 denegado"
+
+#: includes/REST/Collaboration_Controller.php:157
+msgid "That collaboration action is not supported."
+msgstr "Esa acción de colaboración no es compatible."
+
+#: includes/REST/Collaboration_Controller.php:224
+msgid "A former member"
+msgstr "Un antiguo miembro"
+
+#: includes/REST/Collaboration_Controller.php:261
+msgid "That feed view is not supported."
+msgstr "Esa vista del feed no es compatible."
+
+#: includes/REST/Comments_Controller.php:153
+msgid "The parent comment is invalid."
+msgstr "El comentario superior no es válido."
+
+#: includes/REST/Comments_Controller.php:209
+msgid "The comment could not be deleted."
+msgstr "No se pudo eliminar el comentario."
+
+#: includes/REST/Comments_Controller.php:257
+msgid "Write a comment before saving."
+msgstr "Escribe un comentario antes de guardar."
+
+#: includes/REST/Comments_Controller.php:261
+msgid "That block is not supported in comments."
+msgstr "Ese bloque no es compatible con los comentarios."
+
+#: includes/REST/Collaboration_Controller.php:220
+#: includes/REST/Knowledge_Controller.php:201
+#: src/tasks/TasksScreen.js:194
+msgid "Untitled"
+msgstr "Sin título"
+
+#: includes/REST/Media_Controller.php:147
+#: includes/REST/Media_Controller.php:165
+#: includes/REST/Media_Controller.php:197
+msgid "That media could not be found."
+msgstr "No se pudo encontrar ese archivo multimedia."
+
+#: includes/REST/Media_Controller.php:151
+msgid "You do not have permission to view that media."
+msgstr "No tienes permiso para ver ese archivo multimedia."
+
+#: includes/REST/Media_Controller.php:201
+msgid "The media could not be deleted."
+msgstr "No se pudo eliminar el archivo multimedia."
+
+#: includes/REST/Pages_Controller.php:140
+#: includes/REST/Pages_Controller.php:206
+#: includes/REST/Pages_Controller.php:272
+msgid "That page could not be found."
+msgstr "No se pudo encontrar esa página."
+
+#: includes/REST/Pages_Controller.php:158
+msgid "A page title is required."
+msgstr "Se necesita un título para la página."
+
+#: includes/REST/Pages_Controller.php:165
+#: includes/REST/Pages_Controller.php:226
+msgid "The parent page is invalid."
+msgstr "La página superior no es válida."
+
+#: includes/REST/Pages_Controller.php:168
+#: includes/REST/Pages_Controller.php:229
+msgid "You cannot place the page under that parent."
+msgstr "No puedes colocar la página bajo esa página superior."
+
+#: includes/REST/Pages_Controller.php:235
+msgid "A page cannot be its own ancestor."
+msgstr "Una página no puede ser su propio antepasado."
+
+#: includes/REST/Pages_Controller.php:247
+msgid "That page status is not supported."
+msgstr "Ese estado de página no es compatible."
+
+#: includes/REST/Pages_Controller.php:250
+msgid "You do not have permission to publish pages."
+msgstr "No tienes permiso para publicar páginas."
+
+#: includes/REST/Pages_Controller.php:277
+msgid "The page could not be deleted."
+msgstr "No se pudo eliminar la página."
+
+#: includes/REST/Tasks_Controller.php:155
+msgid "That task could not be found."
+msgstr "No se pudo encontrar esa tarea."
+
+#: includes/REST/Tasks_Controller.php:160
+msgid "The parent post for that task could not be loaded."
+msgstr "No se pudo cargar la publicación que contiene esa tarea."
+
+#: includes/REST/Tasks_Controller.php:166
+msgid "That task status is not supported."
+msgstr "Ese estado de tarea no es compatible."
+
+#: includes/REST/Tasks_Controller.php:231
+msgid "You do not have permission to view that task."
+msgstr "No tienes permiso para ver esa tarea."
+
+#: includes/REST/Workspace_Controller.php:118
+msgid "That image could not be found."
+msgstr "No se pudo encontrar esa imagen."
+
+#: includes/Tasks/Cron.php:68
+msgid "Once per day"
+msgstr "Una vez al día"
+
+#: includes/Tasks/Sync.php:176
+#: src/notifications/NotificationsScreen.js:34
+msgid "Untitled task"
+msgstr "Tarea sin título"
+
+#: includes/Update/GitHub_Updater.php:86
+msgid "Check Update"
+msgstr "Comprobar actualización"
+
+#. translators: %s: latest Q2 version.
+#: includes/Update/GitHub_Updater.php:142
+#, php-format
+msgid "Q2 %s is available. Use the “Update now” action to install it."
+msgstr "Q2 %s está disponible. Usa la acción «Actualizar ahora» para instalarla."
+
+#: includes/Update/GitHub_Updater.php:154
+msgid "Q2 is up to date."
+msgstr "Q2 está actualizado."
+
+#: includes/Update/GitHub_Updater.php:224
+msgid "See the GitHub release for details."
+msgstr "Consulta la versión de GitHub para conocer los detalles."
+
+#: templates/application.php:24
+msgid "Skip to workspace content"
+msgstr "Saltar al contenido del espacio de trabajo"
+
+#: templates/application.php:26
+msgid "Loading Q2…"
+msgstr "Cargando Q2…"
+
+#: templates/application.php:28
+msgid "Q2 requires JavaScript for its application interface."
+msgstr "Q2 necesita JavaScript para mostrar su interfaz."
+
+#: src/blocks/changelog/edit.js:20
+msgid "Heading"
+msgstr "Encabezado"
+
+#: src/blocks/changelog/edit.js:25
+msgid "Summary"
+msgstr "Resumen"
+
+#: src/blocks/changelog/edit.js:32
+msgid "Remove entry"
+msgstr "Quitar entrada"
+
+#: src/blocks/changelog/edit.js:34
+#: src/starters/StartersScreen.js:164
+msgid "Remove"
+msgstr "Quitar"
+
+#: src/blocks/changelog/edit.js:78
+#: src/blocks/changelog/edit.js:128
+#: src/blocks/changelog/index.js:9
+msgid "Changelog"
+msgstr "Registro de cambios"
+
+#: src/blocks/changelog/edit.js:80
+msgid "Record every important change to this project. Entries appear in chronological order."
+msgstr "Registra cada cambio importante del proyecto. Las entradas aparecen en orden cronológico."
+
+#: src/blocks/changelog/edit.js:106
+msgid "What changed?"
+msgstr "¿Qué cambió?"
+
+#: src/blocks/changelog/edit.js:116
+msgid "Add entry"
+msgstr "Añadir entrada"
+
+#: src/blocks/changelog/index.js:10
+msgid "Append-only changelog entry list with dates."
+msgstr "Lista fechada de entradas del registro de cambios."
+
+#: src/blocks/project-status/edit.js:54
+msgid "Project status"
+msgstr "Estado del proyecto"
+
+#. translators: 1: done tasks, 2: total tasks.
+#: src/blocks/project-status/edit.js:58
+#, js-format
+msgid "%1$d of %2$d tasks done"
+msgstr "%1$d de %2$d tareas completadas"
+
+#. translators: %d: overdue task count.
+#: src/blocks/project-status/edit.js:67
+#, js-format
+msgid "%d overdue"
+msgid_plural "%d overdue"
+msgstr[0] "%d atrasada"
+msgstr[1] "%d atrasadas"
+
+#: src/blocks/project-status/edit.js:77
+#: src/blocks/task/edit.js:101
+msgid "To do"
+msgstr "Por hacer"
+
+#: src/blocks/project-status/edit.js:81
+#: src/blocks/task/edit.js:103
+msgid "In progress"
+msgstr "En curso"
+
+#: src/blocks/project-status/edit.js:85
+#: src/blocks/task/edit.js:106
+msgid "Done"
+msgstr "Completada"
+
+#: src/blocks/project-status/edit.js:90
+msgid "Project Status summarises Q2 Task blocks in this post. Drop task blocks above or below."
+msgstr "Estado del proyecto resume los bloques Tarea de Q2 de esta publicación. Añade bloques de tarea arriba o abajo."
+
+#: src/blocks/project-status/index.js:9
+msgid "Project Status"
+msgstr "Estado del proyecto"
+
+#: src/blocks/project-status/index.js:10
+msgid "A live summary of the Task blocks in this post."
+msgstr "Un resumen en vivo de los bloques Tarea de esta publicación."
+
+#: src/blocks/task/edit.js:29
+msgid "Loading members…"
+msgstr "Cargando miembros…"
+
+#: src/blocks/task/edit.js:91
+msgid "Task title"
+msgstr "Título de la tarea"
+
+#: src/blocks/task/edit.js:93
+msgid "What needs to be done?"
+msgstr "¿Qué hay que hacer?"
+
+#: src/blocks/task/edit.js:98
+msgid "Status"
+msgstr "Estado"
+
+#: src/blocks/task/edit.js:113
+msgid "Due date"
+msgstr "Fecha límite"
+
+#. translators: %d: number of assignees.
+#: src/blocks/task/edit.js:126
+#, js-format
+msgid "%d assignee"
+msgid_plural "%d assignees"
+msgstr[0] "%d persona asignada"
+msgstr[1] "%d personas asignadas"
+
+#: src/blocks/task/edit.js:134
+msgid "Add assignees"
+msgstr "Añadir personas asignadas"
+
+#: src/blocks/task/edit.js:138
+#: src/people/PeopleScreen.js:52
+#: src/people/PeopleScreen.js:59
+msgid "Search people"
+msgstr "Buscar personas"
+
+#: src/blocks/task/edit.js:155
+msgid "Details"
+msgstr "Detalles"
+
+#: src/blocks/task/edit.js:184
+msgid "Task:"
+msgstr "Tarea:"
+
+#. translators: %s: due date.
+#: src/blocks/task/edit.js:190
+#, js-format
+msgid "due %s"
+msgstr "vence el %s"
+
+#: src/blocks/task/index.js:11
+msgid "Task"
+msgstr "Tarea"
+
+#: src/blocks/task/index.js:12
+msgid "A trackable task with assignees and a due date."
+msgstr "Una tarea con seguimiento, personas asignadas y fecha límite."
+
+#: src/comments/CommentsThread.js:44
+msgid "Delete this comment?"
+msgstr "¿Eliminar este comentario?"
+
+#: src/comments/CommentsThread.js:92
+msgid "Save comment"
+msgstr "Guardar comentario"
+
+#: src/comments/CommentsThread.js:108
+#: src/comments/CommentsThread.js:137
+#: src/index.js:1348
+msgid "Reply"
+msgstr "Responder"
+
+#: src/comments/CommentsThread.js:115
+#: src/pages/PagesScreen.js:433
+msgid "Edit"
+msgstr "Editar"
+
+#: src/comments/CommentsThread.js:125
+msgid "Deleting…"
+msgstr "Eliminando…"
+
+#: src/comments/CommentsThread.js:126
+#: src/media/MediaScreen.js:400
+#: src/pages/PagesScreen.js:463
+msgid "Delete"
+msgstr "Eliminar"
+
+#: src/comments/CommentsThread.js:186
+msgid "Comments could not be loaded."
+msgstr "No se pudieron cargar los comentarios."
+
+#: src/comments/CommentsThread.js:206
+#: src/notifications/NotificationsScreen.js:138
+#: src/search/SearchScreen.js:10
+msgid "Comments"
+msgstr "Comentarios"
+
+#. translators: %d: comment count.
+#: src/comments/CommentsThread.js:210
+#, js-format
+msgid "Discussion (%d)"
+msgstr "Conversación (%d)"
+
+#: src/comments/CommentsThread.js:215
+msgid "Loading comments…"
+msgstr "Cargando comentarios…"
+
+#: src/comments/CommentsThread.js:233
+msgid "Add to the discussion"
+msgstr "Participa en la conversación"
+
+#: src/comments/CommentsThread.js:238
+msgid "Comment"
+msgstr "Comentar"
+
+#: src/components/TagPicker.js:25
+#: src/index.js:1326
+#: src/search/SearchScreen.js:12
+msgid "Tags"
+msgstr "Etiquetas"
+
+#: src/editor/BlockContentEditor.js:60
+#: src/pages/PagesScreen.js:443
+msgid "Publish"
+msgstr "Publicar"
+
+#: src/editor/BlockContentEditor.js:88
+msgid "Write something before saving."
+msgstr "Escribe algo antes de guardar."
+
+#: src/editor/BlockContentEditor.js:99
+msgid "The content could not be saved."
+msgstr "No se pudo guardar el contenido."
+
+#: src/editor/BlockContentEditor.js:120
+msgid "Add block"
+msgstr "Añadir bloque"
+
+#: src/editor/BlockContentEditor.js:141
+msgid "Mention teammates with @username or @all."
+msgstr "Menciona a tus compañeros con @usuario o @all."
+
+#: src/editor/BlockContentEditor.js:145
+msgid "Mention teammates with @username."
+msgstr "Menciona a tus compañeros con @usuario."
+
+#: src/editor/BlockContentEditor.js:157
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: src/editor/BlockContentEditor.js:166
+#: src/starters/StartersScreen.js:118
+msgid "Saving…"
+msgstr "Guardando…"
+
+#: src/index.js:56
+#: src/search/SearchScreen.js:8
+msgid "Posts"
+msgstr "Publicaciones"
+
+#: src/index.js:57
+#: src/pages/PagesScreen.js:261
+#: src/search/SearchScreen.js:9
+msgid "Pages"
+msgstr "Páginas"
+
+#: src/index.js:58
+#: src/media/MediaScreen.js:156
+msgid "Media"
+msgstr "Multimedia"
+
+#: src/index.js:61
+#: src/index.js:297
+#: src/index.js:426
+#: src/notifications/NotificationsScreen.js:160
+msgid "Notifications"
+msgstr "Notificaciones"
+
+#: src/index.js:65
+#: src/search/SearchScreen.js:73
+msgid "Search"
+msgstr "Buscar"
+
+#: src/index.js:66
+#: src/tasks/TasksScreen.js:97
+msgid "Tasks"
+msgstr "Tareas"
+
+#: src/index.js:67
+#: src/people/PeopleScreen.js:48
+#: src/search/SearchScreen.js:11
+msgid "People"
+msgstr "Personas"
+
+#: src/index.js:68
+msgid "Projects"
+msgstr "Proyectos"
+
+#: src/index.js:69
+#: src/starters/StartersScreen.js:109
+msgid "Starter Buttons"
+msgstr "Botones de inicio"
+
+#: src/index.js:173
+msgid "Workspace navigation"
+msgstr "Navegación del espacio de trabajo"
+
+#: src/index.js:207
+msgid "Powered by"
+msgstr "Funciona con"
+
+#: src/index.js:285
+#: src/search/SearchScreen.js:77
+msgid "Search workspace"
+msgstr "Buscar en el espacio de trabajo"
+
+#. translators: %s: workspace name.
+#: src/index.js:288
+#, js-format
+msgid "Search in %s"
+msgstr "Buscar en %s"
+
+#: src/index.js:311
+msgid "Toggle navigation"
+msgstr "Alternar navegación"
+
+#: src/index.js:355
+#: src/index.js:684
+msgid "A collaborative workspace."
+msgstr "Un espacio de trabajo colaborativo."
+
+#: src/index.js:386
+msgid "Workspace actions"
+msgstr "Acciones del espacio de trabajo"
+
+#: src/index.js:414
+msgid "New post"
+msgstr "Nueva publicación"
+
+#: src/index.js:441
+msgid "My profile"
+msgstr "Mi perfil"
+
+#: src/index.js:453
+msgid "Workspace settings"
+msgstr "Ajustes del espacio de trabajo"
+
+#: src/index.js:469
+msgid "Signed in"
+msgstr "Sesión iniciada"
+
+#: src/index.js:481
+msgid "Sign out"
+msgstr "Cerrar sesión"
+
+#: src/index.js:522
+msgid "The workspace image could not be saved."
+msgstr "No se pudo guardar la imagen del espacio de trabajo."
+
+#: src/index.js:535
+msgid "The media library is still loading. Please try again in a moment."
+msgstr "La biblioteca multimedia todavía se está cargando. Inténtalo de nuevo en un momento."
+
+#: src/index.js:545
+msgid "Select cover image"
+msgstr "Seleccionar imagen de portada"
+
+#: src/index.js:546
+msgid "Select workspace icon"
+msgstr "Seleccionar icono del espacio de trabajo"
+
+#: src/index.js:550
+msgid "Use as cover"
+msgstr "Usar como portada"
+
+#: src/index.js:551
+msgid "Use as icon"
+msgstr "Usar como icono"
+
+#: src/index.js:612
+msgid "Change cover"
+msgstr "Cambiar portada"
+
+#: src/index.js:613
+msgid "Add cover"
+msgstr "Añadir portada"
+
+#: src/index.js:624
+msgid "Remove cover"
+msgstr "Quitar portada"
+
+#: src/index.js:658
+msgid "Change workspace icon"
+msgstr "Cambiar icono del espacio de trabajo"
+
+#: src/index.js:659
+msgid "Add workspace icon"
+msgstr "Añadir icono del espacio de trabajo"
+
+#: src/index.js:670
+msgid "Remove workspace icon"
+msgstr "Quitar icono del espacio de trabajo"
+
+#: src/index.js:710
+#: src/index.js:712
+msgid "Team"
+msgstr "Equipo"
+
+#: src/index.js:717
+msgid "View all team members"
+msgstr "Ver todos los miembros del equipo"
+
+#: src/index.js:795
+msgid "The feed could not be loaded."
+msgstr "No se pudo cargar el feed."
+
+#: src/index.js:845
+msgid "Filter feed"
+msgstr "Filtrar feed"
+
+#: src/index.js:854
+msgid "All posts"
+msgstr "Todas las publicaciones"
+
+#: src/index.js:856
+msgid "New Posts"
+msgstr "Nuevas publicaciones"
+
+#: src/index.js:859
+msgid "New Comments"
+msgstr "Nuevos comentarios"
+
+#: src/index.js:862
+msgid "My Posts"
+msgstr "Mis publicaciones"
+
+#: src/index.js:865
+msgid "My Mentions"
+msgstr "Mis menciones"
+
+#: src/index.js:871
+msgid "Feed view"
+msgstr "Vista del feed"
+
+#: src/index.js:881
+msgid "Default view"
+msgstr "Vista predeterminada"
+
+#: src/index.js:884
+msgid "Expanded view"
+msgstr "Vista ampliada"
+
+#: src/index.js:887
+msgid "Compact view"
+msgstr "Vista compacta"
+
+#: src/index.js:895
+msgid "Loading updates…"
+msgstr "Cargando novedades…"
+
+#: src/index.js:900
+msgid "Something went wrong"
+msgstr "Algo salió mal"
+
+#: src/index.js:903
+msgid "Try again"
+msgstr "Intentar de nuevo"
+
+#: src/index.js:910
+msgid "Start the conversation"
+msgstr "Inicia la conversación"
+
+#: src/index.js:913
+msgid "Publish the first update for this workspace."
+msgstr "Publica la primera novedad de este espacio de trabajo."
+
+#: src/index.js:935
+msgid "Loading more…"
+msgstr "Cargando más…"
+
+#: src/index.js:944
+msgid "Load more updates"
+msgstr "Cargar más novedades"
+
+#: src/index.js:980
+msgid "Update published."
+msgstr "Novedad publicada."
+
+#: src/index.js:981
+msgid "Update submitted for review."
+msgstr "Novedad enviada a revisión."
+
+#: src/index.js:996
+msgid "Now"
+msgstr "Ahora"
+
+#: src/index.js:1017
+#: src/index.js:1045
+msgid "Post"
+msgstr "Publicar"
+
+#. translators: %s: current user's display name.
+#: src/index.js:1029
+#, js-format
+msgid "Hi, %s! Post an update, ask a question, or brainstorm ideas."
+msgstr "¡Hola, %s! Publica una novedad, haz una pregunta o comparte ideas."
+
+#: src/index.js:1034
+msgid "there"
+msgstr "allí"
+
+#: src/index.js:1144
+msgid "Delete this post? This moves it to the trash."
+msgstr "¿Eliminar esta publicación? Se moverá a la papelera."
+
+#: src/index.js:1163
+msgid "The post could not be deleted."
+msgstr "No se pudo eliminar la publicación."
+
+#: src/index.js:1236
+msgid "Post actions"
+msgstr "Acciones de la publicación"
+
+#: src/index.js:1253
+#: src/index.js:1287
+#: src/index.js:1290
+msgid "Edit post"
+msgstr "Editar publicación"
+
+#: src/index.js:1262
+msgid "Delete post"
+msgstr "Eliminar publicación"
+
+#: src/index.js:1277
+msgid "Unknown author"
+msgstr "Autor desconocido"
+
+#: src/index.js:1316
+msgid "Save update"
+msgstr "Guardar cambios"
+
+#: src/index.js:1364
+msgid "Following"
+msgstr "Siguiendo"
+
+#: src/index.js:1365
+msgid "Follow"
+msgstr "Seguir"
+
+#: src/index.js:1385
+msgid "Liked"
+msgstr "Te gusta"
+
+#: src/index.js:1386
+msgid "Like"
+msgstr "Me gusta"
+
+#: src/index.js:1408
+msgid "Q2 foundation"
+msgstr "Base de Q2"
+
+#: src/index.js:1415
+msgid "This area is architected and coming next."
+msgstr "Esta área está diseñada y llegará próximamente."
+
+#: src/index.js:1418
+msgid "The foundation milestone establishes navigation without pretending unfinished collaboration features are complete."
+msgstr "La base establece la navegación sin presentar como completas las funciones de colaboración que aún no lo están."
+
+#: src/index.js:1432
+msgid "Page not found"
+msgstr "Página no encontrada"
+
+#: src/index.js:1434
+msgid "Return to the feed"
+msgstr "Volver al feed"
+
+#: src/media/MediaScreen.js:7
+#: src/notifications/NotificationsScreen.js:136
+#: src/search/SearchScreen.js:7
+msgid "All"
+msgstr "Todo"
+
+#: src/media/MediaScreen.js:8
+msgid "Images"
+msgstr "Imágenes"
+
+#: src/media/MediaScreen.js:9
+msgid "Video"
+msgstr "Vídeo"
+
+#: src/media/MediaScreen.js:10
+msgid "Audio"
+msgstr "Audio"
+
+#: src/blocks/files/index.js:6
+#: src/media/MediaScreen.js:11
+msgid "Files"
+msgstr "Archivos"
+
+#: src/media/MediaScreen.js:61
+msgid "Media could not be loaded."
+msgstr "No se pudieron cargar los archivos multimedia."
+
+#: src/media/MediaScreen.js:92
+msgid "The file could not be uploaded."
+msgstr "No se pudo subir el archivo."
+
+#: src/media/MediaScreen.js:119
+msgid "The file details could not be saved."
+msgstr "No se pudieron guardar los detalles del archivo."
+
+#: src/media/MediaScreen.js:129
+msgid "Delete this file?"
+msgstr "¿Eliminar este archivo?"
+
+#: src/media/MediaScreen.js:141
+msgid "The file could not be deleted."
+msgstr "No se pudo eliminar el archivo."
+
+#: src/media/MediaScreen.js:154
+#: src/pages/PagesScreen.js:259
+#: src/people/PeopleScreen.js:46
+#: src/search/SearchScreen.js:71
+#: src/starters/StartersScreen.js:107
+#: src/tasks/TasksScreen.js:95
+msgid "Workspace"
+msgstr "Espacio de trabajo"
+
+#: src/media/MediaScreen.js:167
+msgid "Uploading…"
+msgstr "Subiendo…"
+
+#: src/media/MediaScreen.js:168
+msgid "Upload"
+msgstr "Subir"
+
+#: src/media/MediaScreen.js:181
+#: src/media/MediaScreen.js:191
+msgid "Search media"
+msgstr "Buscar multimedia"
+
+#: src/media/MediaScreen.js:211
+msgid "Loading media…"
+msgstr "Cargando multimedia…"
+
+#: src/media/MediaScreen.js:215
+msgid "No files match"
+msgstr "No hay archivos coincidentes"
+
+#: src/media/MediaScreen.js:217
+msgid "Upload an attachment or refine your search."
+msgstr "Sube un archivo adjunto o ajusta tu búsqueda."
+
+#: src/media/MediaScreen.js:276
+msgid "Previous"
+msgstr "Anterior"
+
+#. translators: 1: current page, 2: total pages.
+#: src/media/MediaScreen.js:281
+#, js-format
+msgid "%1$d of %2$d"
+msgstr "%1$d de %2$d"
+
+#: src/media/MediaScreen.js:295
+msgid "Next"
+msgstr "Siguiente"
+
+#: src/media/MediaScreen.js:303
+msgid "Select a file"
+msgstr "Selecciona un archivo"
+
+#: src/media/MediaScreen.js:305
+msgid "Pick an item on the left to view its details."
+msgstr "Elige un elemento de la izquierda para ver sus detalles."
+
+#. translators: 1: author, 2: date, 3: mime.
+#: src/media/MediaScreen.js:319
+#, js-format
+msgid "Uploaded by %1$s on %2$s · %3$s"
+msgstr "Subido por %1$s el %2$s · %3$s"
+
+#: src/media/MediaScreen.js:324
+#: src/pages/PagesScreen.js:335
+#: src/pages/PagesScreen.js:422
+msgid "Unknown"
+msgstr "Desconocido"
+
+#: src/media/MediaScreen.js:356
+#: src/pages/PagesScreen.js:354
+msgid "Title"
+msgstr "Título"
+
+#: src/media/MediaScreen.js:365
+msgid "Caption"
+msgstr "Leyenda"
+
+#: src/media/MediaScreen.js:374
+msgid "Description"
+msgstr "Descripción"
+
+#: src/media/MediaScreen.js:384
+msgid "Save details"
+msgstr "Guardar detalles"
+
+#: src/media/MediaScreen.js:392
+msgid "Open original"
+msgstr "Abrir original"
+
+#: src/mentions/register.js:44
+msgid "Everyone in this workspace"
+msgstr "Todos en este espacio de trabajo"
+
+#: src/notifications/NotificationsScreen.js:14
+msgid "commented on a thread you follow"
+msgstr "comentó en una conversación que sigues"
+
+#: src/notifications/NotificationsScreen.js:15
+msgid "mentioned you"
+msgstr "te mencionó"
+
+#: src/notifications/NotificationsScreen.js:16
+msgid "liked your update"
+msgstr "indicó que le gusta tu publicación"
+
+#: src/notifications/NotificationsScreen.js:17
+msgid "assigned a task to you"
+msgstr "te asignó una tarea"
+
+#: src/notifications/NotificationsScreen.js:18
+msgid "reminded you about a task"
+msgstr "te recordó una tarea"
+
+#. translators: 1: task title, 2: due date.
+#: src/notifications/NotificationsScreen.js:38
+#, js-format
+msgid "the task “%1$s” (due %2$s)"
+msgstr "la tarea «%1$s» (vence el %2$s)"
+
+#. translators: %s: task title.
+#: src/notifications/NotificationsScreen.js:45
+#, js-format
+msgid "the task “%s”"
+msgstr "la tarea «%s»"
+
+#: src/notifications/NotificationsScreen.js:159
+msgid "Inbox"
+msgstr "Bandeja de entrada"
+
+#: src/notifications/NotificationsScreen.js:163
+msgid "Mark all read"
+msgstr "Marcar todo como leído"
+
+#: src/notifications/NotificationsScreen.js:137
+msgid "Unread"
+msgstr "Sin leer"
+
+#: src/notifications/NotificationsScreen.js:179
+msgid "Loading notifications…"
+msgstr "Cargando notificaciones…"
+
+#: src/notifications/NotificationsScreen.js:184
+msgid "Notifications could not be loaded."
+msgstr "No se pudieron cargar las notificaciones."
+
+#: src/notifications/NotificationsScreen.js:189
+msgid "You are all caught up."
+msgstr "Estás al día."
+
+#: src/notifications/NotificationsScreen.js:208
+msgid "sent an update"
+msgstr "envió una publicación"
+
+#: src/pages/PagesScreen.js:37
+msgid "Collapse"
+msgstr "Contraer"
+
+#: src/pages/PagesScreen.js:38
+msgid "Expand"
+msgstr "Expandir"
+
+#: src/pages/PagesScreen.js:53
+#: src/pages/PagesScreen.js:328
+#: src/pages/PagesScreen.js:413
+msgid "(Untitled)"
+msgstr "(Sin título)"
+
+#: src/pages/PagesScreen.js:56
+msgid "Draft"
+msgstr "Borrador"
+
+#: src/pages/PagesScreen.js:61
+msgid "Private"
+msgstr "Privada"
+
+#: src/pages/PagesScreen.js:115
+msgid "Pages could not be loaded."
+msgstr "No se pudieron cargar las páginas."
+
+#: src/pages/PagesScreen.js:143
+msgid "The page could not be loaded."
+msgstr "No se pudo cargar la página."
+
+#: src/pages/PagesScreen.js:198
+msgid "Move this page to trash?"
+msgstr "¿Mover esta página a la papelera?"
+
+#: src/pages/PagesScreen.js:240
+msgid "The page could not be created."
+msgstr "No se pudo crear la página."
+
+#: src/pages/PagesScreen.js:268
+#: src/pages/PagesScreen.js:349
+msgid "New page"
+msgstr "Nueva página"
+
+#: src/pages/PagesScreen.js:273
+#: src/pages/PagesScreen.js:282
+msgid "Search pages"
+msgstr "Buscar páginas"
+
+#: src/pages/PagesScreen.js:286
+msgid "Loading pages…"
+msgstr "Cargando páginas…"
+
+#: src/pages/PagesScreen.js:291
+msgid "No pages yet"
+msgstr "Todavía no hay páginas"
+
+#: src/pages/PagesScreen.js:293
+msgid "Create durable documents, plans, and onboarding guides."
+msgstr "Crea documentos permanentes, planes y guías de incorporación."
+
+#: src/pages/PagesScreen.js:316
+msgid "Recently edited"
+msgstr "Editadas recientemente"
+
+#. translators: 1: author display name, 2: modified date.
+#: src/pages/PagesScreen.js:333
+#, js-format
+msgid "%1$s · %2$s"
+msgstr "%1$s · %2$s"
+
+#: src/pages/PagesScreen.js:365
+#: src/pages/PagesScreen.js:475
+msgid "Page title"
+msgstr "Título de la página"
+
+#: src/pages/PagesScreen.js:372
+msgid "Create page"
+msgstr "Crear página"
+
+#: src/pages/PagesScreen.js:379
+msgid "Select a page"
+msgstr "Selecciona una página"
+
+#: src/pages/PagesScreen.js:381
+msgid "Pick a document from the tree to read or edit it."
+msgstr "Elige un documento del árbol para leerlo o editarlo."
+
+#: src/pages/PagesScreen.js:391
+msgid "Loading page…"
+msgstr "Cargando página…"
+
+#: src/pages/PagesScreen.js:399
+msgid "Breadcrumb"
+msgstr "Migas de pan"
+
+#. translators: 1: author display name, 2: creation date.
+#: src/pages/PagesScreen.js:420
+#, js-format
+msgid "By %1$s on %2$s"
+msgstr "Por %1$s el %2$s"
+
+#: src/pages/PagesScreen.js:454
+msgid "Move to draft"
+msgstr "Mover a borrador"
+
+#: src/pages/PagesScreen.js:494
+msgid "Save page"
+msgstr "Guardar página"
+
+#: src/people/PeopleScreen.js:28
+msgid "People could not be loaded."
+msgstr "No se pudieron cargar las personas."
+
+#: src/people/PeopleScreen.js:63
+msgid "Loading people…"
+msgstr "Cargando personas…"
+
+#: src/people/PeopleScreen.js:78
+msgid "Member"
+msgstr "Miembro"
+
+#. translators: %s: search query.
+#: src/people/PeopleScreen.js:87
+#, js-format
+msgid "No people found for “%s”."
+msgstr "No se encontraron personas para «%s»."
+
+#: src/search/SearchScreen.js:55
+msgid "Search failed."
+msgstr "La búsqueda falló."
+
+#: src/search/SearchScreen.js:84
+msgid "Search posts, pages, comments, people, tags…"
+msgstr "Buscar publicaciones, páginas, comentarios, personas, etiquetas…"
+
+#: src/search/SearchScreen.js:111
+msgid "Find anything in this workspace"
+msgstr "Encuentra cualquier cosa en este espacio de trabajo"
+
+#: src/search/SearchScreen.js:114
+msgid "Type to search posts, pages, comments, people, and tags."
+msgstr "Escribe para buscar publicaciones, páginas, comentarios, personas y etiquetas."
+
+#: src/search/SearchScreen.js:121
+msgid "Searching…"
+msgstr "Buscando…"
+
+#. translators: %s: search query.
+#: src/search/SearchScreen.js:128
+#, js-format
+msgid "No results for “%s”"
+msgstr "No hay resultados para «%s»"
+
+#: src/starters/StartersScreen.js:62
+msgid "Starter patterns saved."
+msgstr "Patrones de inicio guardados."
+
+#: src/starters/StartersScreen.js:65
+msgid "The starters could not be saved."
+msgstr "No se pudieron guardar los elementos de inicio."
+
+#: src/starters/StartersScreen.js:85
+msgid "Loading patterns…"
+msgstr "Cargando patrones…"
+
+#: src/starters/StartersScreen.js:95
+msgid "Patterns could not be loaded."
+msgstr "No se pudieron cargar los patrones."
+
+#: src/starters/StartersScreen.js:119
+msgid "Save starters"
+msgstr "Guardar elementos de inicio"
+
+#. translators: %d: maximum number of starters.
+#: src/starters/StartersScreen.js:125
+#, js-format
+msgid "Choose up to %d Starter Buttons that appear when members create a new post or page. Order the buttons to control the priority of each pattern."
+msgstr "Elige hasta %d botones de inicio que aparecerán cuando los miembros creen una publicación o página. Ordena los botones para definir la prioridad de cada patrón."
+
+#: src/starters/StartersScreen.js:145
+msgid "Move up"
+msgstr "Mover arriba"
+
+#: src/starters/StartersScreen.js:154
+msgid "Move down"
+msgstr "Mover abajo"
+
+#: src/starters/StartersScreen.js:203
+msgid "Starter"
+msgstr "Elemento de inicio"
+
+#: src/starters/StartersScreen.js:204
+msgid "Add to starters"
+msgstr "Añadir a los elementos de inicio"
+
+#: src/tasks/TasksScreen.js:7
+msgid "Assigned to me"
+msgstr "Asignadas a mí"
+
+#: src/tasks/TasksScreen.js:8
+msgid "All tasks"
+msgstr "Todas las tareas"
+
+#: src/tasks/TasksScreen.js:13
+msgid "Updating…"
+msgstr "Actualizando…"
+
+#: src/tasks/TasksScreen.js:16
+msgid "Mark active"
+msgstr "Marcar como activa"
+
+#: src/tasks/TasksScreen.js:18
+msgid "Mark done"
+msgstr "Marcar como completada"
+
+#: src/tasks/TasksScreen.js:75
+msgid "The task could not be updated."
+msgstr "No se pudo actualizar la tarea."
+
+#: src/tasks/TasksScreen.js:124
+msgid "Overdue only"
+msgstr "Solo atrasadas"
+
+#. translators: %d: number of overdue tasks.
+#: src/tasks/TasksScreen.js:140
+#, js-format
+msgid "%d overdue task"
+msgid_plural "%d overdue tasks"
+msgstr[0] "%d tarea atrasada"
+msgstr[1] "%d tareas atrasadas"
+
+#: src/tasks/TasksScreen.js:150
+msgid "Loading tasks…"
+msgstr "Cargando tareas…"
+
+#: src/tasks/TasksScreen.js:154
+msgid "Tasks could not be loaded."
+msgstr "No se pudieron cargar las tareas."
+
+#: src/tasks/TasksScreen.js:162
+msgid "No tasks are assigned to you yet."
+msgstr "Todavía no tienes tareas asignadas."
+
+#: src/tasks/TasksScreen.js:163
+msgid "No tasks match the current filter."
+msgstr "Ninguna tarea coincide con el filtro actual."
+
+#: src/tasks/TasksScreen.js:166
+msgid "Drop a Q2 Task block into a post or page to start tracking work."
+msgstr "Añade un bloque Tarea de Q2 a una publicación o página para empezar a hacer seguimiento del trabajo."
+
+#: includes/REST/Surveys_Controller.php:93
+msgid "That survey option is not available."
+msgstr "Esa opción de la encuesta no está disponible."
+
+#: includes/REST/Surveys_Controller.php:115
+#: includes/REST/Surveys_Controller.php:131
+msgid "That survey could not be found."
+msgstr "No se pudo encontrar esa encuesta."
+
+#: src/blocks/files/edit.js:9
+#: src/blocks/files/edit.js:37
+#: src/blocks/files/edit.js:92
+msgid "File"
+msgstr "Archivo"
+
+#: src/blocks/files/edit.js:27
+msgid "Files heading"
+msgstr "Encabezado de archivos"
+
+#: src/blocks/files/edit.js:29
+msgid "Here are all the files"
+msgstr "Aquí están todos los archivos"
+
+#: src/blocks/files/edit.js:48
+msgid "Remove file"
+msgstr "Quitar archivo"
+
+#: src/blocks/files/edit.js:72
+msgid "Add files"
+msgstr "Añadir archivos"
+
+#: src/blocks/files/edit.js:100
+msgid "Download"
+msgstr "Descargar"
+
+#: src/blocks/files/edit.js:106
+msgid "No files added yet."
+msgstr "Todavía no se han añadido archivos."
+
+#: src/blocks/files/index.js:7
+msgid "Share a tidy list of downloadable files."
+msgstr "Comparte una lista ordenada de archivos descargables."
+
+#: src/blocks/survey/edit.js:35
+msgid "Survey question"
+msgstr "Pregunta de la encuesta"
+
+#: src/blocks/survey/edit.js:37
+msgid "What would you like to ask?"
+msgstr "¿Qué te gustaría preguntar?"
+
+#. translators: %d: survey option number.
+#: src/blocks/survey/edit.js:47
+#: src/blocks/survey/edit.js:53
+#, js-format
+msgid "Option %d"
+msgstr "Opción %d"
+
+#: src/blocks/survey/edit.js:63
+msgid "Remove option"
+msgstr "Quitar opción"
+
+#: src/blocks/survey/edit.js:83
+msgid "Add option"
+msgstr "Añadir opción"
+
+#: src/blocks/survey/edit.js:94
+#: src/blocks/survey/index.js:6
+msgid "Survey"
+msgstr "Encuesta"
+
+#: src/blocks/survey/edit.js:122
+msgid "Vote"
+msgstr "Votar"
+
+#: src/blocks/survey/index.js:7
+msgid "Ask one question and collect a vote from each teammate."
+msgstr "Haz una pregunta y recoge un voto de cada compañero."
+
+#. translators: %s: parent comment author.
+#: src/comments/CommentsThread.js:77
+#, js-format
+msgid "to %s"
+msgstr "a %s"
+
+#: src/index.js:1004
+#: src/index.js:1304
+msgid "Post title"
+msgstr "Título de la publicación"
+
+#: src/index.js:1294
+msgid "Close editor"
+msgstr "Cerrar editor"
+
+#: src/notifications/NotificationsScreen.js:119
+msgid "Older than 2 days"
+msgstr "Hace más de 2 días"
+
+#: src/notifications/NotificationsScreen.js:121
+msgid "Today"
+msgstr "Hoy"
+
+#: src/notifications/NotificationsScreen.js:123
+msgid "Yesterday"
+msgstr "Ayer"
+
+#: src/notifications/NotificationsScreen.js:139
+msgid "Follows"
+msgstr "Seguidos"
+
+#: src/notifications/NotificationsScreen.js:140
+msgid "Likes"
+msgstr "Me gusta"
+
+#. translators: %d: number of survey votes.
+#: src/surveys/useSurveyRuntime.js:22
+#, js-format
+msgid "%d vote"
+msgid_plural "%d votes"
+msgstr[0] "%d voto"
+msgstr[1] "%d votos"
+
+#: src/surveys/useSurveyRuntime.js:67
+msgid "Saving vote…"
+msgstr "Guardando voto…"
+
+#: src/surveys/useSurveyRuntime.js:78
+msgid "The vote could not be saved."
+msgstr "No se pudo guardar el voto."
+
+#: src/surveys/useSurveyRuntime.js:97
+msgid "Survey results could not be loaded."
+msgstr "No se pudieron cargar los resultados de la encuesta."

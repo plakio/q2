@@ -8,9 +8,10 @@
  * Requires PHP:      8.1
  * Author:            Plak
  * Author URI:        https://plak.io/
- * License:           GPL-2.0-or-later
+ * License:           GPLv2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       q2
+ * Domain Path:       /languages
  * Update URI:        https://github.com/plakio/q2
  *
  * @package Q2

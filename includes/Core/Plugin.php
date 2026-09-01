@@ -21,6 +21,7 @@ use Q2\REST\Media_Controller;
 use Q2\REST\Pages_Controller;
 use Q2\REST\People_Controller;
 use Q2\REST\Tasks_Controller;
+use Q2\REST\Surveys_Controller;
 use Q2\REST\Workspace_Controller;
 use Q2\Tasks\Cron as Tasks_Cron;
 use Q2\Tasks\Sync as Tasks_Sync;
@@ -63,6 +64,7 @@ final class Plugin {
 		( new Pages_Controller() )->register();
 		( new People_Controller() )->register();
 		( new Tasks_Controller() )->register();
+		( new Surveys_Controller() )->register();
 		( new Workspace_Controller() )->register();
 		( new Tasks_Sync() )->register();
 		( new Tasks_Cron() )->register();

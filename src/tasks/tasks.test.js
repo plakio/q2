@@ -1,12 +1,4 @@
-function toggleLabel( task, busyId ) {
-	if ( busyId === task.blockId ) {
-		return 'Updating…';
-	}
-	if ( 'done' === task.status ) {
-		return 'Mark active';
-	}
-	return 'Mark done';
-}
+import { toggleLabel } from './TasksScreen';
 
 describe( 'tasks screen helpers', () => {
 	it( 'shows "Updating…" while a specific task is busy', () => {

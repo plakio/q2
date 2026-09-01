@@ -196,7 +196,15 @@ final class Collaboration_Controller {
 		return rest_ensure_response(
 			array_map(
 				static function ( object $row ): array {
-					$actor   = get_userdata( (int) $row->actor_user_id );
+					$actor          = get_userdata( (int) $row->actor_user_id );
+					$object_title   = get_the_title( (int) $row->object_id );
+					$object_excerpt = '';
+					if ( 'comment' === (string) $row->secondary_object_type && (int) $row->secondary_object_id > 0 ) {
+						$comment = get_comment( (int) $row->secondary_object_id );
+						if ( $comment instanceof \WP_Comment ) {
+							$object_excerpt = wp_trim_words( wp_strip_all_tags( $comment->comment_content ), 18 );
+						}
+					}
 					$payload = array();
 					if ( ! empty( $row->payload ) ) {
 						$decoded = json_decode( (string) $row->payload, true );
@@ -209,6 +217,8 @@ final class Collaboration_Controller {
 						'type'                => $row->type,
 						'objectId'            => (int) $row->object_id,
 						'objectType'          => (string) $row->object_type,
+						'objectTitle'         => $object_title ? $object_title : __( 'Untitled', 'q2' ),
+						'objectExcerpt'       => $object_excerpt,
 						'secondaryObjectType' => (string) $row->secondary_object_type,
 						'payload'             => $payload,
 						'actorName'           => $actor ? $actor->display_name : __( 'A former member', 'q2' ),

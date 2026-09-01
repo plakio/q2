@@ -11,9 +11,10 @@ import { registerCoreBlocks } from '@wordpress/block-library';
 import { createBlock, getBlockType, parse, serialize } from '@wordpress/blocks';
 import { Button, Spinner } from '@wordpress/components';
 import { mediaUpload } from '@wordpress/editor';
-import { useMemo, useState } from '@wordpress/element';
+import { useEffect, useMemo, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { plus } from '@wordpress/icons';
+import { serializedContentIsMeaningful } from './content';
 
 export const POST_BLOCKS = [
 	'core/paragraph',
@@ -28,6 +29,8 @@ export const POST_BLOCKS = [
 	'q2/task',
 	'q2/project-status',
 	'q2/changelog',
+	'q2/survey',
+	'q2/files',
 ];
 
 export const COMMENT_BLOCKS = [
@@ -53,6 +56,7 @@ export default function BlockContentEditor( {
 	allowedBlocks = POST_BLOCKS,
 	onSave,
 	onCancel,
+	onContentChange,
 	submitLabel = __( 'Publish', 'q2' ),
 	compact = false,
 } ) {
@@ -61,6 +65,10 @@ export default function BlockContentEditor( {
 	);
 	const [ busy, setBusy ] = useState( false );
 	const [ message, setMessage ] = useState( '' );
+	const canSave = useMemo(
+		() => serializedContentIsMeaningful( serialize( blocks ).trim() ),
+		[ blocks ]
+	);
 	const editorSettings = useMemo(
 		() => ( {
 			allowedBlockTypes: allowedBlocks,
@@ -71,12 +79,16 @@ export default function BlockContentEditor( {
 		[ allowedBlocks ]
 	);
 
+	useEffect( () => {
+		onContentChange?.( canSave );
+	}, [ canSave, onContentChange ] );
+
 	const save = async () => {
-		const content = serialize( blocks ).trim();
-		if ( ! content ) {
+		if ( ! canSave ) {
 			setMessage( __( 'Write something before saving.', 'q2' ) );
 			return;
 		}
+		const content = serialize( blocks ).trim();
 
 		setBusy( true );
 		setMessage( '' );
@@ -148,7 +160,7 @@ export default function BlockContentEditor( {
 					<Button
 						variant="primary"
 						onClick={ save }
-						disabled={ busy }
+						disabled={ busy || ! canSave }
 					>
 						{ busy && <Spinner /> }
 						{ busy ? __( 'Saving…', 'q2' ) : submitLabel }

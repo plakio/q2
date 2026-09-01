@@ -4,3 +4,5 @@
 import './task';
 import './project-status';
 import './changelog';
+import './survey';
+import './files';
