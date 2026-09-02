@@ -13,11 +13,12 @@ const attributes = {
 		source: 'attribute',
 		attribute: 'data-block-id',
 		selector: '.q2-task',
+		role: 'content',
 	},
-	title: { type: 'string', default: '' },
-	status: { type: 'string', default: 'todo' },
-	dueDate: { type: 'string', default: '' },
-	assignees: { type: 'array', default: [] },
+	title: { type: 'string', default: '', role: 'content' },
+	status: { type: 'string', default: 'todo', role: 'content' },
+	dueDate: { type: 'string', default: '', role: 'content' },
+	assignees: { type: 'array', default: [], role: 'content' },
 };
 
 registerBlockType( 'q2/task', {
@@ -26,7 +27,7 @@ registerBlockType( 'q2/task', {
 	category: 'widgets',
 	icon: 'list-view',
 	keywords: [ 'task', 'todo', 'assignment' ],
-	supports: { html: false, reusable: false },
+	supports: { html: false, reusable: false, splitting: true },
 	attributes,
 	edit: Edit,
 	save: Save,

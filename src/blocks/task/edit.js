@@ -2,8 +2,14 @@
  * Q2 Task block — assigns + due date + status.
  */
 import apiFetch from '@wordpress/api-fetch';
-import { InnerBlocks, RichText, useBlockProps } from '@wordpress/block-editor';
+import {
+	InnerBlocks,
+	RichText,
+	store as blockEditorStore,
+	useBlockProps,
+} from '@wordpress/block-editor';
 import { Button, SelectControl, TextControl } from '@wordpress/components';
+import { useSelect } from '@wordpress/data';
 import { useEffect, useId, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { chevronDown, chevronUp } from '@wordpress/icons';
@@ -42,7 +48,7 @@ function AssigneeSelector( { members, value, onChange, idPrefix } ) {
 	);
 }
 
-export default function Edit( { attributes, setAttributes } ) {
+export default function Edit( { attributes, setAttributes, clientId } ) {
 	const {
 		blockId,
 		title,
@@ -58,12 +64,39 @@ export default function Edit( { attributes, setAttributes } ) {
 	const [ search, setSearch ] = useState( '' );
 	const [ expanded, setExpanded ] = useState( false );
 	const assigneeIdPrefix = useId();
+	const hasEarlierDuplicate = useSelect(
+		( select ) => {
+			if ( ! blockId ) {
+				return false;
+			}
+			const editor = select( blockEditorStore );
+			const blockIds = editor.getClientIdsWithDescendants();
+			const index = blockIds.indexOf( clientId );
+			return blockIds.slice( 0, index ).some( ( siblingId ) => {
+				return (
+					editor.getBlockAttributes( siblingId )?.blockId === blockId
+				);
+			} );
+		},
+		[ blockId, clientId ]
+	);
 
 	useEffect( () => {
 		if ( ! blockId ) {
 			setAttributes( { blockId: generateTaskId() } );
 		}
 	}, [ blockId, setAttributes ] );
+
+	useEffect( () => {
+		if ( hasEarlierDuplicate ) {
+			setAttributes( {
+				blockId: generateTaskId(),
+				status: 'todo',
+				dueDate: '',
+				assignees: [],
+			} );
+		}
+	}, [ hasEarlierDuplicate, setAttributes ] );
 
 	useEffect( () => {
 		if ( ! expanded ) {
@@ -103,10 +136,11 @@ export default function Edit( { attributes, setAttributes } ) {
 					}
 				/>
 				<RichText
+					identifier="title"
 					tagName="p"
 					className="q2-task-title"
 					value={ title }
-					placeholder={ __( 'What needs to be done?', 'q2' ) }
+					placeholder={ __( 'Add a task…', 'q2' ) }
 					allowedFormats={ [] }
 					onChange={ ( next ) => setAttributes( { title: next } ) }
 				/>

@@ -3122,29 +3122,6 @@ a {
 	display: none;
 }
 
-.q2-task-list-add {
-	display: flex;
-	gap: 0.5rem;
-	align-items: center;
-	padding-top: 0.35rem;
-}
-
-.q2-task-list-add input {
-	flex: 1;
-	min-width: 0;
-	padding: 0.55rem 0.65rem;
-	border: 1px solid transparent;
-	border-radius: 0.3rem;
-	background: var(--q2-soft);
-	font: inherit;
-}
-
-.q2-task-list-add input:focus {
-	border-color: var(--q2-accent);
-	background: #fff;
-	outline: none;
-}
-
 .q2-task-fields {
 	display: grid;
 	gap: 0.75rem;
