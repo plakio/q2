@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Q2 0.2.5\n"
+"Project-Id-Version: Q2 0.2.6\n"
 "Report-Msgid-Bugs-To: https://github.com/plakio/q2/issues\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-01T16:41:57+00:00\n"
+"POT-Creation-Date: 2026-09-02T04:56:00+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: q2\n"
@@ -40,11 +40,11 @@ msgstr ""
 msgid "https://plak.io/"
 msgstr ""
 
-#: includes/Application/Application.php:77
+#: includes/Application/Application.php:78
 msgid "You do not have permission to access Q2."
 msgstr ""
 
-#: includes/Application/Application.php:78
+#: includes/Application/Application.php:79
 msgid "Q2 access denied"
 msgstr ""
 
@@ -157,11 +157,7 @@ msgstr ""
 msgid "You do not have permission to view that task."
 msgstr ""
 
-#: includes/REST/Workspace_Controller.php:147
-msgid "Enter a label and a valid URL."
-msgstr ""
-
-#: includes/REST/Workspace_Controller.php:201
+#: includes/REST/Workspace_Controller.php:135
 msgid "That image could not be found."
 msgstr ""
 
@@ -190,6 +186,10 @@ msgstr ""
 
 #: includes/Update/GitHub_Updater.php:224
 msgid "See the GitHub release for details."
+msgstr ""
+
+#: includes/Workspace/Navigation.php:103
+msgid "Q2 Workspace Links"
 msgstr ""
 
 #: templates/application.php:24
@@ -439,7 +439,7 @@ msgstr ""
 
 #: src/comments/CommentsThread.js:109
 #: src/comments/CommentsThread.js:139
-#: src/index.js:1603
+#: src/index.js:1519
 msgid "Reply"
 msgstr ""
 
@@ -488,14 +488,14 @@ msgstr ""
 
 #: src/components/TagPicker.js:25
 #: src/editor/P2BlockEditor.js:161
-#: src/index.js:1581
+#: src/index.js:1497
 #: src/search/SearchScreen.js:12
 msgid "Tags"
 msgstr ""
 
 #: src/editor/BlockContentEditor.js:91
 #: src/editor/P2BlockEditor.js:109
-#: src/index.js:1336
+#: src/index.js:1252
 #: src/pages/PagesScreen.js:386
 msgid "Publish"
 msgstr ""
@@ -591,7 +591,7 @@ msgid "Update"
 msgstr ""
 
 #: src/editor/P2BlockEditor.js:110
-#: src/index.js:1337
+#: src/index.js:1253
 msgid "Submit for review"
 msgstr ""
 
@@ -629,8 +629,8 @@ msgstr ""
 
 #: src/editor/PostEditorIframe.js:93
 #: src/index.js:188
-#: src/index.js:1526
-#: src/index.js:1560
+#: src/index.js:1442
+#: src/index.js:1476
 msgid "Edit post"
 msgstr ""
 
@@ -803,207 +803,183 @@ msgstr ""
 msgid "Post filters"
 msgstr ""
 
-#: src/index.js:898
-msgid "The link could not be added."
-msgstr ""
-
-#: src/index.js:912
-msgid "The link could not be removed."
-msgstr ""
-
-#: src/index.js:920
+#: src/index.js:880
 msgid "Links"
 msgstr ""
 
-#: src/index.js:924
-msgid "Add link"
+#: src/index.js:882
+msgid "Edit links"
 msgstr ""
 
-#: src/index.js:938
-msgid "Label"
-msgstr ""
-
-#: src/index.js:960
-msgid "Open in a new tab"
-msgstr ""
-
-#: src/index.js:962
-msgid "Add"
-msgstr ""
-
-#: src/index.js:986
-msgid "Remove link"
-msgstr ""
-
-#: src/index.js:995
+#: src/index.js:912
 msgid "No links yet."
 msgstr ""
 
-#: src/index.js:1016
-#: src/index.js:1018
+#: src/index.js:932
+#: src/index.js:934
 msgid "Team"
 msgstr ""
 
-#: src/index.js:1023
+#: src/index.js:939
 msgid "View all team members"
 msgstr ""
 
-#: src/index.js:1098
+#: src/index.js:1014
 msgid "The feed could not be loaded."
 msgstr ""
 
-#: src/index.js:1151
+#: src/index.js:1067
 msgid "Filter feed"
 msgstr ""
 
-#: src/index.js:1160
+#: src/index.js:1076
 msgid "All posts"
 msgstr ""
 
-#: src/index.js:1162
+#: src/index.js:1078
 msgid "New Posts"
 msgstr ""
 
-#: src/index.js:1165
+#: src/index.js:1081
 msgid "New Comments"
 msgstr ""
 
-#: src/index.js:1168
+#: src/index.js:1084
 msgid "My Posts"
 msgstr ""
 
-#: src/index.js:1171
+#: src/index.js:1087
 msgid "My Mentions"
 msgstr ""
 
-#: src/index.js:1177
+#: src/index.js:1093
 msgid "Feed view"
 msgstr ""
 
-#: src/index.js:1187
+#: src/index.js:1103
 msgid "Default view"
 msgstr ""
 
-#: src/index.js:1190
+#: src/index.js:1106
 msgid "Expanded view"
 msgstr ""
 
-#: src/index.js:1193
+#: src/index.js:1109
 msgid "Compact view"
 msgstr ""
 
-#: src/index.js:1201
+#: src/index.js:1117
 msgid "Loading updates…"
 msgstr ""
 
-#: src/index.js:1206
+#: src/index.js:1122
 msgid "Something went wrong"
 msgstr ""
 
-#: src/index.js:1209
+#: src/index.js:1125
 msgid "Try again"
 msgstr ""
 
-#: src/index.js:1216
+#: src/index.js:1132
 msgid "Start the conversation"
 msgstr ""
 
-#: src/index.js:1219
+#: src/index.js:1135
 msgid "Publish the first update for this workspace."
 msgstr ""
 
-#: src/index.js:1242
+#: src/index.js:1158
 msgid "Loading more…"
 msgstr ""
 
-#: src/index.js:1251
+#: src/index.js:1167
 msgid "Load more updates"
 msgstr ""
 
-#: src/index.js:1269
+#: src/index.js:1185
 msgid "Update published."
 msgstr ""
 
-#: src/index.js:1270
+#: src/index.js:1186
 msgid "Update submitted for review."
 msgstr ""
 
-#: src/index.js:1285
-#: src/index.js:1327
+#: src/index.js:1201
+#: src/index.js:1243
 msgid "Create a post"
 msgstr ""
 
-#: src/index.js:1291
+#: src/index.js:1207
 msgid "Now"
 msgstr ""
 
 #. translators: %s: current user's display name.
-#: src/index.js:1300
+#: src/index.js:1216
 #, js-format
 msgid "Hi, %s! Post an update, ask a question, or share ideas."
 msgstr ""
 
-#: src/index.js:1305
+#: src/index.js:1221
 msgid "there"
 msgstr ""
 
-#: src/index.js:1314
+#: src/index.js:1230
 msgid "Post"
 msgstr ""
 
-#: src/index.js:1417
+#: src/index.js:1333
 msgid "Delete this post? This moves it to the trash."
 msgstr ""
 
-#: src/index.js:1436
+#: src/index.js:1352
 msgid "The post could not be deleted."
 msgstr ""
 
-#: src/index.js:1509
+#: src/index.js:1425
 msgid "Post actions"
 msgstr ""
 
-#: src/index.js:1535
+#: src/index.js:1451
 msgid "Delete post"
 msgstr ""
 
-#: src/index.js:1550
+#: src/index.js:1466
 msgid "Unknown author"
 msgstr ""
 
-#: src/index.js:1619
+#: src/index.js:1535
 msgid "Following"
 msgstr ""
 
-#: src/index.js:1620
+#: src/index.js:1536
 msgid "Follow"
 msgstr ""
 
-#: src/index.js:1640
+#: src/index.js:1556
 msgid "Liked"
 msgstr ""
 
-#: src/index.js:1641
+#: src/index.js:1557
 msgid "Like"
 msgstr ""
 
-#: src/index.js:1663
+#: src/index.js:1579
 msgid "Q2 foundation"
 msgstr ""
 
-#: src/index.js:1670
+#: src/index.js:1586
 msgid "This area is architected and coming next."
 msgstr ""
 
-#: src/index.js:1673
+#: src/index.js:1589
 msgid "The foundation milestone establishes navigation without pretending unfinished collaboration features are complete."
 msgstr ""
 
-#: src/index.js:1687
+#: src/index.js:1603
 msgid "Page not found"
 msgstr ""
 
-#: src/index.js:1689
+#: src/index.js:1605
 msgid "Return to the feed"
 msgstr ""
 

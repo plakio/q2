@@ -39,11 +39,11 @@ msgstr "Plak"
 msgid "https://plak.io/"
 msgstr "https://plak.io/"
 
-#: includes/Application/Application.php:77
+#: includes/Application/Application.php:78
 msgid "You do not have permission to access Q2."
 msgstr "No tienes permiso para acceder a Q2."
 
-#: includes/Application/Application.php:78
+#: includes/Application/Application.php:79
 msgid "Q2 access denied"
 msgstr "Acceso a Q2 denegado"
 
@@ -147,7 +147,7 @@ msgstr "Ese estado de tarea no es compatible."
 msgid "You do not have permission to view that task."
 msgstr "No tienes permiso para ver esa tarea."
 
-#: includes/REST/Workspace_Controller.php:201
+#: includes/REST/Workspace_Controller.php:135
 msgid "That image could not be found."
 msgstr "No se pudo encontrar esa imagen."
 
@@ -344,7 +344,7 @@ msgstr "Guardar comentario"
 
 #: src/comments/CommentsThread.js:109
 #: src/comments/CommentsThread.js:139
-#: src/index.js:1603
+#: src/index.js:1519
 msgid "Reply"
 msgstr "Responder"
 
@@ -393,14 +393,14 @@ msgstr "Comentar"
 
 #: src/components/TagPicker.js:25
 #: src/editor/P2BlockEditor.js:161
-#: src/index.js:1581
+#: src/index.js:1497
 #: src/search/SearchScreen.js:12
 msgid "Tags"
 msgstr "Etiquetas"
 
 #: src/editor/BlockContentEditor.js:91
 #: src/editor/P2BlockEditor.js:109
-#: src/index.js:1336
+#: src/index.js:1252
 #: src/pages/PagesScreen.js:386
 msgid "Publish"
 msgstr "Publicar"
@@ -571,173 +571,173 @@ msgstr "Añadir icono del espacio de trabajo"
 msgid "Remove workspace icon"
 msgstr "Quitar icono del espacio de trabajo"
 
-#: src/index.js:1016
-#: src/index.js:1018
+#: src/index.js:932
+#: src/index.js:934
 msgid "Team"
 msgstr "Equipo"
 
-#: src/index.js:1023
+#: src/index.js:939
 msgid "View all team members"
 msgstr "Ver todos los miembros del equipo"
 
-#: src/index.js:1098
+#: src/index.js:1014
 msgid "The feed could not be loaded."
 msgstr "No se pudo cargar el feed."
 
-#: src/index.js:1151
+#: src/index.js:1067
 msgid "Filter feed"
 msgstr "Filtrar feed"
 
-#: src/index.js:1160
+#: src/index.js:1076
 msgid "All posts"
 msgstr "Todas las publicaciones"
 
-#: src/index.js:1162
+#: src/index.js:1078
 msgid "New Posts"
 msgstr "Nuevas publicaciones"
 
-#: src/index.js:1165
+#: src/index.js:1081
 msgid "New Comments"
 msgstr "Nuevos comentarios"
 
-#: src/index.js:1168
+#: src/index.js:1084
 msgid "My Posts"
 msgstr "Mis publicaciones"
 
-#: src/index.js:1171
+#: src/index.js:1087
 msgid "My Mentions"
 msgstr "Mis menciones"
 
-#: src/index.js:1177
+#: src/index.js:1093
 msgid "Feed view"
 msgstr "Vista del feed"
 
-#: src/index.js:1187
+#: src/index.js:1103
 msgid "Default view"
 msgstr "Vista predeterminada"
 
-#: src/index.js:1190
+#: src/index.js:1106
 msgid "Expanded view"
 msgstr "Vista ampliada"
 
-#: src/index.js:1193
+#: src/index.js:1109
 msgid "Compact view"
 msgstr "Vista compacta"
 
-#: src/index.js:1201
+#: src/index.js:1117
 msgid "Loading updates…"
 msgstr "Cargando novedades…"
 
-#: src/index.js:1206
+#: src/index.js:1122
 msgid "Something went wrong"
 msgstr "Algo salió mal"
 
-#: src/index.js:1209
+#: src/index.js:1125
 msgid "Try again"
 msgstr "Intentar de nuevo"
 
-#: src/index.js:1216
+#: src/index.js:1132
 msgid "Start the conversation"
 msgstr "Inicia la conversación"
 
-#: src/index.js:1219
+#: src/index.js:1135
 msgid "Publish the first update for this workspace."
 msgstr "Publica la primera novedad de este espacio de trabajo."
 
-#: src/index.js:1242
+#: src/index.js:1158
 msgid "Loading more…"
 msgstr "Cargando más…"
 
-#: src/index.js:1251
+#: src/index.js:1167
 msgid "Load more updates"
 msgstr "Cargar más novedades"
 
-#: src/index.js:1269
+#: src/index.js:1185
 msgid "Update published."
 msgstr "Novedad publicada."
 
-#: src/index.js:1270
+#: src/index.js:1186
 msgid "Update submitted for review."
 msgstr "Novedad enviada a revisión."
 
-#: src/index.js:1291
+#: src/index.js:1207
 msgid "Now"
 msgstr "Ahora"
 
-#: src/index.js:1314
+#: src/index.js:1230
 msgid "Post"
 msgstr "Publicar"
 
 #. translators: %s: current user's display name.
-#: src/index.js:1300
+#: src/index.js:1216
 #, js-format
 msgid "Hi, %s! Post an update, ask a question, or share ideas."
 msgstr "¡Hola, %s! Publica una novedad, haz una pregunta o comparte ideas."
 
-#: src/index.js:1305
+#: src/index.js:1221
 msgid "there"
 msgstr "allí"
 
-#: src/index.js:1417
+#: src/index.js:1333
 msgid "Delete this post? This moves it to the trash."
 msgstr "¿Eliminar esta publicación? Se moverá a la papelera."
 
-#: src/index.js:1436
+#: src/index.js:1352
 msgid "The post could not be deleted."
 msgstr "No se pudo eliminar la publicación."
 
-#: src/index.js:1509
+#: src/index.js:1425
 msgid "Post actions"
 msgstr "Acciones de la publicación"
 
 #: src/editor/PostEditorIframe.js:93
 #: src/index.js:188
-#: src/index.js:1526
-#: src/index.js:1560
+#: src/index.js:1442
+#: src/index.js:1476
 msgid "Edit post"
 msgstr "Editar publicación"
 
-#: src/index.js:1535
+#: src/index.js:1451
 msgid "Delete post"
 msgstr "Eliminar publicación"
 
-#: src/index.js:1550
+#: src/index.js:1466
 msgid "Unknown author"
 msgstr "Autor desconocido"
 
-#: src/index.js:1619
+#: src/index.js:1535
 msgid "Following"
 msgstr "Siguiendo"
 
-#: src/index.js:1620
+#: src/index.js:1536
 msgid "Follow"
 msgstr "Seguir"
 
-#: src/index.js:1640
+#: src/index.js:1556
 msgid "Liked"
 msgstr "Te gusta"
 
-#: src/index.js:1641
+#: src/index.js:1557
 msgid "Like"
 msgstr "Me gusta"
 
-#: src/index.js:1663
+#: src/index.js:1579
 msgid "Q2 foundation"
 msgstr "Base de Q2"
 
-#: src/index.js:1670
+#: src/index.js:1586
 msgid "This area is architected and coming next."
 msgstr "Esta área está diseñada y llegará próximamente."
 
-#: src/index.js:1673
+#: src/index.js:1589
 msgid "The foundation milestone establishes navigation without pretending unfinished collaboration features are complete."
 msgstr "La base establece la navegación sin presentar como completas las funciones de colaboración que aún no lo están."
 
-#: src/index.js:1687
+#: src/index.js:1603
 msgid "Page not found"
 msgstr "Página no encontrada"
 
-#: src/index.js:1689
+#: src/index.js:1605
 msgid "Return to the feed"
 msgstr "Volver al feed"
 
@@ -1299,10 +1299,6 @@ msgstr "No se pudo guardar el voto."
 msgid "Survey results could not be loaded."
 msgstr "No se pudieron cargar los resultados de la encuesta."
 
-#: includes/REST/Workspace_Controller.php:147
-msgid "Enter a label and a valid URL."
-msgstr "Introduce una etiqueta y una URL válida."
-
 #: src/editor/BlockContentEditor.js:301
 msgid "Undo"
 msgstr "Deshacer"
@@ -1366,7 +1362,7 @@ msgid "Update"
 msgstr "Actualizar"
 
 #: src/editor/P2BlockEditor.js:110
-#: src/index.js:1337
+#: src/index.js:1253
 msgid "Submit for review"
 msgstr "Enviar para revisión"
 
@@ -1416,47 +1412,27 @@ msgstr "Mis publicaciones"
 msgid "Post filters"
 msgstr "Filtros de publicaciones"
 
-#: src/index.js:898
-msgid "The link could not be added."
-msgstr "No se ha podido añadir el enlace."
-
-#: src/index.js:912
-msgid "The link could not be removed."
-msgstr "No se ha podido eliminar el enlace."
-
-#: src/index.js:920
+#: src/index.js:880
 msgid "Links"
 msgstr "Enlaces"
 
-#: src/index.js:924
-msgid "Add link"
-msgstr "Añadir enlace"
-
-#: src/index.js:938
-msgid "Label"
-msgstr "Etiqueta"
-
-#: src/index.js:960
-msgid "Open in a new tab"
-msgstr "Abrir en una pestaña nueva"
-
-#: src/index.js:962
-msgid "Add"
-msgstr "Añadir"
-
-#: src/index.js:986
-msgid "Remove link"
-msgstr "Eliminar enlace"
-
-#: src/index.js:995
+#: src/index.js:912
 msgid "No links yet."
 msgstr "Todavía no hay enlaces."
 
-#: src/index.js:1285
-#: src/index.js:1327
+#: src/index.js:1201
+#: src/index.js:1243
 msgid "Create a post"
 msgstr "Crear una publicación"
 
 #: src/pages/PagesScreen.js:304
 msgid "Back to pages"
 msgstr "Volver a las páginas"
+
+#: includes/Workspace/Navigation.php:103
+msgid "Q2 Workspace Links"
+msgstr "Enlaces del espacio de trabajo Q2"
+
+#: src/index.js:882
+msgid "Edit links"
+msgstr "Editar enlaces"

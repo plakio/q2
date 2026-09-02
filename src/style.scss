@@ -2240,6 +2240,7 @@ a {
 	font-weight: 600;
 	line-height: 1.5;
 	text-decoration: none;
+	padding-left: calc(var(--q2-link-depth, 0) * 1rem);
 }
 
 .q2-workspace-links li a:hover,
@@ -3680,77 +3681,6 @@ a {
 	margin: 0;
 	color: var(--p2-color-text-light);
 	font-size: 0.8125rem;
-}
-
-/* Direct workspace links */
-.q2-workspace-links header button {
-	display: grid;
-	place-items: center;
-	width: 1.75rem;
-	height: 1.75rem;
-	padding: 0;
-	border: 0;
-	border-radius: 2px;
-	background: transparent;
-	color: inherit;
-	font-size: 1.25rem;
-}
-
-.q2-workspace-links-form {
-	display: grid;
-	gap: 0.5rem;
-	margin-bottom: 1rem;
-}
-
-.q2-workspace-links-form input {
-	min-width: 0;
-	width: 100%;
-	padding: 0.45rem 0.55rem;
-	border: 1px solid var(--p2-color-border);
-	background: #fff;
-	font-size: 0.8125rem;
-}
-
-.q2-workspace-link-target {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	font-size: 0.8125rem;
-}
-
-.q2-workspace-links-form .q2-workspace-link-target input {
-	width: auto;
-	margin: 0;
-}
-
-.q2-workspace-links-form button {
-	padding: 0.45rem 0.75rem;
-	border: 0;
-	border-radius: 2px;
-	background: var(--p2-color-link);
-	color: #fff;
-}
-
-.q2-workspace-links li {
-	display: flex;
-	align-items: center;
-	gap: 0.35rem;
-}
-
-.q2-workspace-links li > a {
-	min-width: 0;
-	flex: 1;
-}
-
-.q2-workspace-link-remove {
-	padding: 0.2rem 0.35rem;
-	border: 0;
-	background: transparent;
-	color: var(--p2-color-text-light);
-}
-
-.q2-workspace-links-error {
-	color: #b32d2e !important;
 }
 
 /* Full Gutenberg workspace */

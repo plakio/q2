@@ -871,101 +871,28 @@ function ActivityFilterIcon( { item } ) {
 }
 
 function WorkspaceLinks() {
-	const [ links, setLinks ] = useState( settings.links || [] );
-	const [ editing, setEditing ] = useState( false );
-	const [ label, setLabel ] = useState( '' );
-	const [ url, setUrl ] = useState( '' );
-	const [ newTab, setNewTab ] = useState( false );
-	const [ error, setError ] = useState( '' );
-	const canManage = Boolean( settings.capabilities?.manageQ2 );
-
-	const addLink = async ( event ) => {
-		event.preventDefault();
-		setError( '' );
-		try {
-			const result = await apiFetch( {
-				path: '/q2/v1/workspace/links',
-				method: 'POST',
-				data: { label, url, newTab },
-			} );
-			setLinks( result );
-			setLabel( '' );
-			setUrl( '' );
-			setNewTab( false );
-			setEditing( false );
-		} catch ( reason ) {
-			setError(
-				reason.message || __( 'The link could not be added.', 'q2' )
-			);
-		}
-	};
-
-	const removeLink = async ( id ) => {
-		try {
-			const result = await apiFetch( {
-				path: `/q2/v1/workspace/links/${ id }`,
-				method: 'DELETE',
-			} );
-			setLinks( result );
-		} catch ( reason ) {
-			setError(
-				reason.message || __( 'The link could not be removed.', 'q2' )
-			);
-		}
-	};
+	const links = settings.links || [];
+	const editUrl = settings.linksEditUrl;
 
 	return (
 		<section className="q2-workspace-links">
 			<header>
 				<h2>{ __( 'Links', 'q2' ) }</h2>
-				{ canManage && (
-					<button
-						type="button"
-						aria-label={ __( 'Add link', 'q2' ) }
-						aria-expanded={ editing }
-						onClick={ () => setEditing( ( value ) => ! value ) }
-					>
-						<span aria-hidden="true">+</span>
-					</button>
+				{ editUrl && (
+					<a href={ editUrl } aria-label={ __( 'Edit links', 'q2' ) }>
+						<span aria-hidden="true">•••</span>
+					</a>
 				) }
 			</header>
-			{ editing && (
-				<form className="q2-workspace-links-form" onSubmit={ addLink }>
-					<input
-						type="text"
-						value={ label }
-						onChange={ ( event ) => setLabel( event.target.value ) }
-						placeholder={ __( 'Label', 'q2' ) }
-						required
-					/>
-					<input
-						type="url"
-						value={ url }
-						onChange={ ( event ) => setUrl( event.target.value ) }
-						placeholder="https://"
-						required
-					/>
-					<label
-						className="q2-workspace-link-target"
-						htmlFor="q2-workspace-link-new-tab"
-					>
-						<input
-							id="q2-workspace-link-new-tab"
-							type="checkbox"
-							checked={ newTab }
-							onChange={ ( event ) =>
-								setNewTab( event.target.checked )
-							}
-						/>
-						<span>{ __( 'Open in a new tab', 'q2' ) }</span>
-					</label>
-					<button type="submit">{ __( 'Add', 'q2' ) }</button>
-				</form>
-			) }
 			{ links.length > 0 ? (
 				<ul>
 					{ links.map( ( item ) => (
-						<li key={ item.id || item.url }>
+						<li
+							key={ item.id || item.url }
+							style={ {
+								'--q2-link-depth': item.depth || 0,
+							} }
+						>
 							<a
 								href={ item.url }
 								target={ item.newTab ? '_blank' : undefined }
@@ -978,23 +905,12 @@ function WorkspaceLinks() {
 								<Icon icon={ link } size={ 16 } />
 								<span>{ item.label }</span>
 							</a>
-							{ canManage && (
-								<button
-									type="button"
-									className="q2-workspace-link-remove"
-									onClick={ () => removeLink( item.id ) }
-									aria-label={ __( 'Remove link', 'q2' ) }
-								>
-									×
-								</button>
-							) }
 						</li>
 					) ) }
 				</ul>
 			) : (
 				<p>{ __( 'No links yet.', 'q2' ) }</p>
 			) }
-			{ error && <p className="q2-workspace-links-error">{ error }</p> }
 		</section>
 	);
 }

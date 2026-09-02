@@ -12,6 +12,7 @@ namespace Q2\REST;
 defined( 'ABSPATH' ) || exit;
 
 use Q2\Core\Capabilities;
+use Q2\Workspace\Navigation;
 
 /**
  * Exposes workspace identity settings (cover image, icon) for editing.
@@ -55,25 +56,9 @@ final class Workspace_Controller {
 			'q2/v1',
 			'/workspace/links',
 			array(
-				array(
-					'methods'             => 'GET',
-					'callback'            => array( $this, 'get_links' ),
-					'permission_callback' => static fn(): bool => current_user_can( 'read' ),
-				),
-				array(
-					'methods'             => 'POST',
-					'callback'            => array( $this, 'create_link' ),
-					'permission_callback' => array( $this, 'can_manage' ),
-				),
-			)
-		);
-		register_rest_route(
-			'q2/v1',
-			'/workspace/links/(?P<id>[a-zA-Z0-9-]+)',
-			array(
-				'methods'             => 'DELETE',
-				'callback'            => array( $this, 'delete_link' ),
-				'permission_callback' => array( $this, 'can_manage' ),
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_links' ),
+				'permission_callback' => static fn(): bool => current_user_can( 'read' ),
 			)
 		);
 	}
@@ -128,61 +113,10 @@ final class Workspace_Controller {
 	}
 
 	/**
-	 * Returns links managed directly from the Q2 sidebar.
+	 * Returns links from the workspace Navigation entity.
 	 */
 	public function get_links(): \WP_REST_Response {
-		return rest_ensure_response( $this->links() );
-	}
-
-	/**
-	 * Adds a workspace link.
-	 *
-	 * @param \WP_REST_Request $request Current request.
-	 */
-	public function create_link( \WP_REST_Request $request ): \WP_REST_Response|\WP_Error {
-		$label   = sanitize_text_field( (string) $request->get_param( 'label' ) );
-		$url     = esc_url_raw( (string) $request->get_param( 'url' ), array( 'http', 'https' ) );
-		$new_tab = rest_sanitize_boolean( $request->get_param( 'newTab' ) );
-		if ( '' === $label || '' === $url ) {
-			return new \WP_Error( 'q2_workspace_link_invalid', __( 'Enter a label and a valid URL.', 'q2' ), array( 'status' => 400 ) );
-		}
-
-		$links   = $this->links();
-		$links[] = array(
-			'id'     => wp_generate_uuid4(),
-			'label'  => $label,
-			'url'    => $url,
-			'newTab' => $new_tab,
-		);
-		update_option( 'q2_workspace_links', array_slice( $links, 0, 30 ), false );
-		return new \WP_REST_Response( array_values( $links ), 201 );
-	}
-
-	/**
-	 * Deletes a workspace link.
-	 *
-	 * @param \WP_REST_Request $request Current request.
-	 */
-	public function delete_link( \WP_REST_Request $request ): \WP_REST_Response {
-		$id    = sanitize_text_field( (string) $request->get_param( 'id' ) );
-		$links = array_values(
-			array_filter(
-				$this->links(),
-				static fn( array $link ): bool => $link['id'] !== $id
-			)
-		);
-		update_option( 'q2_workspace_links', $links, false );
-		return rest_ensure_response( $links );
-	}
-
-	/**
-	 * Reads normalized workspace links.
-	 *
-	 * @return array<int, array{id: string, label: string, url: string, newTab?: bool}>
-	 */
-	private function links(): array {
-		$links = get_option( 'q2_workspace_links', array() );
-		return is_array( $links ) ? array_values( $links ) : array();
+		return rest_ensure_response( Navigation::links() );
 	}
 
 	/**

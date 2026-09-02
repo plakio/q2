@@ -30,6 +30,12 @@ Q2 follows the WordPress site language. English (en_US) is the source language, 
 
 == Changelog ==
 
+= 0.2.7 =
+
+* Manage workspace links with the native Gutenberg Navigation editor.
+* Migrate existing sidebar links while retaining the previous option as a fallback.
+* Display nested navigation links in the workspace sidebar.
+
 = 0.2.4 =
 
 * Add workspace cover and icon controls shared by the header and workspace card.

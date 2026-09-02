@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit;
 
 use Q2\Core\Capabilities;
 use Q2\Editor\EditorFrame;
+use Q2\Workspace\Navigation;
 
 /**
  * Serves and bootstraps the private, theme-independent application document.
@@ -188,7 +189,8 @@ final class Application {
 			'adminUrl'         => admin_url(),
 			'profileUrl'       => admin_url( 'profile.php' ),
 			'logoutUrl'        => wp_logout_url( home_url( '/' ) ),
-			'links'            => $this->workspace_links(),
+			'links'            => Navigation::links(),
+			'linksEditUrl'     => Navigation::edit_url(),
 			'newPostEditorUrl' => EditorFrame::new_post_url(),
 			'workspace'        => array(
 				'coverUrl' => $this->workspace_cover_url(),
@@ -216,16 +218,6 @@ final class Application {
 				'mentionAll'       => current_user_can( Capabilities::MENTION_ALL ),
 			),
 		);
-	}
-
-	/**
-	 * Returns the first configured navigation menu as workspace links.
-	 *
-	 * @return array<int, array<string, mixed>>
-	 */
-	private function workspace_links(): array {
-		$links = get_option( 'q2_workspace_links', array() );
-		return is_array( $links ) ? array_values( $links ) : array();
 	}
 
 	/**
