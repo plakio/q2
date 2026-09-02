@@ -20,8 +20,8 @@ msgstr "Q2"
 
 #. Plugin URI of the plugin
 #: q2.php
-msgid "https://github.com/plakio/q2"
-msgstr "https://github.com/plakio/q2"
+msgid "https://getq2.com/"
+msgstr "https://getq2.com/"
 
 #. Description of the plugin
 #: q2.php

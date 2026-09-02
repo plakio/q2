@@ -33,7 +33,7 @@ fi
 
 ZIP_FILE="$DIST_DIR/$PLUGIN_SLUG-$VERSION.zip"
 ( cd "$STAGING_ROOT" && zip -qr "$ZIP_FILE" "$PLUGIN_SLUG" )
-shasum -a 256 "$ZIP_FILE" > "$ZIP_FILE.sha256"
+( cd "$DIST_DIR" && shasum -a 256 "$PLUGIN_SLUG-$VERSION.zip" > "$PLUGIN_SLUG-$VERSION.zip.sha256" )
 
 if ! unzip -Z1 "$ZIP_FILE" | grep -Fxq "$PLUGIN_SLUG/q2.php"; then
 	printf 'Error: release ZIP must contain %s/q2.php.\n' "$PLUGIN_SLUG" >&2

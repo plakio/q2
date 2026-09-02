@@ -305,7 +305,7 @@ function App() {
 					{ __( 'Powered by', 'q2' ) }{ ' ' }
 					<a
 						className="q2-sidebar-footer-link"
-						href="https://github.com/plakio/q2"
+						href="https://getq2.com/"
 						target="_blank"
 						rel="noopener noreferrer"
 					>

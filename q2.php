@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       Q2
- * Plugin URI:        https://github.com/plakio/q2
+ * Plugin URI:        https://getq2.com/
  * Description:       A modern, self-hosted collaborative workspace for WordPress.
  * Version:           0.2.14
  * Requires at least: 7.1
