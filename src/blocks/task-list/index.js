@@ -12,7 +12,6 @@ registerBlockType( 'q2/task-list', {
 	icon: 'yes-alt',
 	keywords: [ 'tasks', 'todo', 'checklist' ],
 	supports: { html: false, reusable: false },
-	template: [ [ 'q2/task' ] ],
 	templateInsertUpdatesSelection: true,
 	attributes: {
 		title: { type: 'string', default: '' },

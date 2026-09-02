@@ -11,6 +11,7 @@ import { __ } from '@wordpress/i18n';
 
 const ALLOWED_BLOCKS = [ 'q2/task' ];
 const DEFAULT_BLOCK = { name: 'q2/task' };
+const TEMPLATE = [ [ 'q2/task' ] ];
 
 export default function Edit( { attributes, setAttributes } ) {
 	const { title = '' } = attributes;
@@ -21,6 +22,7 @@ export default function Edit( { attributes, setAttributes } ) {
 			allowedBlocks: ALLOWED_BLOCKS,
 			defaultBlock: DEFAULT_BLOCK,
 			directInsert: true,
+			template: TEMPLATE,
 			templateLock: false,
 			renderAppender: false,
 		}
