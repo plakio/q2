@@ -32,6 +32,10 @@ For Multisite, network-activate Q2 to make every existing and future site an ind
 
 == Changelog ==
 
+= 0.2.9 =
+
+* Place workspace Links below Team in the sidebar.
+
 = 0.2.8 =
 
 * Add Multisite lifecycle support with one Q2 workspace per site.

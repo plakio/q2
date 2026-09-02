@@ -298,8 +298,8 @@ function App() {
 							</a>
 						) ) }
 				</nav>
-				<WorkspaceLinks />
 				<Team onNavigate={ goToRoute } />
+				<WorkspaceLinks />
 				<div className="q2-sidebar-footer">
 					{ __( 'Powered by', 'q2' ) }{ ' ' }
 					<a
