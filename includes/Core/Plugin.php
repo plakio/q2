@@ -55,6 +55,7 @@ final class Plugin {
 	 */
 	public function boot(): void {
 		Installer::maybe_upgrade();
+		Lifecycle::register();
 		( new Application() )->register();
 		( new EditorFrame() )->register();
 		( new Activity() )->register();

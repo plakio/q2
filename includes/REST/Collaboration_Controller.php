@@ -246,7 +246,7 @@ final class Collaboration_Controller {
 	 * Returns the persisted feed presentation preference.
 	 */
 	public function get_feed_view(): \WP_REST_Response {
-		$view = get_user_meta( get_current_user_id(), 'q2_feed_view', true );
+		$view = get_user_option( 'q2_feed_view', get_current_user_id() );
 		return rest_ensure_response( array( 'view' => in_array( $view, array( 'default', 'expanded', 'compact' ), true ) ? $view : 'default' ) );
 	}
 
@@ -260,7 +260,7 @@ final class Collaboration_Controller {
 		if ( ! in_array( $view, array( 'default', 'expanded', 'compact' ), true ) ) {
 			return new \WP_Error( 'q2_invalid_feed_view', __( 'That feed view is not supported.', 'q2' ), array( 'status' => 400 ) );
 		}
-		update_user_meta( get_current_user_id(), 'q2_feed_view', $view );
+		update_user_option( get_current_user_id(), 'q2_feed_view', $view, false );
 		return rest_ensure_response( array( 'view' => $view ) );
 	}
 

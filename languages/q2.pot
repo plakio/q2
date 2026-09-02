@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Q2 0.2.6\n"
+"Project-Id-Version: Q2 0.2.7\n"
 "Report-Msgid-Bugs-To: https://github.com/plakio/q2/issues\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-02T04:56:00+00:00\n"
+"POT-Creation-Date: 2026-09-02T05:21:14+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: q2\n"
@@ -157,7 +157,7 @@ msgstr ""
 msgid "You do not have permission to view that task."
 msgstr ""
 
-#: includes/REST/Workspace_Controller.php:135
+#: includes/REST/Workspace_Controller.php:237
 msgid "That image could not be found."
 msgstr ""
 
@@ -439,7 +439,7 @@ msgstr ""
 
 #: src/comments/CommentsThread.js:109
 #: src/comments/CommentsThread.js:139
-#: src/index.js:1519
+#: src/index.js:1531
 msgid "Reply"
 msgstr ""
 
@@ -488,14 +488,14 @@ msgstr ""
 
 #: src/components/TagPicker.js:25
 #: src/editor/P2BlockEditor.js:161
-#: src/index.js:1497
+#: src/index.js:1509
 #: src/search/SearchScreen.js:12
 msgid "Tags"
 msgstr ""
 
 #: src/editor/BlockContentEditor.js:91
 #: src/editor/P2BlockEditor.js:109
-#: src/index.js:1252
+#: src/index.js:1264
 #: src/pages/PagesScreen.js:386
 msgid "Publish"
 msgstr ""
@@ -591,7 +591,7 @@ msgid "Update"
 msgstr ""
 
 #: src/editor/P2BlockEditor.js:110
-#: src/index.js:1253
+#: src/index.js:1265
 msgid "Submit for review"
 msgstr ""
 
@@ -622,364 +622,366 @@ msgid "The editor could not be loaded."
 msgstr ""
 
 #: src/editor/PostEditorIframe.js:93
-#: src/index.js:188
-#: src/index.js:514
+#: src/index.js:198
+#: src/index.js:526
 msgid "New post"
 msgstr ""
 
 #: src/editor/PostEditorIframe.js:93
-#: src/index.js:188
-#: src/index.js:1442
-#: src/index.js:1476
+#: src/index.js:198
+#: src/index.js:1454
+#: src/index.js:1488
 msgid "Edit post"
 msgstr ""
 
-#: src/index.js:59
+#: src/index.js:60
 #: src/search/SearchScreen.js:8
 msgid "Posts"
 msgstr ""
 
-#: src/index.js:60
+#: src/index.js:61
 #: src/pages/PagesScreen.js:208
 #: src/search/SearchScreen.js:9
 msgid "Pages"
 msgstr ""
 
-#: src/index.js:63
+#: src/index.js:64
 #: src/media/MediaScreen.js:156
 msgid "Media"
 msgstr ""
 
-#: src/index.js:69
-#: src/index.js:540
+#: src/index.js:70
+#: src/index.js:552
 #: src/notifications/NotificationsScreen.js:160
 msgid "Notifications"
 msgstr ""
 
-#: src/index.js:73
+#: src/index.js:74
 #: src/search/SearchScreen.js:73
 msgid "Search"
 msgstr ""
 
-#: src/index.js:76
+#: src/index.js:77
 #: src/tasks/TasksScreen.js:97
 msgid "Tasks"
 msgstr ""
 
-#: src/index.js:80
+#: src/index.js:81
 #: src/people/PeopleScreen.js:48
 #: src/search/SearchScreen.js:11
 msgid "People"
 msgstr ""
 
-#: src/index.js:81
+#: src/index.js:86
+#: src/projects/ProjectsScreen.js:45
 msgid "Projects"
 msgstr ""
 
-#: src/index.js:82
+#: src/index.js:92
 #: src/starters/StartersScreen.js:109
 msgid "Starter Buttons"
 msgstr ""
 
-#: src/index.js:185
+#: src/index.js:195
 #: src/pages/PagesScreen.js:417
 msgid "Edit page"
 msgstr ""
 
-#: src/index.js:186
-#: src/index.js:527
+#: src/index.js:196
+#: src/index.js:539
 #: src/pages/PagesScreen.js:215
 #: src/pages/PagesScreen.js:312
 msgid "New page"
 msgstr ""
 
-#: src/index.js:252
+#: src/index.js:264
 msgid "Workspace navigation"
 msgstr ""
 
-#: src/index.js:292
+#: src/index.js:304
 msgid "Powered by"
 msgstr ""
 
-#: src/index.js:400
+#: src/index.js:412
 #: src/search/SearchScreen.js:77
 msgid "Search workspace"
 msgstr ""
 
-#: src/index.js:409
+#: src/index.js:421
 msgid "Toggle navigation"
 msgstr ""
 
-#: src/index.js:460
-#: src/index.js:800
+#: src/index.js:472
+#: src/index.js:812
 msgid "A collaborative workspace."
 msgstr ""
 
-#: src/index.js:491
+#: src/index.js:503
 msgid "Workspace actions"
 msgstr ""
 
-#: src/index.js:555
+#: src/index.js:567
 msgid "My profile"
 msgstr ""
 
-#: src/index.js:567
+#: src/index.js:579
 msgid "Workspace settings"
 msgstr ""
 
-#: src/index.js:583
+#: src/index.js:595
 msgid "Signed in"
 msgstr ""
 
-#: src/index.js:595
+#: src/index.js:607
 msgid "Sign out"
 msgstr ""
 
-#: src/index.js:636
+#: src/index.js:648
 msgid "The workspace image could not be saved."
 msgstr ""
 
-#: src/index.js:649
+#: src/index.js:661
 msgid "The media library is still loading. Please try again in a moment."
 msgstr ""
 
-#: src/index.js:659
+#: src/index.js:671
 msgid "Select cover image"
 msgstr ""
 
-#: src/index.js:660
+#: src/index.js:672
 msgid "Select workspace icon"
 msgstr ""
 
-#: src/index.js:664
+#: src/index.js:676
 msgid "Use as cover"
 msgstr ""
 
-#: src/index.js:665
+#: src/index.js:677
 msgid "Use as icon"
 msgstr ""
 
-#: src/index.js:727
+#: src/index.js:739
 msgid "Change cover"
 msgstr ""
 
-#: src/index.js:728
+#: src/index.js:740
 msgid "Add cover"
 msgstr ""
 
-#: src/index.js:739
+#: src/index.js:751
 msgid "Remove cover"
 msgstr ""
 
-#: src/index.js:774
+#: src/index.js:786
 msgid "Change workspace icon"
 msgstr ""
 
-#: src/index.js:775
+#: src/index.js:787
 msgid "Add workspace icon"
 msgstr ""
 
-#: src/index.js:786
+#: src/index.js:798
 msgid "Remove workspace icon"
 msgstr ""
 
-#: src/index.js:816
+#: src/index.js:828
 msgid "New posts"
 msgstr ""
 
-#: src/index.js:821
+#: src/index.js:833
 msgid "New comments"
 msgstr ""
 
-#: src/index.js:826
+#: src/index.js:838
 msgid "My mentions"
 msgstr ""
 
-#: src/index.js:831
+#: src/index.js:843
 msgid "My posts"
 msgstr ""
 
-#: src/index.js:839
+#: src/index.js:851
 msgid "Post filters"
 msgstr ""
 
-#: src/index.js:880
+#: src/index.js:892
 msgid "Links"
 msgstr ""
 
-#: src/index.js:882
+#: src/index.js:894
 msgid "Edit links"
 msgstr ""
 
-#: src/index.js:912
+#: src/index.js:924
 msgid "No links yet."
 msgstr ""
 
-#: src/index.js:932
-#: src/index.js:934
+#: src/index.js:944
+#: src/index.js:946
 msgid "Team"
 msgstr ""
 
-#: src/index.js:939
+#: src/index.js:951
 msgid "View all team members"
 msgstr ""
 
-#: src/index.js:1014
+#: src/index.js:1026
 msgid "The feed could not be loaded."
 msgstr ""
 
-#: src/index.js:1067
+#: src/index.js:1079
 msgid "Filter feed"
 msgstr ""
 
-#: src/index.js:1076
+#: src/index.js:1088
 msgid "All posts"
 msgstr ""
 
-#: src/index.js:1078
+#: src/index.js:1090
 msgid "New Posts"
 msgstr ""
 
-#: src/index.js:1081
+#: src/index.js:1093
 msgid "New Comments"
 msgstr ""
 
-#: src/index.js:1084
+#: src/index.js:1096
 msgid "My Posts"
 msgstr ""
 
-#: src/index.js:1087
+#: src/index.js:1099
 msgid "My Mentions"
 msgstr ""
 
-#: src/index.js:1093
+#: src/index.js:1105
 msgid "Feed view"
 msgstr ""
 
-#: src/index.js:1103
+#: src/index.js:1115
 msgid "Default view"
 msgstr ""
 
-#: src/index.js:1106
+#: src/index.js:1118
 msgid "Expanded view"
 msgstr ""
 
-#: src/index.js:1109
+#: src/index.js:1121
 msgid "Compact view"
 msgstr ""
 
-#: src/index.js:1117
+#: src/index.js:1129
 msgid "Loading updates…"
 msgstr ""
 
-#: src/index.js:1122
+#: src/index.js:1134
 msgid "Something went wrong"
 msgstr ""
 
-#: src/index.js:1125
+#: src/index.js:1137
+#: src/projects/ProjectsScreen.js:60
 msgid "Try again"
 msgstr ""
 
-#: src/index.js:1132
+#: src/index.js:1144
 msgid "Start the conversation"
 msgstr ""
 
-#: src/index.js:1135
+#: src/index.js:1147
 msgid "Publish the first update for this workspace."
 msgstr ""
 
-#: src/index.js:1158
+#: src/index.js:1170
 msgid "Loading more…"
 msgstr ""
 
-#: src/index.js:1167
+#: src/index.js:1179
 msgid "Load more updates"
 msgstr ""
 
-#: src/index.js:1185
+#: src/index.js:1197
 msgid "Update published."
 msgstr ""
 
-#: src/index.js:1186
+#: src/index.js:1198
 msgid "Update submitted for review."
 msgstr ""
 
-#: src/index.js:1201
-#: src/index.js:1243
+#: src/index.js:1213
+#: src/index.js:1255
 msgid "Create a post"
 msgstr ""
 
-#: src/index.js:1207
+#: src/index.js:1219
 msgid "Now"
 msgstr ""
 
 #. translators: %s: current user's display name.
-#: src/index.js:1216
+#: src/index.js:1228
 #, js-format
 msgid "Hi, %s! Post an update, ask a question, or share ideas."
 msgstr ""
 
-#: src/index.js:1221
+#: src/index.js:1233
 msgid "there"
 msgstr ""
 
-#: src/index.js:1230
+#: src/index.js:1242
 msgid "Post"
 msgstr ""
 
-#: src/index.js:1333
+#: src/index.js:1345
 msgid "Delete this post? This moves it to the trash."
 msgstr ""
 
-#: src/index.js:1352
+#: src/index.js:1364
 msgid "The post could not be deleted."
 msgstr ""
 
-#: src/index.js:1425
+#: src/index.js:1437
 msgid "Post actions"
 msgstr ""
 
-#: src/index.js:1451
+#: src/index.js:1463
 msgid "Delete post"
 msgstr ""
 
-#: src/index.js:1466
+#: src/index.js:1478
 msgid "Unknown author"
 msgstr ""
 
-#: src/index.js:1535
+#: src/index.js:1547
 msgid "Following"
 msgstr ""
 
-#: src/index.js:1536
+#: src/index.js:1548
 msgid "Follow"
 msgstr ""
 
-#: src/index.js:1556
+#: src/index.js:1568
 msgid "Liked"
 msgstr ""
 
-#: src/index.js:1557
+#: src/index.js:1569
 msgid "Like"
 msgstr ""
 
-#: src/index.js:1579
+#: src/index.js:1591
 msgid "Q2 foundation"
 msgstr ""
 
-#: src/index.js:1586
+#: src/index.js:1598
 msgid "This area is architected and coming next."
 msgstr ""
 
-#: src/index.js:1589
+#: src/index.js:1601
 msgid "The foundation milestone establishes navigation without pretending unfinished collaboration features are complete."
 msgstr ""
 
-#: src/index.js:1603
+#: src/index.js:1615
 msgid "Page not found"
 msgstr ""
 
-#: src/index.js:1605
+#: src/index.js:1617
 msgid "Return to the feed"
 msgstr ""
 
@@ -1292,6 +1294,30 @@ msgstr ""
 #: src/people/PeopleScreen.js:87
 #, js-format
 msgid "No people found for “%s”."
+msgstr ""
+
+#: src/projects/ProjectsScreen.js:27
+msgid "Projects could not be loaded."
+msgstr ""
+
+#: src/projects/ProjectsScreen.js:43
+msgid "Workspaces"
+msgstr ""
+
+#: src/projects/ProjectsScreen.js:50
+msgid "Loading projects…"
+msgstr ""
+
+#: src/projects/ProjectsScreen.js:66
+msgid "No projects available."
+msgstr ""
+
+#: src/projects/ProjectsScreen.js:68
+msgid "You do not currently have access to any projects."
+msgstr ""
+
+#: src/projects/ProjectsScreen.js:102
+msgid "Current workspace"
 msgstr ""
 
 #: src/search/SearchScreen.js:55

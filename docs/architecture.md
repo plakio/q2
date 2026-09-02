@@ -30,6 +30,7 @@ Each workspace screen reads from a focused controller set:
 | Starters | `q2/v1/knowledge/patterns`, `q2/v1/knowledge/starters` |
 | Notifications | `q2/v1/notifications`, `q2/v1/notifications/read` |
 | People | `q2/v1/people` |
+| Projects | `q2/v1/workspaces` |
 | Embedded blocks | `q2/task`, `q2/project-status`, `q2/changelog` and the `q2/v1/posts/(?P<id>\d+)/tasks` summary |
 
 All controllers sit behind object-level or capability-level permission callbacks; no route returns data beyond `current_user_can()`. Reusable screenless widgets (search, members autocomplete, mention helpers) live under `src/components` and `src/mentions`.
@@ -74,6 +75,12 @@ Every route:
 ## Permissions
 
 Q2 derives ordinary actions from Core capabilities. Q2-specific capabilities are limited to policy not represented by Core, initially `manage_q2` and `q2_mention_all`. Activation grants them to administrators; filters allow sites to customize role mapping. Future task assignment checks both the actor’s edit capability and the assignee’s site membership.
+
+## Multisite workspaces
+
+On Multisite, each site is an independent Q2 workspace. Network activation provisions Q2 tables, capabilities, rewrite rules, and task cron events for existing sites; sites created later are provisioned through `wp_initialize_site`. Network deactivation clears runtime cron and rewrite state per site without deleting workspace data.
+
+The Projects screen lists Q2-enabled sites in the current network that the user can read. Ordinary users see joined sites, while super administrators can access all healthy Q2 sites. Site-local WordPress objects, options, roles, navigation entities, and prefixed Q2 tables remain isolated in the target blog context.
 
 ## Rendering and privacy
 

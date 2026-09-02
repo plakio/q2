@@ -47,22 +47,14 @@ add_action(
 
 register_activation_hook(
 	__FILE__,
-	static function (): void {
-		Q2\Application\Application::register_rewrite_rules();
-		Q2\Core\Capabilities::activate();
-		Q2\Core\Installer::install();
-		Q2\Tasks\Cron::ensure_scheduled();
-		flush_rewrite_rules();
+	static function ( bool $network_wide ): void {
+		Q2\Core\Lifecycle::activate( $network_wide );
 	}
 );
 
 register_deactivation_hook(
 	__FILE__,
-	static function (): void {
-		$timestamp = wp_next_scheduled( Q2\Tasks\Cron::HOOK_NAME );
-		if ( $timestamp ) {
-			wp_unschedule_event( $timestamp, Q2\Tasks\Cron::HOOK_NAME );
-		}
-		flush_rewrite_rules();
+	static function ( bool $network_wide ): void {
+		Q2\Core\Lifecycle::deactivate( $network_wide );
 	}
 );

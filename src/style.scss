@@ -3683,6 +3683,92 @@ a {
 	font-size: 0.8125rem;
 }
 
+/* Multisite projects */
+.q2-projects-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+	gap: 1rem;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+.q2-projects-grid a {
+	display: grid;
+	grid-template-columns: 3rem 1fr;
+	align-items: center;
+	gap: 0 0.875rem;
+	min-height: 6rem;
+	padding: 1rem;
+	border: 1px solid var(--p2-color-border);
+	border-radius: 3px;
+	background: #fff;
+	color: inherit;
+	text-decoration: none;
+}
+
+.q2-projects-grid a:hover,
+.q2-projects-grid a:focus-visible {
+	border-color: var(--p2-color-link);
+	box-shadow: 0 0 0 1px var(--p2-color-link);
+}
+
+.q2-projects-grid a[aria-current="page"] {
+	background: var(--p2-color-bg-very-light);
+}
+
+.q2-project-icon {
+	display: grid;
+	grid-row: span 2;
+	place-items: center;
+	width: 3rem;
+	height: 3rem;
+	border-radius: 4px;
+	background: var(--p2-color-link);
+	color: #fff;
+	font-size: 1.25rem;
+	font-weight: 700;
+	overflow: hidden;
+}
+
+.q2-project-icon img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.q2-project-name {
+	min-width: 0;
+	font-size: 1rem;
+	font-weight: 650;
+	overflow-wrap: anywhere;
+}
+
+.q2-project-current {
+	color: var(--p2-color-text-light);
+	font-size: 0.75rem;
+}
+
+.q2-projects-status {
+	display: flex;
+	align-items: flex-start;
+	flex-direction: column;
+	gap: 0.5rem;
+	padding: 1rem;
+	border: 1px solid var(--p2-color-border);
+	background: var(--p2-color-bg-very-light);
+}
+
+.q2-projects-status button {
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: var(--p2-color-link);
+	font: inherit;
+	font-weight: 600;
+	text-decoration: underline;
+}
+
 /* Full Gutenberg workspace */
 .q2-full-editor-overlay,
 .q2-post-editor-overlay {

@@ -139,7 +139,7 @@ final class Repository {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$sql = $wpdb->prepare(
-			"SELECT id, block_id, parent_post_id, status, due_date, assignees, title
+			"SELECT id, block_id, parent_post_id, actor_user_id, status, due_date, assignees, title
 			FROM {$wpdb->prefix}q2_tasks
 			WHERE due_date IS NOT NULL AND due_date <= %s
 			ORDER BY due_date ASC",

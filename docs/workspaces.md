@@ -1,10 +1,10 @@
-# Future Q2 workspaces
+# Q2 Multisite workspaces
 
-## Recommended mapping
+## Mapping
 
-A Q2 workspace should default to a WordPress Multisite network, and each collaboration space/project/team to a site within that network. WordPress already supplies site-local posts/pages/comments/terms/options, network users, per-site roles, site IDs, domain/path routing, and mature administration APIs.
+A Q2 workspace maps to a site in a WordPress Multisite network. Each collaboration space, project, or team therefore has site-local posts, pages, comments, media, terms, options, roles, navigation, Q2 tables, and URLs while sharing network user identities.
 
-This mapping is not finalized product behavior and is not part of the initial release.
+Q2 can still be activated on an ordinary single-site installation. On Multisite it may be activated per site or network-wide. Network activation provisions existing sites and automatically provisions newly initialized sites.
 
 ## Benefits
 
@@ -13,9 +13,15 @@ This mapping is not finalized product behavior and is not part of the initial re
 - Existing domain/path mapping, exports, backups, and site lifecycle.
 - `$wpdb->prefix` naturally scopes Q2 collaboration tables to a site.
 
-## Gaps Q2 must solve
+## Current behavior
 
-- Workspace home and navigation across joined sites.
+- Projects lists readable Q2 sites in the current network and opens the selected workspace at its canonical home URL.
+- Ordinary users see sites they have joined. Super administrators can access every healthy Q2-enabled site in the network.
+- Workspace identity, Links navigation, feed preferences, content, permissions, task indexes, and collaboration data are site-local.
+- Deactivation preserves data. When Q2 is network-active, deleting a site includes its Q2 tables in WordPress's normal table cleanup.
+
+## Future network features
+
 - Member versus guest semantics: a network member is not automatically a member of every site, which can model guests but needs clear UI.
 - Network-wide search with per-result access checks and indexing strategy.
 - Crossposting provenance, updates, deletion, and comment ownership.
@@ -39,4 +45,3 @@ This mapping is not finalized product behavior and is not part of the initial re
 ## Open decisions before implementation
 
 Network notification storage (aggregate table versus bounded per-site reads), global-search indexing, crosspost copy versus reference semantics, guest invitation UX, glossary ownership, network administrator capabilities, and single-site-to-multisite migration all need prototypes and scale tests.
-

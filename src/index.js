@@ -44,6 +44,7 @@ import NotificationsScreen from './notifications/NotificationsScreen';
 import TasksScreen from './tasks/TasksScreen';
 import PagesScreen from './pages/PagesScreen';
 import PeopleScreen from './people/PeopleScreen';
+import ProjectsScreen from './projects/ProjectsScreen';
 import SearchScreen from './search/SearchScreen';
 import StartersScreen from './starters/StartersScreen';
 import useSurveyRuntime from './surveys/useSurveyRuntime';
@@ -78,7 +79,16 @@ const routes = [
 		sidebar: true,
 	},
 	{ key: 'people', label: __( 'People', 'q2' ), icon: people, sidebar: true },
-	{ key: 'projects', label: __( 'Projects', 'q2' ), icon: postList },
+	...( settings.isMultisite
+		? [
+				{
+					key: 'projects',
+					label: __( 'Projects', 'q2' ),
+					icon: postList,
+					sidebar: true,
+				},
+		  ]
+		: [] ),
 	{ key: 'starters', label: __( 'Starter Buttons', 'q2' ), icon: starEmpty },
 ];
 
@@ -207,6 +217,8 @@ function App() {
 		);
 	} else if ( route === 'people' ) {
 		content = <PeopleScreen />;
+	} else if ( route === 'projects' ) {
+		content = <ProjectsScreen />;
 	} else if ( route === 'pages' ) {
 		content = (
 			<PagesScreen

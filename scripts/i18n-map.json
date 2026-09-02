@@ -18,6 +18,7 @@
 	"src/notifications/NotificationsScreen.js": "build/index.js",
 	"src/pages/PagesScreen.js": "build/index.js",
 	"src/people/PeopleScreen.js": "build/index.js",
+	"src/projects/ProjectsScreen.js": "build/index.js",
 	"src/search/SearchScreen.js": "build/index.js",
 	"src/starters/StartersScreen.js": "build/index.js",
 	"src/surveys/useSurveyRuntime.js": "build/index.js",

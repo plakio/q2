@@ -28,7 +28,17 @@ Q2 follows the WordPress site language. English (en_US) is the source language, 
 4. Sign in and visit the site homepage. Q2 uses the homepage as the private workspace; `/q2/` remains available as a compatibility entry.
 5. To use Spanish, choose Español under Settings > General > Site Language.
 
+For Multisite, network-activate Q2 to make every existing and future site an independent workspace. Members can switch among joined workspaces from Projects; network administrators can access all Q2 workspaces.
+
 == Changelog ==
+
+= 0.2.8 =
+
+* Add Multisite lifecycle support with one Q2 workspace per site.
+* Add the Projects screen for switching between accessible workspaces.
+* Provision existing and newly created sites during network activation.
+* Keep feed preferences, navigation, content, and collaboration data site-local.
+* Fix task reminder actor data and cron cleanup during deactivation.
 
 = 0.2.7 =
 

@@ -199,6 +199,7 @@ final class Application {
 			),
 			'restNonce'        => wp_create_nonce( 'wp_rest' ),
 			'restRoot'         => esc_url_raw( rest_url() ),
+			'isMultisite'      => is_multisite(),
 			'siteName'         => get_bloginfo( 'name' ),
 			'siteDescription'  => get_bloginfo( 'description' ),
 			'siteIconUrl'      => get_site_icon_url( 96 ),
