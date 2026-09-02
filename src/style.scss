@@ -3951,7 +3951,14 @@ a {
 	height: 20px;
 }
 
+.q2-p2-toolbar-history {
+	display: flex;
+	flex: 0 0 auto;
+}
+
 .q2-p2-toolbar-history .components-toolbar-group {
+	display: flex;
+	flex-wrap: nowrap;
 	background: transparent;
 	border: 0;
 	padding: 0;
