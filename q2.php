@@ -3,7 +3,7 @@
  * Plugin Name:       Q2
  * Plugin URI:        https://getq2.com/
  * Description:       A modern, self-hosted collaborative workspace for WordPress.
- * Version:           0.2.14
+ * Version:           0.2.15
  * Requires at least: 7.1
  * Requires PHP:      8.1
  * Author:            Plak
@@ -19,7 +19,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'Q2_VERSION', '0.2.14' );
+define( 'Q2_VERSION', '0.2.15' );
 define( 'Q2_PATH', plugin_dir_path( __FILE__ ) );
 define( 'Q2_URL', plugin_dir_url( __FILE__ ) );
 
