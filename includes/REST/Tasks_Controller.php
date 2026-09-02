@@ -281,7 +281,24 @@ final class Tasks_Controller {
 		}
 
 		$updated_segment = '<!-- wp:q2/task ' . $encoded . ' -->';
-		return substr( $content, 0, $open ) . $updated_segment . substr( $content, $close + 3 );
+		$updated_content = substr( $content, 0, $open ) . $updated_segment . substr( $content, $close + 3 );
+
+		// Keep the saved checkbox markup valid when status changes outside the editor.
+		if ( isset( $attrs['status'] ) ) {
+			$block_end = strpos( $updated_content, '<!-- /wp:q2/task -->', $open );
+			if ( false !== $block_end ) {
+				$block_html      = substr( $updated_content, $open, $block_end - $open );
+				$status          = (string) $attrs['status'];
+				$done            = 'done' === $status;
+				$label           = $done ? __( 'Mark task as active', 'q2' ) : __( 'Mark task as done', 'q2' );
+				$block_html      = preg_replace( '/data-status="[^"]*"/', 'data-status="' . esc_attr( $status ) . '"', $block_html, 1 ) ?? $block_html;
+				$block_html      = preg_replace( '/aria-checked="(?:true|false)"/', 'aria-checked="' . ( $done ? 'true' : 'false' ) . '"', $block_html, 1 ) ?? $block_html;
+				$block_html      = preg_replace( '/aria-label="[^"]*"(?=[^>]*data-q2-task-toggle)/', 'aria-label="' . esc_attr( $label ) . '"', $block_html, 1 ) ?? $block_html;
+				$updated_content = substr( $updated_content, 0, $open ) . $block_html . substr( $updated_content, $block_end );
+			}
+		}
+
+		return $updated_content;
 	}
 
 	/**

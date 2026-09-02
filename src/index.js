@@ -42,6 +42,7 @@ import { buildFeedPath } from './feed/query';
 import MediaScreen from './media/MediaScreen';
 import NotificationsScreen from './notifications/NotificationsScreen';
 import TasksScreen from './tasks/TasksScreen';
+import './tasks/taskRuntime';
 import PagesScreen from './pages/PagesScreen';
 import PeopleScreen from './people/PeopleScreen';
 import ProjectsScreen from './projects/ProjectsScreen';

@@ -46,6 +46,7 @@ export const POST_BLOCKS = [
 	'core/code',
 	'core/embed',
 	'q2/task',
+	'q2/task-list',
 	'q2/project-status',
 	'q2/changelog',
 	'q2/survey',

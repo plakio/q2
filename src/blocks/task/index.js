@@ -5,7 +5,20 @@
  */
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
-import Edit, { Save } from './edit';
+import Edit, { LegacySave, Save } from './edit';
+
+const attributes = {
+	blockId: {
+		type: 'string',
+		source: 'attribute',
+		attribute: 'data-block-id',
+		selector: '.q2-task',
+	},
+	title: { type: 'string', default: '' },
+	status: { type: 'string', default: 'todo' },
+	dueDate: { type: 'string', default: '' },
+	assignees: { type: 'array', default: [] },
+};
 
 registerBlockType( 'q2/task', {
 	title: __( 'Task', 'q2' ),
@@ -14,18 +27,8 @@ registerBlockType( 'q2/task', {
 	icon: 'list-view',
 	keywords: [ 'task', 'todo', 'assignment' ],
 	supports: { html: false, reusable: false },
-	attributes: {
-		blockId: {
-			type: 'string',
-			source: 'attribute',
-			attribute: 'data-block-id',
-			selector: '.q2-task',
-		},
-		title: { type: 'string', default: '' },
-		status: { type: 'string', default: 'todo' },
-		dueDate: { type: 'string', default: '' },
-		assignees: { type: 'array', default: [] },
-	},
+	attributes,
 	edit: Edit,
 	save: Save,
+	deprecated: [ { attributes, save: LegacySave } ],
 } );
