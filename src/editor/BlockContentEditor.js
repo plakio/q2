@@ -19,7 +19,13 @@ import {
 } from '@wordpress/components';
 import { mediaUpload } from '@wordpress/editor';
 import '@wordpress/format-library';
-import { useCallback, useEffect, useMemo, useState } from '@wordpress/element';
+import {
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from '@wordpress/element';
 import { useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import {
@@ -484,17 +490,22 @@ function P2Layout( {
 
 function AutoSelectFirstBlock( { blocks } ) {
 	const { selectBlock } = useDispatch( 'core/block-editor' );
+	const firstClientId = blocks?.[ 0 ]?.clientId;
+	const didAutoSelect = useRef( false );
 
+	// Select the first block only when the editor opens. Depending on the
+	// whole `blocks` array would re-run on every keystroke and steal focus
+	// from whichever block the user is actually editing.
 	useEffect( () => {
-		const first = blocks?.[ 0 ];
-		if ( ! first ) {
+		if ( didAutoSelect.current || ! firstClientId ) {
 			return undefined;
 		}
+		didAutoSelect.current = true;
 		const timer = window.setTimeout( () => {
-			selectBlock( first.clientId );
+			selectBlock( firstClientId );
 		}, 0 );
 		return () => window.clearTimeout( timer );
-	}, [ blocks, selectBlock ] );
+	}, [ firstClientId, selectBlock ] );
 
 	return null;
 }
