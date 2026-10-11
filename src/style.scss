@@ -1127,7 +1127,8 @@ a {
 // Nested inner layouts must not inherit the canvas minimums above:
 // an empty nested layout (e.g. inside each list item) would otherwise
 // stretch every item to the full canvas height.
-.q2-block-editor .block-editor-block-list__block .block-editor-block-list__layout {
+.q2-block-editor .block-editor-block-list__block .block-editor-block-list__layout,
+.q2-block-editor .block-editor-block-list__block.block-editor-block-list__layout {
 	min-height: 0;
 }
 
@@ -3742,7 +3743,8 @@ a {
 	min-height: 5rem;
 }
 
-.q2-composer .block-editor-block-list__block .block-editor-block-list__layout {
+.q2-composer .block-editor-block-list__block .block-editor-block-list__layout,
+.q2-composer .block-editor-block-list__block.block-editor-block-list__layout {
 	min-height: 0;
 }
 
@@ -4080,7 +4082,8 @@ a {
 	min-height: 260px;
 }
 
-.q2-p2-canvas .block-editor-block-list__block .block-editor-block-list__layout {
+.q2-p2-canvas .block-editor-block-list__block .block-editor-block-list__layout,
+.q2-p2-canvas .block-editor-block-list__block.block-editor-block-list__layout {
 	min-height: 0;
 }
 
@@ -4116,11 +4119,14 @@ a {
 .q2-block-editor-canvas .is-selected .wp-block-a8c-sketch svg {
 	pointer-events: auto;
 }
+
 // Keep list rhythm compact and consistent between editor and content.
+// (:not() keeps the editor block wrapper on the standard 1.5rem block gap:
+// in the editor the <ul> itself carries the block wrapper classes.)
 .q2-post-content .wp-block-list,
 .q2-page-content .wp-block-list,
-.q2-p2-canvas .wp-block-list,
-.q2-block-editor-canvas .wp-block-list {
+.q2-p2-canvas .wp-block-list:not(.block-editor-block-list__block),
+.q2-block-editor-canvas .wp-block-list:not(.block-editor-block-list__block) {
 	padding-left: 1.5em;
 	margin-top: 0.5em;
 	margin-bottom: 0.5em;
