@@ -1124,6 +1124,13 @@ a {
 	min-height: inherit;
 }
 
+// Nested inner layouts must not inherit the canvas minimums above:
+// an empty nested layout (e.g. inside each list item) would otherwise
+// stretch every item to the full canvas height.
+.q2-block-editor .block-editor-block-list__block .block-editor-block-list__layout {
+	min-height: 0;
+}
+
 .q2-editor-actions {
 	display: flex;
 	align-items: center;
@@ -3735,6 +3742,10 @@ a {
 	min-height: 5rem;
 }
 
+.q2-composer .block-editor-block-list__block .block-editor-block-list__layout {
+	min-height: 0;
+}
+
 .q2-composer .block-editor-default-block-appender__content,
 .q2-composer .block-editor-block-list__block {
 	font-size: 1rem;
@@ -4067,6 +4078,10 @@ a {
 
 .q2-p2-canvas .block-editor-block-list__layout {
 	min-height: 260px;
+}
+
+.q2-p2-canvas .block-editor-block-list__block .block-editor-block-list__layout {
+	min-height: 0;
 }
 
 .q2-p2-canvas .block-editor-block-list__block {
