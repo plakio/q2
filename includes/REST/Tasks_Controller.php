@@ -389,6 +389,7 @@ final class Tasks_Controller {
 			'blockId'   => (string) $row->block_id,
 			'postId'    => $post_id,
 			'postTitle' => get_the_title( $post_id ),
+			'postSlug'  => (string) get_post_field( 'post_name', $post_id ),
 			'title'     => (string) $row->title,
 			'status'    => (string) $row->status,
 			'dueDate'   => $row->due_date ? (string) $row->due_date : null,

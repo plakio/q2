@@ -290,6 +290,19 @@ final class EditorFrame {
 (function(){
 	if (window.parent === window) { return; }
 	var wasSaving = false;
+	// Capture the in-application view URL immediately: the editor rewrites
+	// the iframe location to its canonical form shortly after load, which
+	// would otherwise take our parameters with it.
+	var Q2_VIEW_URL = (function(){
+		try {
+			var hash = window.location.hash || '';
+			var match = hash.match(/(?:^#|[&#])q2_view=([^&]*)/);
+			if (match && match[1]) { return decodeURIComponent(match[1]); }
+			return new URLSearchParams(window.location.search).get('q2_view') || '';
+		} catch (e) {
+			return '';
+		}
+	})();
 	function post(type, detail) {
 		var editor = window.wp && wp.data ? wp.data.select('core/editor') : null;
 		var postId = editor && editor.getCurrentPostId ? editor.getCurrentPostId() : 0;
@@ -308,9 +321,43 @@ final class EditorFrame {
 			wasSaving = saving;
 		});
 		post('ready');
+		rewriteViewLinks();
+		observeViewLinks();
 		<?php if ( $p2 ) : ?>
 		mountDisplayOptions();
 		<?php endif; ?>
+	}
+	function q2ViewUrl() {
+		return Q2_VIEW_URL;
+	}
+	function rewriteViewLinks() {
+		var viewUrl = q2ViewUrl();
+		if (!viewUrl) { return; }
+		// Point the header "view" link at the in-application URL so readers
+		// stay inside the workspace. Preview and admin links are untouched.
+		document.querySelectorAll('.edit-post-header a[target="_blank"], .editor-header a[target="_blank"]').forEach(function(anchor){
+			var href = anchor.getAttribute('href') || '';
+			if (!href || anchor.dataset.q2ViewRewritten) { return; }
+			if (/\/wp-admin\//.test(href) || /[?&]preview=true/.test(href) || /^wp-preview/.test(anchor.target || '')) { return; }
+			if (!/^https?:\/\//.test(href) && href.charAt(0) !== '/') { return; }
+			anchor.href = viewUrl;
+			anchor.dataset.q2ViewRewritten = '1';
+		});
+	}
+	function observeViewLinks() {
+		var header = document.querySelector('.edit-post-header, .editor-header');
+		if ( ! header ) {
+			// The header renders after the data layer is ready; retry.
+			window.setTimeout( observeViewLinks, 200 );
+			return;
+		}
+		if ( header.dataset.q2ViewObserved ) {
+			return;
+		}
+		header.dataset.q2ViewObserved = '1';
+		// The header re-renders as the post loads; keep the rewrite applied.
+		new MutationObserver(function(){ rewriteViewLinks(); }).observe(header, { childList: true, subtree: true });
+		rewriteViewLinks();
 	}
 		<?php if ( $p2 ) : ?>
 	function mountDisplayOptions() {
@@ -359,14 +406,49 @@ final class EditorFrame {
 	 * @return string
 	 */
 	public static function editor_url( int $post_id ): string {
-		$nonce = wp_create_nonce( 'q2-embed' );
+		$nonce    = wp_create_nonce( 'q2-embed' );
+		$args     = array(
+			self::QUERY_FLAG => '1',
+			'_wpnonce'       => $nonce,
+		);
+		$view_url = self::q2_view_url( $post_id );
+		if ( '' !== $view_url ) {
+			$args['q2_view'] = $view_url;
+		}
 		return add_query_arg(
-			array(
-				self::QUERY_FLAG => '1',
-				'_wpnonce'       => $nonce,
-			),
+			$args,
 			admin_url( 'post.php?post=' . $post_id . '&action=edit' )
 		);
+	}
+
+	/**
+	 * Returns the in-application URL used to view a published post or page.
+	 *
+	 * Mirrors the deep links the Q2 client builds so view actions stay
+	 * inside the workspace instead of opening the native permalink.
+	 *
+	 * @param int $post_id Post or page ID.
+	 * @return string Q2 deep link, or an empty string when unavailable.
+	 */
+	public static function q2_view_url( int $post_id ): string {
+		$post = get_post( $post_id );
+		if ( ! $post instanceof \WP_Post || 'publish' !== $post->post_status ) {
+			return '';
+		}
+		if ( 'page' === $post->post_type ) {
+			$path = get_page_uri( $post );
+			if ( '' === $path ) {
+				return '';
+			}
+			return home_url( '/q2/pages/' . $path . '/' );
+		}
+		if ( 'post' === $post->post_type ) {
+			if ( '' === $post->post_name ) {
+				return '';
+			}
+			return home_url( '/q2/feed/' . $post->post_name . '/' );
+		}
+		return '';
 	}
 
 	/**
@@ -452,7 +534,10 @@ final class EditorFrame {
 
 		if ( $post_id > 0 ) {
 			return new \WP_REST_Response(
-				array( 'url' => add_query_arg( 'q2_mode', $mode, self::editor_url( $post_id ) ) )
+				array(
+					'url'     => add_query_arg( 'q2_mode', $mode, self::editor_url( $post_id ) ),
+					'viewUrl' => self::q2_view_url( $post_id ),
+				)
 			);
 		}
 

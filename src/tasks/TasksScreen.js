@@ -186,13 +186,22 @@ export default function TasksScreen() {
 							>
 								<div>
 									<strong>{ task.title }</strong>
-									<a
-										className="q2-task-post"
-										href={ `#pages&focusPost=${ task.postId }` }
-									>
-										{ task.postTitle ||
-											__( 'Untitled', 'q2' ) }
-									</a>
+									{ task.postSlug ? (
+										<a
+											className="q2-task-post"
+											href={ `${
+												window.q2Settings?.appUrl || '/'
+											}feed/${ task.postSlug }/` }
+										>
+											{ task.postTitle ||
+												__( 'Untitled', 'q2' ) }
+										</a>
+									) : (
+										<span className="q2-task-post">
+											{ task.postTitle ||
+												__( 'Untitled', 'q2' ) }
+										</span>
+									) }
 								</div>
 								<div className="q2-task-meta">
 									<span

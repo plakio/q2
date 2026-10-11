@@ -32,7 +32,7 @@ function decodeEntities( text ) {
  * @param {string} type      Object subtype (`post` or `page`).
  * @return {string} Q2 deep link, or the native URL when it cannot be derived.
  */
-function toQ2Url( nativeUrl, type ) {
+export function toQ2Url( nativeUrl, type ) {
 	const appUrl = window.q2Settings?.appUrl;
 	const homeUrl = window.q2Settings?.homeUrl;
 	if ( ! appUrl || ! homeUrl ) {

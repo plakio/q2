@@ -1,7 +1,24 @@
 import apiFetch from '@wordpress/api-fetch';
 import { useEffect, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
+import { toQ2Url } from '../editor/linkSuggestions';
 import StateMessage from '../components/StateMessage';
+
+function resultUrl( item ) {
+	const fallback = window.q2Settings?.homeUrl || '/';
+	if ( 'post' === item.type || 'page' === item.type ) {
+		if ( item.path ) {
+			return `${ window.q2Settings?.appUrl || '/' }pages/${ item.path }/`;
+		}
+		if ( item.slug ) {
+			return `${ window.q2Settings?.appUrl || '/' }feed/${ item.slug }/`;
+		}
+		if ( item.url ) {
+			return toQ2Url( item.url, item.type );
+		}
+	}
+	return item.url || fallback;
+}
 
 const ALL_TYPES = [
 	{ key: '', label: __( 'All', 'q2' ) },
@@ -139,11 +156,7 @@ export default function SearchScreen() {
 							className={ `q2-search-result is-${ item.type }` }
 						>
 							<a
-								href={
-									item.url ||
-									window.q2Settings?.homeUrl ||
-									'/'
-								}
+								href={ resultUrl( item ) }
 								className="q2-search-link"
 							>
 								<span className="q2-search-type">

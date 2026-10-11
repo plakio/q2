@@ -11,7 +11,16 @@ async function fetchEditorUrl( { postId, postType, variant } ) {
 					postType || 'post'
 			  }&mode=${ variant }`;
 	const response = await apiFetch( { path } );
-	return response?.url || '';
+	const url = response?.url || '';
+	const viewUrl = response?.viewUrl || '';
+	// Carry the in-application view URL in the fragment: wp-admin rewrites
+	// the iframe query string to its canonical form, but preserves the hash.
+	if ( viewUrl && ! url.includes( '#' ) ) {
+		return {
+			url: `${ url }#q2_view=${ encodeURIComponent( viewUrl ) }`,
+		};
+	}
+	return { url };
 }
 
 export default function PostEditorIframe( {
@@ -36,7 +45,7 @@ export default function PostEditorIframe( {
 		fetchEditorUrl( { postId, postType, variant } )
 			.then( ( resolved ) => {
 				if ( ! cancelled ) {
-					setUrl( resolved );
+					setUrl( resolved?.url || '' );
 				}
 			} )
 			.catch( ( reason ) => {

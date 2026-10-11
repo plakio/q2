@@ -206,6 +206,8 @@ final class Knowledge_Controller {
 					'title'   => $post_title,
 					'excerpt' => wp_trim_words( wp_strip_all_tags( $post->post_content ), 24 ),
 					'url'     => get_permalink( $post ),
+					'slug'    => $post->post_name,
+					'path'    => 'page' === $post->post_type ? get_page_uri( $post ) : null,
 				);
 				++$counts[ $post->post_type ];
 			}
