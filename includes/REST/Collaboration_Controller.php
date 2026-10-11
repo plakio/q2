@@ -217,6 +217,7 @@ final class Collaboration_Controller {
 						'type'                => $row->type,
 						'objectId'            => (int) $row->object_id,
 						'objectType'          => (string) $row->object_type,
+						'objectSlug'          => (string) get_post_field( 'post_name', (int) $row->object_id ),
 						'objectTitle'         => $object_title ? $object_title : __( 'Untitled', 'q2' ),
 						'objectExcerpt'       => $object_excerpt,
 						'secondaryObjectType' => (string) $row->secondary_object_type,

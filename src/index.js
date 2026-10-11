@@ -186,6 +186,17 @@ function App() {
 		setRouteDetail( path );
 	}, [] );
 
+	const openPost = useCallback( ( slug ) => {
+		window.history.pushState(
+			{},
+			'',
+			`${ settings.appUrl }feed/${ slug }/`
+		);
+		setRoute( 'feed' );
+		setRouteDetail( slug );
+		setFocusPostId( 0 );
+	}, [] );
+
 	const navigate = useCallback(
 		( event, nextRoute ) => {
 			if (
@@ -281,7 +292,11 @@ function App() {
 	} else if ( route === 'notifications' ) {
 		content = (
 			<NotificationsScreen
-				onOpenPost={ ( postId ) => {
+				onOpenPost={ ( postId, slug ) => {
+					if ( slug ) {
+						openPost( slug );
+						return;
+					}
 					setFocusPostId( postId );
 					goToRoute( 'feed' );
 				} }

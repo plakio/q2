@@ -218,7 +218,10 @@ export default function NotificationsScreen( { onOpenPost } ) {
 											onClick={ async () => {
 												await markRead( item.id );
 												if ( item.objectId ) {
-													onOpenPost( item.objectId );
+													onOpenPost(
+														item.objectId,
+														item.objectSlug
+													);
 												}
 											} }
 										>
