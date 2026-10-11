@@ -187,7 +187,8 @@ final class EditorFrame {
 			. 'html.wp-toolbar{padding-top:0!important;}'
 			. 'body.q2-embed{margin:0!important;background:#fff!important;}'
 			. '#wpcontent,#wpbody-content{margin-left:0!important;padding:0!important;}'
-			. '.edit-post-header,.edit-post-layout__header{position:sticky;top:0;z-index:30;}';
+			. '.edit-post-header,.edit-post-layout__header{position:sticky;top:0;z-index:30;}'
+			. 'figure.wp-block-a8c-sketch.is-selected svg,.is-selected figure.wp-block-a8c-sketch svg,.is-selected .wp-block-a8c-sketch svg{pointer-events:auto!important;}';
 
 		if ( $inline ) {
 			$css .= '.editor-post-title,.editor-post-title__block,.editor-visual-editor__post-title-wrapper,.edit-post-sidebar,.interface-interface-skeleton__sidebar,.editor-post-publish-panel{display:none!important;}'
@@ -303,6 +304,17 @@ final class EditorFrame {
 			return '';
 		}
 	})();
+	// Capture early too: the editor canonicalizes the iframe location
+	// shortly after load, which would otherwise take this flag with it.
+	var Q2_FULLSCREEN = (function(){
+		try {
+			var params = new URLSearchParams(window.location.search);
+			if (params.get('q2_fullscreen')) { return true; }
+			return /(?:^#|[&#])q2_fullscreen=([^&]*)/.test(window.location.hash || '');
+		} catch (e) {
+			return false;
+		}
+	})();
 	function post(type, detail) {
 		var editor = window.wp && wp.data ? wp.data.select('core/editor') : null;
 		var postId = editor && editor.getCurrentPostId ? editor.getCurrentPostId() : 0;
@@ -323,6 +335,7 @@ final class EditorFrame {
 		post('ready');
 		rewriteViewLinks();
 		observeViewLinks();
+		mountFullscreenButton();
 		<?php if ( $p2 ) : ?>
 		mountDisplayOptions();
 		<?php endif; ?>
@@ -359,6 +372,28 @@ final class EditorFrame {
 		new MutationObserver(function(){ rewriteViewLinks(); }).observe(header, { childList: true, subtree: true });
 		rewriteViewLinks();
 	}
+	function wantsFullscreenButton() {
+		return !! Q2_FULLSCREEN;
+	}
+	function mountFullscreenButton() {
+		if (!wantsFullscreenButton() || document.querySelector('.q2-fullscreen-button')) { return; }
+		var settings = document.querySelector('.edit-post-header__settings, .editor-header__settings');
+		if (!settings) {
+			window.setTimeout(mountFullscreenButton, 200);
+			return;
+		}
+		var button = document.createElement('button');
+		button.type = 'button';
+		button.className = 'components-button has-icon q2-fullscreen-button';
+		button.setAttribute('aria-label', <?php echo wp_json_encode( __( 'Open full editor', 'q2' ) ); ?>);
+		button.title = <?php echo wp_json_encode( __( 'Open full editor', 'q2' ) ); ?>;
+		button.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 9V4h5v2H6v3H4zm11-5h5v5h-2V6h-3V4zM4 15h2v3h3v2H4v-5zm13 0h2v5h-5v-2h3v-3z"/></svg>';
+		button.addEventListener('click', function(event){
+			event.preventDefault();
+			post('open:fullscreen');
+		});
+		settings.insertBefore(button, settings.firstChild);
+	}
 		<?php if ( $p2 ) : ?>
 	function mountDisplayOptions() {
 		var skeleton = document.querySelector('.interface-interface-skeleton__content');
@@ -388,6 +423,59 @@ final class EditorFrame {
 			post('close:requested');
 		}
 	}, true);
+	// Let the Sketch drawing block receive full pointer gestures: Gutenberg
+	// marks every movable block draggable, so a press-and-move on the canvas
+	// would start a native block drag and kill the stroke after its first
+	// point. Applies once the block is selected so selecting still works.
+	hookSketchCanvases();
+	function sketchGuard(event){
+		if (event.button !== 0) { return; }
+		var target = event.target;
+		if (!target || typeof target.closest !== 'function') { return; }
+		var figure = target.closest('.wp-block-a8c-sketch');
+		if (!figure || !figure.closest('.is-selected')) { return; }
+		event.preventDefault();
+	}
+	function hookSketchDocument(doc) {
+		if (!doc || doc.__q2SketchHooked) { return; }
+		try {
+			doc.__q2SketchHooked = true;
+			var style = doc.createElement('style');
+			style.setAttribute('data-q2-sketch', '1');
+			style.textContent = 'figure.wp-block-a8c-sketch.is-selected svg,.is-selected figure.wp-block-a8c-sketch svg,.is-selected .wp-block-a8c-sketch svg{pointer-events:auto!important}';
+			(doc.head || doc.documentElement).appendChild(style);
+			doc.addEventListener('mousedown', sketchGuard, true);
+		} catch (e) { /* cross-origin or detached; skip */ }
+	}
+	function hookSketchCanvases() {
+		// The editor canvas lives in nested (sometimes blob:) iframes whose
+		// documents are replaced as content changes; cover the current tree,
+		// future iframes, and re-scan periodically.
+		function hookWindow(win) {
+			try {
+				hookSketchDocument(win.document);
+			} catch (e) { return; }
+			try {
+				var frames = win.frames;
+				for (var i = 0; i < frames.length; i++) { hookWindow(frames[i]); }
+			} catch (e) { /* cross-origin; skip */ }
+		}
+		hookWindow(window);
+		try {
+			new MutationObserver(function(mutations){
+				mutations.forEach(function(mutation){
+					mutation.addedNodes.forEach(function(node){
+						if (node && node.tagName === 'IFRAME') {
+							node.addEventListener('load', function(){ hookWindow(node.contentWindow); });
+							hookWindow(node.contentWindow);
+						}
+					});
+				});
+				hookWindow(window);
+			}).observe(document, { childList: true, subtree: true });
+		} catch (e) { /* MutationObserver unavailable; skip */ }
+		window.setInterval(function(){ hookWindow(window); }, 2000);
+	}
 	document.addEventListener('keydown', function(event) {
 		if (event.key === 'Escape' && (document.body.classList.contains('q2-embed-full') || document.body.classList.contains('q2-embed-p2'))) {
 			post('close:requested');

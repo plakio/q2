@@ -2,7 +2,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { Icon } from '@wordpress/components';
 import { useEffect, useId, useMemo, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
-import { chevronLeft, chevronRight, fullscreen } from '@wordpress/icons';
+import { chevronLeft, chevronRight } from '@wordpress/icons';
 import PostEditorIframe from '../editor/PostEditorIframe';
 import StateMessage from '../components/StateMessage';
 
@@ -557,57 +557,28 @@ export default function PagesScreen( {
 							) }
 						</header>
 						{ editing ? (
-							<>
-								{ onOpenInFullEditor && (
-									<div className="q2-page-edit-toolbar">
-										<button
-											type="button"
-											onClick={ () => {
-												setEditing( false );
-												onOpenInFullEditor(
-													selectedId
-												);
-											} }
-											aria-label={ __(
-												'Open full editor',
-												'q2'
-											) }
-											title={ __(
-												'Open full editor',
-												'q2'
-											) }
-										>
-											<Icon
-												icon={ fullscreen }
-												size={ 20 }
-											/>
-											<span>
-												{ __(
-													'Open full editor',
-													'q2'
-												) }
-											</span>
-										</button>
-									</div>
-								) }
-								<PostEditorIframe
-									postId={ selectedId }
-									postType="page"
-									variant="full"
-									title={ __( 'Edit page', 'q2' ) }
-									onClose={ () => setEditing( false ) }
-									onSaved={ () => {
-										setEditing( false );
-										reload();
-										apiFetch( {
-											path: `/q2/v1/pages/${ selectedId }`,
-										} ).then( ( next ) => {
-											setPageData( next );
-											setPageStatus( 'ready' );
-										} );
-									} }
-								/>
-							</>
+							<PostEditorIframe
+								postId={ selectedId }
+								postType="page"
+								variant="full"
+								title={ __( 'Edit page', 'q2' ) }
+								onClose={ () => setEditing( false ) }
+								allowFullEditor
+								onOpenInFullEditor={ ( pageId ) => {
+									setEditing( false );
+									onOpenInFullEditor?.( pageId );
+								} }
+								onSaved={ () => {
+									setEditing( false );
+									reload();
+									apiFetch( {
+										path: `/q2/v1/pages/${ selectedId }`,
+									} ).then( ( next ) => {
+										setPageData( next );
+										setPageStatus( 'ready' );
+									} );
+								} }
+							/>
 						) : (
 							<div
 								className="q2-page-content"

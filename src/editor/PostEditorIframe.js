@@ -3,7 +3,12 @@ import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Spinner } from '@wordpress/components';
 
-async function fetchEditorUrl( { postId, postType, variant } ) {
+async function fetchEditorUrl( {
+	postId,
+	postType,
+	variant,
+	allowFullEditor,
+} ) {
 	const path =
 		postId > 0
 			? `/q2/v1/editor-url?post_id=${ postId }&mode=${ variant }`
@@ -13,12 +18,19 @@ async function fetchEditorUrl( { postId, postType, variant } ) {
 	const response = await apiFetch( { path } );
 	const url = response?.url || '';
 	const viewUrl = response?.viewUrl || '';
-	// Carry the in-application view URL in the fragment: wp-admin rewrites
-	// the iframe query string to its canonical form, but preserves the hash.
-	if ( viewUrl && ! url.includes( '#' ) ) {
-		return {
-			url: `${ url }#q2_view=${ encodeURIComponent( viewUrl ) }`,
-		};
+	// Carry embed flags in the fragment: wp-admin rewrites the iframe query
+	// string to its canonical form shortly after load, but preserves the
+	// hash.
+	const params = new URLSearchParams();
+	if ( viewUrl ) {
+		params.set( 'q2_view', viewUrl );
+	}
+	if ( allowFullEditor ) {
+		params.set( 'q2_fullscreen', '1' );
+	}
+	const query = params.toString();
+	if ( query && ! url.includes( '#' ) ) {
+		return { url: `${ url }#${ query }` };
 	}
 	return { url };
 }
@@ -29,6 +41,8 @@ export default function PostEditorIframe( {
 	isNew = false,
 	onClose,
 	onSaved,
+	onOpenInFullEditor,
+	allowFullEditor = false,
 	title,
 	variant = 'embedded',
 } ) {
@@ -42,7 +56,7 @@ export default function PostEditorIframe( {
 		setReady( false );
 		setError( '' );
 		setUrl( '' );
-		fetchEditorUrl( { postId, postType, variant } )
+		fetchEditorUrl( { postId, postType, variant, allowFullEditor } )
 			.then( ( resolved ) => {
 				if ( ! cancelled ) {
 					setUrl( resolved?.url || '' );
@@ -59,7 +73,7 @@ export default function PostEditorIframe( {
 		return () => {
 			cancelled = true;
 		};
-	}, [ postId, postType, variant ] );
+	}, [ postId, postType, variant, allowFullEditor ] );
 
 	useEffect( () => {
 		function handleMessage( event ) {
@@ -75,6 +89,11 @@ export default function PostEditorIframe( {
 				setReady( true );
 			} else if ( data.type === 'save:done' && onSaved ) {
 				onSaved( { postId: data.postId } );
+			} else if (
+				data.type === 'open:fullscreen' &&
+				onOpenInFullEditor
+			) {
+				onOpenInFullEditor( data.postId || postId );
 			} else if ( data.type === 'close:requested' && onClose ) {
 				onClose();
 			}
@@ -82,7 +101,7 @@ export default function PostEditorIframe( {
 
 		window.addEventListener( 'message', handleMessage );
 		return () => window.removeEventListener( 'message', handleMessage );
-	}, [ onClose, onSaved ] );
+	}, [ onClose, onSaved, onOpenInFullEditor, postId ] );
 
 	useEffect( () => {
 		if ( ! ready || ! wrapperRef.current ) {
