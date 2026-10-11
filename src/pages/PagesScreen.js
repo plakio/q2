@@ -296,6 +296,29 @@ export default function PagesScreen( {
 			}${ sideCollapsed ? ' is-side-collapsed' : '' }` }
 		>
 			<aside className="q2-pages-side">
+				<div className="q2-pages-side-topbar">
+					<button
+						type="button"
+						className="q2-pages-side-toggle"
+						onClick={ toggleSide }
+						aria-expanded={ ! sideCollapsed }
+						aria-label={
+							sideCollapsed
+								? __( 'Expand sidebar', 'q2' )
+								: __( 'Collapse sidebar', 'q2' )
+						}
+						title={
+							sideCollapsed
+								? __( 'Expand sidebar', 'q2' )
+								: __( 'Collapse sidebar', 'q2' )
+						}
+					>
+						<Icon
+							icon={ sideCollapsed ? chevronRight : chevronLeft }
+							size={ 20 }
+						/>
+					</button>
+				</div>
 				<header className="q2-page-header">
 					<div>
 						<span className="q2-eyebrow">
@@ -303,38 +326,13 @@ export default function PagesScreen( {
 						</span>
 						<h1>{ __( 'Pages', 'q2' ) }</h1>
 					</div>
-					<div className="q2-pages-header-actions">
-						<button
-							type="button"
-							className="q2-pages-create"
-							onClick={ startCreate }
-						>
-							{ __( 'New', 'q2' ) }
-						</button>
-						<button
-							type="button"
-							className="q2-pages-side-toggle"
-							onClick={ toggleSide }
-							aria-expanded={ ! sideCollapsed }
-							aria-label={
-								sideCollapsed
-									? __( 'Expand sidebar', 'q2' )
-									: __( 'Collapse sidebar', 'q2' )
-							}
-							title={
-								sideCollapsed
-									? __( 'Expand sidebar', 'q2' )
-									: __( 'Collapse sidebar', 'q2' )
-							}
-						>
-							<Icon
-								icon={
-									sideCollapsed ? chevronRight : chevronLeft
-								}
-								size={ 20 }
-							/>
-						</button>
-					</div>
+					<button
+						type="button"
+						className="q2-pages-create"
+						onClick={ startCreate }
+					>
+						{ __( 'New', 'q2' ) }
+					</button>
 				</header>
 				<label className="q2-pages-search" htmlFor={ searchId }>
 					<span className="screen-reader-text">

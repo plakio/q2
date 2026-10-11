@@ -1695,10 +1695,10 @@ a {
 	transition: background var(--p2-transition-quick) ease-in-out;
 }
 
-.q2-pages-header-actions {
+.q2-pages-side-topbar {
 	display: flex;
-	align-items: center;
-	gap: 0.5rem;
+	justify-content: flex-end;
+	margin: -1rem 0 0.5rem;
 }
 
 .q2-pages-side-toggle,
