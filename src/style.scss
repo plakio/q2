@@ -1695,6 +1695,48 @@ a {
 	transition: background var(--p2-transition-quick) ease-in-out;
 }
 
+.q2-pages-header-actions {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.q2-pages-side-toggle,
+.q2-pages-side-expand {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.25rem;
+	height: 2.25rem;
+	padding: 0;
+	border: 1px solid var(--q2-line);
+	border-radius: 100px;
+	background: #fff;
+	color: var(--q2-muted);
+	cursor: pointer;
+}
+
+.q2-pages-side-toggle:hover,
+.q2-pages-side-toggle:focus-visible,
+.q2-pages-side-expand:hover,
+.q2-pages-side-expand:focus-visible {
+	border-color: var(--p2-color-link);
+	color: var(--p2-color-link);
+}
+
+.q2-pages-side-expand {
+	margin-bottom: 1rem;
+}
+
+// Collapsed sidebar: the tree hides and the reader takes the full width.
+.q2-pages-screen.is-side-collapsed {
+	grid-template-columns: 0 minmax(0, 1fr);
+}
+
+.q2-pages-screen.is-side-collapsed .q2-pages-side {
+	display: none;
+}
+
 .q2-pages-create:hover,
 .q2-pages-create:focus-visible {
 	background: var(--p2-color-link-dark);
@@ -1930,9 +1972,18 @@ a {
 		grid-template-columns: 1fr;
 	}
 
+	.q2-pages-screen.is-side-collapsed {
+		grid-template-columns: 1fr;
+	}
+
 	.q2-pages-side {
 		border-right: 0;
 		border-bottom: 1px solid var(--q2-line);
+	}
+
+	.q2-pages-side-toggle,
+	.q2-pages-side-expand {
+		display: none;
 	}
 
 	.q2-pages-reader {

@@ -1,6 +1,8 @@
 import apiFetch from '@wordpress/api-fetch';
+import { Icon } from '@wordpress/components';
 import { useEffect, useId, useMemo, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
+import { chevronLeft, chevronRight } from '@wordpress/icons';
 import PostEditorIframe from '../editor/PostEditorIframe';
 import StateMessage from '../components/StateMessage';
 
@@ -114,6 +116,16 @@ export default function PagesScreen( {
 	const [ editing, setEditing ] = useState( false );
 	const [ creating, setCreating ] = useState( false );
 	const [ copied, setCopied ] = useState( false );
+	const [ sideCollapsed, setSideCollapsed ] = useState( () => {
+		try {
+			return (
+				window.localStorage.getItem( 'q2_pages_side_collapsed' ) === '1'
+			);
+		} catch {
+			// Storage unavailable (e.g. private mode); keep expanded.
+			return false;
+		}
+	} );
 	const [ expanded, setExpanded ] = useState( () => new Set() );
 	const searchId = useId();
 
@@ -244,6 +256,21 @@ export default function PagesScreen( {
 		}
 	};
 
+	const toggleSide = () => {
+		setSideCollapsed( ( current ) => {
+			const next = ! current;
+			try {
+				window.localStorage.setItem(
+					'q2_pages_side_collapsed',
+					next ? '1' : '0'
+				);
+			} catch {
+				// Storage unavailable; the state still applies.
+			}
+			return next;
+		} );
+	};
+
 	const startCreate = () => {
 		if ( onCreatePage ) {
 			onCreatePage();
@@ -266,7 +293,7 @@ export default function PagesScreen( {
 		<div
 			className={ `q2-pages-screen${
 				selectedId || creating ? ' has-selection' : ''
-			}` }
+			}${ sideCollapsed ? ' is-side-collapsed' : '' }` }
 		>
 			<aside className="q2-pages-side">
 				<header className="q2-page-header">
@@ -276,13 +303,38 @@ export default function PagesScreen( {
 						</span>
 						<h1>{ __( 'Pages', 'q2' ) }</h1>
 					</div>
-					<button
-						type="button"
-						className="q2-pages-create"
-						onClick={ startCreate }
-					>
-						{ __( 'New page', 'q2' ) }
-					</button>
+					<div className="q2-pages-header-actions">
+						<button
+							type="button"
+							className="q2-pages-create"
+							onClick={ startCreate }
+						>
+							{ __( 'New', 'q2' ) }
+						</button>
+						<button
+							type="button"
+							className="q2-pages-side-toggle"
+							onClick={ toggleSide }
+							aria-expanded={ ! sideCollapsed }
+							aria-label={
+								sideCollapsed
+									? __( 'Expand sidebar', 'q2' )
+									: __( 'Collapse sidebar', 'q2' )
+							}
+							title={
+								sideCollapsed
+									? __( 'Expand sidebar', 'q2' )
+									: __( 'Collapse sidebar', 'q2' )
+							}
+						>
+							<Icon
+								icon={
+									sideCollapsed ? chevronRight : chevronLeft
+								}
+								size={ 20 }
+							/>
+						</button>
+					</div>
 				</header>
 				<label className="q2-pages-search" htmlFor={ searchId }>
 					<span className="screen-reader-text">
@@ -363,6 +415,18 @@ export default function PagesScreen( {
 				) }
 			</aside>
 			<section className="q2-pages-reader">
+				{ sideCollapsed && (
+					<button
+						type="button"
+						className="q2-pages-side-expand"
+						onClick={ toggleSide }
+						aria-expanded={ false }
+						aria-label={ __( 'Expand sidebar', 'q2' ) }
+						title={ __( 'Expand sidebar', 'q2' ) }
+					>
+						<Icon icon={ chevronRight } size={ 20 } />
+					</button>
+				) }
 				{ ( selectedId || creating ) && (
 					<button
 						type="button"

@@ -190,7 +190,7 @@ final class Application {
 			'window.q2Settings = ' . wp_json_encode( $this->client_settings() ) . ';',
 			'before'
 		);
-		wp_set_script_translations( self::SCRIPT_HANDLE, 'q2' );
+		wp_set_script_translations( self::SCRIPT_HANDLE, 'q2', Q2_PATH . 'languages' );
 	}
 
 	/**
