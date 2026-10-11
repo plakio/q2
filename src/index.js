@@ -280,6 +280,9 @@ function App() {
 				initialSlug={ routeDetail }
 				onPageChange={ openPage }
 				onCreatePage={ () => openEditor( 'page' ) }
+				onOpenInFullEditor={ ( pageId ) =>
+					openEditor( 'page', pageId )
+				}
 			/>
 		);
 	} else if ( route === 'media' ) {

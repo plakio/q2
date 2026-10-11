@@ -1728,6 +1728,32 @@ a {
 	margin-bottom: 1rem;
 }
 
+.q2-page-edit-toolbar {
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: 0.75rem;
+}
+
+.q2-page-edit-toolbar button {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	padding: 0.45rem 0.8rem;
+	border: 1px solid var(--q2-line);
+	border-radius: 100px;
+	background: #fff;
+	color: var(--q2-muted);
+	font-size: 0.85rem;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.q2-page-edit-toolbar button:hover,
+.q2-page-edit-toolbar button:focus-visible {
+	border-color: var(--p2-color-link);
+	color: var(--p2-color-link);
+}
+
 // Collapsed sidebar: the tree hides and the reader takes the full width
 // (single column, so the reader can't auto-place into the zero track).
 .q2-pages-screen.is-side-collapsed {
