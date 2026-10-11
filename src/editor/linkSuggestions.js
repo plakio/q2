@@ -24,6 +24,44 @@ function decodeEntities( text ) {
 }
 
 /**
+ * Rewrites a native WordPress permalink into the equivalent Q2 deep link.
+ *
+ * Pages keep their full hierarchical path; posts use their slug.
+ *
+ * @param {string} nativeUrl Native permalink returned by the REST API.
+ * @param {string} type      Object subtype (`post` or `page`).
+ * @return {string} Q2 deep link, or the native URL when it cannot be derived.
+ */
+function toQ2Url( nativeUrl, type ) {
+	const appUrl = window.q2Settings?.appUrl;
+	const homeUrl = window.q2Settings?.homeUrl;
+	if ( ! appUrl || ! homeUrl ) {
+		return nativeUrl;
+	}
+
+	let pathname;
+	try {
+		pathname = new URL( nativeUrl ).pathname;
+	} catch {
+		return nativeUrl;
+	}
+
+	const homePath = new URL( homeUrl ).pathname.replace( /\/$/, '' );
+	const relative = pathname
+		.slice( homePath.length )
+		.replace( /^\/+|\/+$/g, '' );
+	if ( ! relative ) {
+		return nativeUrl;
+	}
+
+	if ( type === 'page' ) {
+		return `${ appUrl }pages/${ relative }/`;
+	}
+
+	return `${ appUrl }feed/${ relative.split( '/' ).pop() }/`;
+}
+
+/**
  * Fetches link suggestions for a search term.
  *
  * @param {string}  search                       Search term.
@@ -48,11 +86,15 @@ export async function fetchLinkSuggestions(
 
 	return results
 		.filter( ( result ) => result.id && result.url )
-		.map( ( result ) => ( {
-			id: result.id,
-			url: result.url,
-			title: decodeEntities( result.title ) || __( '(no title)', 'q2' ),
-			type: result.subtype || result.type,
-			kind: 'post-type',
-		} ) );
+		.map( ( result ) => {
+			const type = result.subtype || result.type;
+			return {
+				id: result.id,
+				url: toQ2Url( result.url, type ),
+				title:
+					decodeEntities( result.title ) || __( '(no title)', 'q2' ),
+				type,
+				kind: 'post-type',
+			};
+		} );
 }

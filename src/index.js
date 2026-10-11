@@ -50,7 +50,12 @@ import SearchScreen from './search/SearchScreen';
 import StartersScreen from './starters/StartersScreen';
 import useSurveyRuntime from './surveys/useSurveyRuntime';
 import './mentions/register';
-import { routeFromHash, routeFromPath } from './routes';
+import {
+	routeDetailFromHash,
+	routeDetailFromPath,
+	routeFromHash,
+	routeFromPath,
+} from './routes';
 import './style.scss';
 
 const settings = window.q2Settings || {};
@@ -113,8 +118,29 @@ function routeFromLocation() {
 	);
 }
 
+function routeDetailFromLocation() {
+	if ( window.location.hash ) {
+		return routeDetailFromHash( window.location.hash );
+	}
+
+	const homePath = new URL(
+		settings.homeUrl,
+		window.location.origin
+	).pathname.replace( /\/$/, '' );
+	if ( window.location.pathname.replace( /\/$/, '' ) === homePath ) {
+		return '';
+	}
+
+	return routeDetailFromPath(
+		settings.appUrl,
+		window.location.pathname,
+		window.location.origin
+	);
+}
+
 function App() {
 	const [ route, setRoute ] = useState( routeFromLocation );
+	const [ routeDetail, setRouteDetail ] = useState( routeDetailFromLocation );
 	const [ menuOpen, setMenuOpen ] = useState( false );
 	const [ focusPostId, setFocusPostId ] = useState( 0 );
 	const [ feedFilter, setFeedFilter ] = useState( 'all' );
@@ -130,7 +156,10 @@ function App() {
 	);
 
 	useEffect( () => {
-		const onPopState = () => setRoute( routeFromLocation() );
+		const onPopState = () => {
+			setRoute( routeFromLocation() );
+			setRouteDetail( routeDetailFromLocation() );
+		};
 		window.addEventListener( 'popstate', onPopState );
 		return () => window.removeEventListener( 'popstate', onPopState );
 	}, [] );
@@ -142,8 +171,19 @@ function App() {
 				: `${ settings.homeUrl }#${ nextRoute }`;
 		window.history.pushState( {}, '', nextUrl );
 		setRoute( nextRoute );
+		setRouteDetail( '' );
 		setMenuOpen( false );
 		document.querySelector( '#q2-main' )?.focus();
+	}, [] );
+
+	const openPage = useCallback( ( path ) => {
+		window.history.pushState(
+			{},
+			'',
+			`${ settings.appUrl }pages/${ path }/`
+		);
+		setRoute( 'pages' );
+		setRouteDetail( path );
 	}, [] );
 
 	const navigate = useCallback(
@@ -208,6 +248,7 @@ function App() {
 			<Feed
 				key={ contentRevision }
 				focusPostId={ focusPostId }
+				focusPostSlug={ routeDetail }
 				filter={ feedFilter }
 				feedMeta={ feedMeta }
 				onFilterChange={ chooseFeedFilter }
@@ -224,6 +265,8 @@ function App() {
 		content = (
 			<PagesScreen
 				key={ contentRevision }
+				initialSlug={ routeDetail }
+				onPageChange={ openPage }
 				onCreatePage={ () => openEditor( 'page' ) }
 			/>
 		);
@@ -970,6 +1013,7 @@ function Team( { onNavigate } ) {
 
 function Feed( {
 	focusPostId = 0,
+	focusPostSlug = '',
 	filter,
 	feedMeta,
 	onFilterChange,
@@ -1001,6 +1045,7 @@ function Feed( {
 			filter,
 			feedMeta,
 			focusPostId,
+			focusPostSlug,
 		} );
 		if ( ! path ) {
 			setPosts( [] );
@@ -1032,7 +1077,7 @@ function Feed( {
 		return () => {
 			active = false;
 		};
-	}, [ feedMeta, filter, focusPostId, page, refresh ] );
+	}, [ feedMeta, filter, focusPostId, focusPostSlug, page, refresh ] );
 
 	const reload = useCallback( () => {
 		setPage( 1 );
@@ -1298,17 +1343,20 @@ function Post( {
 		( count ) => setReplyCount( count ),
 		[]
 	);
+	const postLink = post.slug
+		? `${ settings.appUrl }feed/${ post.slug }/`
+		: post.link;
 	const copyPostLink = async () => {
-		if ( ! post.link ) {
+		if ( ! postLink ) {
 			return;
 		}
 		try {
-			await navigator.clipboard.writeText( post.link );
+			await navigator.clipboard.writeText( postLink );
 			setLinkCopied( true );
 			window.setTimeout( () => setLinkCopied( false ), 2000 );
 		} catch {
 			// eslint-disable-next-line no-alert
-			window.prompt( __( 'Copy this link:', 'q2' ), post.link );
+			window.prompt( __( 'Copy this link:', 'q2' ), postLink );
 		}
 	};
 	const canEdit =
@@ -1585,7 +1633,7 @@ function Post( {
 					{ collaborationState.likes > 0 &&
 						` (${ collaborationState.likes })` }
 				</button>
-				{ post.link && (
+				{ postLink && (
 					<button type="button" onClick={ copyPostLink }>
 						<Icon icon={ link } size={ 18 } />
 						{ linkCopied

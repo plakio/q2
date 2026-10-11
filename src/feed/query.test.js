@@ -39,4 +39,19 @@ describe( 'feed queries', () => {
 			} )
 		).toContain( 'context=edit&author=7' );
 	} );
+
+	it( 'focuses a single post by slug', () => {
+		expect(
+			buildFeedPath( {
+				page: 1,
+				perPage: 10,
+				canEdit: false,
+				userId: 7,
+				filter: 'all',
+				feedMeta: meta,
+				focusPostId: 0,
+				focusPostSlug: 'hello world',
+			} )
+		).toContain( 'slug=hello%20world' );
+	} );
 } );

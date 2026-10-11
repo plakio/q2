@@ -9,6 +9,14 @@ jest.mock( '@wordpress/api-fetch', () => ( {
 describe( 'fetchLinkSuggestions', () => {
 	beforeEach( () => {
 		apiFetch.mockReset();
+		window.q2Settings = {
+			appUrl: 'https://example.test/q2/',
+			homeUrl: 'https://example.test/',
+		};
+	} );
+
+	afterEach( () => {
+		delete window.q2Settings;
 	} );
 
 	it( 'maps posts and pages into link suggestions', async () => {
@@ -37,14 +45,14 @@ describe( 'fetchLinkSuggestions', () => {
 		expect( results ).toEqual( [
 			{
 				id: 1,
-				url: 'https://example.test/hello/',
+				url: 'https://example.test/q2/feed/hello/',
 				title: 'Hello & welcome',
 				type: 'post',
 				kind: 'post-type',
 			},
 			{
 				id: 2,
-				url: 'https://example.test/about/',
+				url: 'https://example.test/q2/pages/about/',
 				title: 'About',
 				type: 'page',
 				kind: 'post-type',
@@ -63,7 +71,7 @@ describe( 'fetchLinkSuggestions', () => {
 		expect( results ).toEqual( [
 			{
 				id: 3,
-				url: 'https://example.test/ok/',
+				url: 'https://example.test/q2/feed/ok/',
 				title: '(no title)',
 				kind: 'post-type',
 			},

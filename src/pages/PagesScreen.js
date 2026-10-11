@@ -68,7 +68,41 @@ function TreeNode( { node, onSelect, activeId, expanded, onToggle } ) {
 	);
 }
 
-export default function PagesScreen( { onCreatePage } ) {
+function findByPath( nodes, path ) {
+	for ( const node of nodes ) {
+		if ( node.path && node.path === path ) {
+			return node;
+		}
+		if ( node.children?.length ) {
+			const found = findByPath( node.children, path );
+			if ( found ) {
+				return found;
+			}
+		}
+	}
+	return null;
+}
+
+function findById( nodes, id ) {
+	for ( const node of nodes ) {
+		if ( node.id === id ) {
+			return node;
+		}
+		if ( node.children?.length ) {
+			const found = findById( node.children, id );
+			if ( found ) {
+				return found;
+			}
+		}
+	}
+	return null;
+}
+
+export default function PagesScreen( {
+	onCreatePage,
+	initialSlug = '',
+	onPageChange,
+} ) {
 	const [ tree, setTree ] = useState( [] );
 	const [ recents, setRecents ] = useState( [] );
 	const [ status, setStatus ] = useState( 'loading' );
@@ -131,6 +165,18 @@ export default function PagesScreen( { onCreatePage } ) {
 		return undefined;
 	}, [ selectedId ] );
 
+	useEffect( () => {
+		if ( ! initialSlug || status !== 'ready' ) {
+			return;
+		}
+		const node = findByPath( tree, initialSlug );
+		if ( node ) {
+			setSelectedId( ( current ) =>
+				current === node.id ? current : node.id
+			);
+		}
+	}, [ initialSlug, tree, status ] );
+
 	const selectFromTree = ( id ) => {
 		setSelectedId( id );
 		setExpanded( ( prev ) => {
@@ -138,6 +184,10 @@ export default function PagesScreen( { onCreatePage } ) {
 			next.add( id );
 			return next;
 		} );
+		const node = findById( tree, id );
+		if ( node?.path ) {
+			onPageChange?.( node.path );
+		}
 	};
 
 	const toggleExpand = ( id ) => {
@@ -176,17 +226,21 @@ export default function PagesScreen( { onCreatePage } ) {
 		reload();
 	};
 
+	const pageLink = pageData?.path
+		? `${ window.q2Settings?.appUrl || '/' }pages/${ pageData.path }/`
+		: pageData?.link;
+
 	const copyLink = async () => {
-		if ( ! pageData?.link ) {
+		if ( ! pageLink ) {
 			return;
 		}
 		try {
-			await navigator.clipboard.writeText( pageData.link );
+			await navigator.clipboard.writeText( pageLink );
 			setCopied( true );
 			window.setTimeout( () => setCopied( false ), 2000 );
 		} catch {
 			// eslint-disable-next-line no-alert
-			window.prompt( __( 'Copy this link:', 'q2' ), pageData.link );
+			window.prompt( __( 'Copy this link:', 'q2' ), pageLink );
 		}
 	};
 
@@ -281,9 +335,12 @@ export default function PagesScreen( { onCreatePage } ) {
 								<li key={ item.id }>
 									<button
 										type="button"
-										onClick={ () =>
-											setSelectedId( item.id )
-										}
+										onClick={ () => {
+											setSelectedId( item.id );
+											if ( item.path ) {
+												onPageChange?.( item.path );
+											}
+										} }
 									>
 										<strong>
 											{ item.title ||
@@ -382,65 +439,59 @@ export default function PagesScreen( { onCreatePage } ) {
 									) }
 								</p>
 							) }
-							{ ! editing &&
-								( pageData.canEdit || pageData.link ) && (
-									<div className="q2-page-actions">
-										{ pageData.link && (
-											<button
-												type="button"
-												onClick={ copyLink }
-											>
-												{ copied
-													? __( 'Copied!', 'q2' )
-													: __( 'Copy link', 'q2' ) }
-											</button>
-										) }
-										{ pageData.canEdit && (
+							{ ! editing && ( pageData.canEdit || pageLink ) && (
+								<div className="q2-page-actions">
+									{ pageLink && (
+										<button
+											type="button"
+											onClick={ copyLink }
+										>
+											{ copied
+												? __( 'Copied!', 'q2' )
+												: __( 'Copy link', 'q2' ) }
+										</button>
+									) }
+									{ pageData.canEdit && (
+										<button
+											type="button"
+											onClick={ () => setEditing( true ) }
+										>
+											{ __( 'Edit', 'q2' ) }
+										</button>
+									) }
+									{ pageData.canPublish &&
+										pageData.status !== 'publish' && (
 											<button
 												type="button"
 												onClick={ () =>
-													setEditing( true )
+													publish( 'publish' )
 												}
 											>
-												{ __( 'Edit', 'q2' ) }
+												{ __( 'Publish', 'q2' ) }
 											</button>
 										) }
-										{ pageData.canPublish &&
-											pageData.status !== 'publish' && (
-												<button
-													type="button"
-													onClick={ () =>
-														publish( 'publish' )
-													}
-												>
-													{ __( 'Publish', 'q2' ) }
-												</button>
-											) }
-										{ pageData.canPublish &&
-											pageData.status === 'publish' && (
-												<button
-													type="button"
-													onClick={ () =>
-														publish( 'draft' )
-													}
-												>
-													{ __(
-														'Move to draft',
-														'q2'
-													) }
-												</button>
-											) }
-										{ pageData.canDelete && (
+									{ pageData.canPublish &&
+										pageData.status === 'publish' && (
 											<button
 												type="button"
-												className="q2-page-delete"
-												onClick={ trashPage }
+												onClick={ () =>
+													publish( 'draft' )
+												}
 											>
-												{ __( 'Delete', 'q2' ) }
+												{ __( 'Move to draft', 'q2' ) }
 											</button>
 										) }
-									</div>
-								) }
+									{ pageData.canDelete && (
+										<button
+											type="button"
+											className="q2-page-delete"
+											onClick={ trashPage }
+										>
+											{ __( 'Delete', 'q2' ) }
+										</button>
+									) }
+								</div>
+							) }
 						</header>
 						{ editing ? (
 							<PostEditorIframe

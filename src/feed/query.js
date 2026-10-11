@@ -16,6 +16,7 @@ export function buildFeedPath( {
 	filter,
 	feedMeta,
 	focusPostId,
+	focusPostSlug,
 } ) {
 	const filterIds = filterPostIds( filter, feedMeta );
 	if ( filterIds && filterIds.length === 0 ) {
@@ -35,6 +36,8 @@ export function buildFeedPath( {
 	}
 	if ( focusPostId ) {
 		parameters.push( `include=${ focusPostId }` );
+	} else if ( focusPostSlug ) {
+		parameters.push( `slug=${ encodeURIComponent( focusPostSlug ) }` );
 	} else if ( filterIds ) {
 		parameters.push( `include=${ filterIds.join( ',' ) }` );
 	}
