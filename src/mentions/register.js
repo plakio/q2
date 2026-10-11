@@ -1,5 +1,5 @@
 import apiFetch from '@wordpress/api-fetch';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useMemo, useState } from '@wordpress/element';
 import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 
@@ -17,35 +17,46 @@ const memberCompleter = {
 					filterValue
 				) }`,
 			} )
-				.then( ( result ) => active && setMembers( result ) )
+				.then( ( result ) => {
+					if ( active ) {
+						setMembers( Array.isArray( result ) ? result : [] );
+					}
+				} )
 				.catch( () => {} );
 			return () => {
 				active = false;
 			};
 		}, [ filterValue ] );
 
-		const options = members.map( ( member ) => ( {
-			key: `q2-member-${ member.id }`,
-			value: member,
-			label: (
-				<span className="q2-mention-option">
-					<img src={ member.avatarUrl } alt="" />
-					<strong>{ member.name }</strong>
-					<small>@{ member.slug }</small>
-				</span>
-			),
-		} ) );
-		if ( window.q2Settings?.capabilities?.mentionAll ) {
-			options.unshift( {
-				key: 'q2-member-all',
-				value: { slug: 'all' },
+		// The options array must keep a stable reference across renders:
+		// AutocompleterUI dispatches it into state from a layout effect
+		// keyed on its identity, so a fresh array every render loops
+		// into "Maximum update depth exceeded" and crashes the block.
+		const options = useMemo( () => {
+			const list = members.map( ( member ) => ( {
+				key: `q2-member-${ member.id }`,
+				value: member,
 				label: (
-					<strong>
-						{ __( 'Everyone in this workspace', 'q2' ) }
-					</strong>
+					<span className="q2-mention-option">
+						<img src={ member.avatarUrl } alt="" />
+						<strong>{ member.name }</strong>
+						<small>@{ member.slug }</small>
+					</span>
 				),
-			} );
-		}
+			} ) );
+			if ( window.q2Settings?.capabilities?.mentionAll ) {
+				list.unshift( {
+					key: 'q2-member-all',
+					value: { slug: 'all' },
+					label: (
+						<strong>
+							{ __( 'Everyone in this workspace', 'q2' ) }
+						</strong>
+					),
+				} );
+			}
+			return list;
+		}, [ members ] );
 		return [ options ];
 	},
 
