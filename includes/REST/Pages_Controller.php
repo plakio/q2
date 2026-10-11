@@ -352,6 +352,7 @@ final class Pages_Controller {
 			'status'     => $page->post_status,
 			'author'     => (int) $page->post_author,
 			'authorName' => get_the_author_meta( 'display_name', (int) $page->post_author ),
+			'link'       => get_permalink( $page ),
 			'modified'   => mysql_to_rfc3339( $page->post_modified_gmt ),
 			'excerpt'    => wp_trim_words( wp_strip_all_tags( $page->post_content ), 18 ),
 			'menuOrder'  => (int) $page->menu_order,

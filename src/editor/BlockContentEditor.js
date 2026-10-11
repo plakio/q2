@@ -38,6 +38,7 @@ import {
 	undo as undoIcon,
 } from '@wordpress/icons';
 import { serializedContentIsMeaningful } from './content';
+import { fetchLinkSuggestions } from './linkSuggestions';
 import useBlockHistory from './useBlockHistory';
 
 export const POST_BLOCKS = [
@@ -97,6 +98,7 @@ export function useEditorSettings( allowedBlocks ) {
 			allowedBlockTypes: allowedBlocks,
 			hasFixedToolbar: true,
 			mediaUpload,
+			__experimentalFetchLinkSuggestions: fetchLinkSuggestions,
 			__experimentalCanUserUseUnfilteredHTML: false,
 		} ),
 		[ allowedBlocks ]

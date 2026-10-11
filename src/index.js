@@ -1290,6 +1290,7 @@ function Post( {
 	} = usePostCollaboration( post.id );
 	const [ commentsOpen, setCommentsOpen ] = useState( false );
 	const [ editing, setEditing ] = useState( false );
+	const [ linkCopied, setLinkCopied ] = useState( false );
 	const [ replyCount, setReplyCount ] = useState(
 		post._embedded?.replies?.[ 0 ]?.length || 0
 	);
@@ -1297,6 +1298,19 @@ function Post( {
 		( count ) => setReplyCount( count ),
 		[]
 	);
+	const copyPostLink = async () => {
+		if ( ! post.link ) {
+			return;
+		}
+		try {
+			await navigator.clipboard.writeText( post.link );
+			setLinkCopied( true );
+			window.setTimeout( () => setLinkCopied( false ), 2000 );
+		} catch {
+			// eslint-disable-next-line no-alert
+			window.prompt( __( 'Copy this link:', 'q2' ), post.link );
+		}
+	};
 	const canEdit =
 		post.author === settings.currentUser?.id ||
 		settings.capabilities?.editOthersPosts;
@@ -1571,6 +1585,14 @@ function Post( {
 					{ collaborationState.likes > 0 &&
 						` (${ collaborationState.likes })` }
 				</button>
+				{ post.link && (
+					<button type="button" onClick={ copyPostLink }>
+						<Icon icon={ link } size={ 18 } />
+						{ linkCopied
+							? __( 'Copied!', 'q2' )
+							: __( 'Copy link', 'q2' ) }
+					</button>
+				) }
 			</footer>
 			{ commentsOpen && (
 				<CommentsThread

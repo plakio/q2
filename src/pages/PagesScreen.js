@@ -79,6 +79,7 @@ export default function PagesScreen( { onCreatePage } ) {
 	const [ pageStatus, setPageStatus ] = useState( 'idle' );
 	const [ editing, setEditing ] = useState( false );
 	const [ creating, setCreating ] = useState( false );
+	const [ copied, setCopied ] = useState( false );
 	const [ expanded, setExpanded ] = useState( () => new Set() );
 	const searchId = useId();
 
@@ -173,6 +174,20 @@ export default function PagesScreen( { onCreatePage } ) {
 		setSelectedId( 0 );
 		setPageData( null );
 		reload();
+	};
+
+	const copyLink = async () => {
+		if ( ! pageData?.link ) {
+			return;
+		}
+		try {
+			await navigator.clipboard.writeText( pageData.link );
+			setCopied( true );
+			window.setTimeout( () => setCopied( false ), 2000 );
+		} catch {
+			// eslint-disable-next-line no-alert
+			window.prompt( __( 'Copy this link:', 'q2' ), pageData.link );
+		}
 	};
 
 	const startCreate = () => {
@@ -367,47 +382,65 @@ export default function PagesScreen( { onCreatePage } ) {
 									) }
 								</p>
 							) }
-							{ ! editing && pageData.canEdit && (
-								<div className="q2-page-actions">
-									<button
-										type="button"
-										onClick={ () => setEditing( true ) }
-									>
-										{ __( 'Edit', 'q2' ) }
-									</button>
-									{ pageData.canPublish &&
-										pageData.status !== 'publish' && (
+							{ ! editing &&
+								( pageData.canEdit || pageData.link ) && (
+									<div className="q2-page-actions">
+										{ pageData.link && (
+											<button
+												type="button"
+												onClick={ copyLink }
+											>
+												{ copied
+													? __( 'Copied!', 'q2' )
+													: __( 'Copy link', 'q2' ) }
+											</button>
+										) }
+										{ pageData.canEdit && (
 											<button
 												type="button"
 												onClick={ () =>
-													publish( 'publish' )
+													setEditing( true )
 												}
 											>
-												{ __( 'Publish', 'q2' ) }
+												{ __( 'Edit', 'q2' ) }
 											</button>
 										) }
-									{ pageData.canPublish &&
-										pageData.status === 'publish' && (
+										{ pageData.canPublish &&
+											pageData.status !== 'publish' && (
+												<button
+													type="button"
+													onClick={ () =>
+														publish( 'publish' )
+													}
+												>
+													{ __( 'Publish', 'q2' ) }
+												</button>
+											) }
+										{ pageData.canPublish &&
+											pageData.status === 'publish' && (
+												<button
+													type="button"
+													onClick={ () =>
+														publish( 'draft' )
+													}
+												>
+													{ __(
+														'Move to draft',
+														'q2'
+													) }
+												</button>
+											) }
+										{ pageData.canDelete && (
 											<button
 												type="button"
-												onClick={ () =>
-													publish( 'draft' )
-												}
+												className="q2-page-delete"
+												onClick={ trashPage }
 											>
-												{ __( 'Move to draft', 'q2' ) }
+												{ __( 'Delete', 'q2' ) }
 											</button>
 										) }
-									{ pageData.canDelete && (
-										<button
-											type="button"
-											className="q2-page-delete"
-											onClick={ trashPage }
-										>
-											{ __( 'Delete', 'q2' ) }
-										</button>
-									) }
-								</div>
-							) }
+									</div>
+								) }
 						</header>
 						{ editing ? (
 							<PostEditorIframe
