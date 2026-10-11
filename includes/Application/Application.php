@@ -152,10 +152,12 @@ final class Application {
 			'version'      => Q2_VERSION,
 		);
 
+		$extra_deps = $this->third_party_editor_deps();
+
 		wp_enqueue_script(
 			self::SCRIPT_HANDLE,
 			Q2_URL . 'build/index.js',
-			array_merge( $asset['dependencies'], array( 'media-editor' ) ),
+			array_merge( $asset['dependencies'], array( 'media-editor' ), $extra_deps ),
 			$asset['version'],
 			true
 		);
@@ -166,12 +168,62 @@ final class Application {
 			$asset['version']
 		);
 
+		/*
+		 * The wp-edit-blocks subtree pulls wp-reset-editor-styles, which in
+		 * turn depends on the unscoped wp-admin resets `common` and `forms`
+		 * (e.g. `ul { list-style: none }`, admin body/link/form defaults).
+		 * Those leak onto the application document, so prune them from the
+		 * reset's dependencies. The reset itself is scoped to
+		 * .editor-styles-wrapper, which Q2 does not use, and keeps working
+		 * without them. (Note: wp_dequeue_style cannot block them because
+		 * they are never queued directly, only pulled in as dependencies.)
+		 */
+		if ( isset( $GLOBALS['wp_styles']->registered['wp-reset-editor-styles'] ) ) {
+			$reset       = $GLOBALS['wp_styles']->registered['wp-reset-editor-styles'];
+			$reset->deps = array_values(
+				array_diff( (array) $reset->deps, array( 'common', 'forms' ) )
+			);
+		}
+
 		wp_add_inline_script(
 			self::SCRIPT_HANDLE,
 			'window.q2Settings = ' . wp_json_encode( $this->client_settings() ) . ';',
 			'before'
 		);
 		wp_set_script_translations( self::SCRIPT_HANDLE, 'q2' );
+	}
+
+	/**
+	 * Enqueues editor and display assets for whitelisted third-party blocks.
+	 *
+	 * Q2 isolates frontend assets, so blocks from other plugins would miss
+	 * their editor scripts (unregistered type) and styles (broken canvas).
+	 * Editor scripts are returned as app dependencies so they print first
+	 * and the block type exists before the composer mounts.
+	 *
+	 * @return string[] Extra script dependencies for the application bundle.
+	 */
+	private function third_party_editor_deps(): array {
+		$deps     = array();
+		$registry = \WP_Block_Type_Registry::get_instance();
+
+		foreach ( array( 'a8c/sketch' ) as $block_name ) {
+			if ( ! $registry->is_registered( $block_name ) ) {
+				continue;
+			}
+			$type = $registry->get_registered( $block_name );
+			foreach ( (array) $type->editor_script_handles as $handle ) {
+				$deps[] = $handle;
+			}
+			foreach ( (array) $type->editor_style_handles as $handle ) {
+				wp_enqueue_style( $handle );
+			}
+			foreach ( (array) $type->style_handles as $handle ) {
+				wp_enqueue_style( $handle );
+			}
+		}
+
+		return array_values( array_unique( $deps ) );
 	}
 
 	/**

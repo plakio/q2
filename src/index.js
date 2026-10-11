@@ -50,6 +50,7 @@ import SearchScreen from './search/SearchScreen';
 import StartersScreen from './starters/StartersScreen';
 import useSurveyRuntime from './surveys/useSurveyRuntime';
 import './mentions/register';
+import './sketch/support';
 import {
 	routeDetailFromHash,
 	routeDetailFromPath,

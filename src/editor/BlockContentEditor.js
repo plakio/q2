@@ -66,6 +66,10 @@ export const POST_BLOCKS = [
 	'core/spacer',
 	'core/html',
 	'core/shortcode',
+	// Third-party drawing block. Inert when the Sketch plugin is not
+	// active; its editor script is enqueued as an app dependency in
+	// Application::enqueue_assets so the type exists before mount.
+	'a8c/sketch',
 	'q2/task',
 	'q2/task-list',
 	'q2/project-status',
@@ -92,12 +96,53 @@ export function initialBlocks( content ) {
 	return parsed.length > 0 ? parsed : [ createBlock( 'core/paragraph' ) ];
 }
 
+// WordPress core default palette (wp-includes/theme.json). Q2 editors are
+// theme-independent, so expose it directly: color UIs such as the Sketch
+// brush palette or the text-color format read it from the editor settings
+// and render empty without it.
+export const DEFAULT_COLOR_PALETTE = [
+	{ name: 'Black', slug: 'black', color: '#000000' },
+	{ name: 'Cyan bluish gray', slug: 'cyan-bluish-gray', color: '#abb8c3' },
+	{ name: 'White', slug: 'white', color: '#ffffff' },
+	{ name: 'Pale pink', slug: 'pale-pink', color: '#f78da7' },
+	{ name: 'Vivid red', slug: 'vivid-red', color: '#cf2e2e' },
+	{
+		name: 'Luminous vivid orange',
+		slug: 'luminous-vivid-orange',
+		color: '#ff6900',
+	},
+	{
+		name: 'Luminous vivid amber',
+		slug: 'luminous-vivid-amber',
+		color: '#fcb900',
+	},
+	{
+		name: 'Light green cyan',
+		slug: 'light-green-cyan',
+		color: '#7bdcb5',
+	},
+	{ name: 'Vivid green cyan', slug: 'vivid-green-cyan', color: '#00d084' },
+	{ name: 'Pale cyan blue', slug: 'pale-cyan-blue', color: '#8ed1fc' },
+	{ name: 'Vivid cyan blue', slug: 'vivid-cyan-blue', color: '#0693e3' },
+	{ name: 'Vivid purple', slug: 'vivid-purple', color: '#9b51e0' },
+];
+
 export function useEditorSettings( allowedBlocks ) {
 	return useMemo(
 		() => ( {
 			allowedBlockTypes: allowedBlocks,
 			hasFixedToolbar: true,
 			mediaUpload,
+			colors: DEFAULT_COLOR_PALETTE,
+			__experimentalFeatures: {
+				color: {
+					palette: {
+						default: DEFAULT_COLOR_PALETTE,
+						theme: [],
+						custom: [],
+					},
+				},
+			},
 			__experimentalFetchLinkSuggestions: fetchLinkSuggestions,
 			__experimentalCanUserUseUnfilteredHTML: false,
 		} ),

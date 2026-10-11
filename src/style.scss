@@ -4105,6 +4105,17 @@ a {
 	gap: 0;
 }
 
+// The Sketch drawing block captures pointer input on its own <svg>,
+// but core editor CSS disables pointer events on every block svg so
+// clicks select the block instead. Re-enable them once selected so the
+// first click selects the block and subsequent strokes draw. (Covers
+// both merged and nested wrapper structures.)
+.q2-p2-canvas .wp-block-a8c-sketch.is-selected svg,
+.q2-p2-canvas .is-selected .wp-block-a8c-sketch svg,
+.q2-block-editor-canvas .wp-block-a8c-sketch.is-selected svg,
+.q2-block-editor-canvas .is-selected .wp-block-a8c-sketch svg {
+	pointer-events: auto;
+}
 // Keep list rhythm compact and consistent between editor and content.
 .q2-post-content .wp-block-list,
 .q2-page-content .wp-block-list,
@@ -4113,6 +4124,21 @@ a {
 	padding-left: 1.5em;
 	margin-top: 0.5em;
 	margin-bottom: 0.5em;
+	list-style: disc outside;
+}
+
+.q2-post-content .wp-block-list .wp-block-list,
+.q2-page-content .wp-block-list .wp-block-list,
+.q2-p2-canvas .wp-block-list .wp-block-list,
+.q2-block-editor-canvas .wp-block-list .wp-block-list {
+	list-style: circle outside;
+}
+
+.q2-post-content ol.wp-block-list,
+.q2-page-content ol.wp-block-list,
+.q2-p2-canvas ol.wp-block-list,
+.q2-block-editor-canvas ol.wp-block-list {
+	list-style: decimal outside;
 }
 
 .q2-post-content .wp-block-list li,
