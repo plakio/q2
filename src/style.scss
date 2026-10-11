@@ -2876,6 +2876,48 @@ a {
 	flex-wrap: wrap;
 }
 
+.q2-media-side-topbar {
+	display: flex;
+	justify-content: flex-end;
+	margin: -1rem 0 0.5rem;
+}
+
+.q2-media-side-toggle,
+.q2-media-side-expand {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.25rem;
+	height: 2.25rem;
+	padding: 0;
+	border: 1px solid var(--q2-line);
+	border-radius: 100px;
+	background: #fff;
+	color: var(--q2-muted);
+	cursor: pointer;
+}
+
+.q2-media-side-toggle:hover,
+.q2-media-side-toggle:focus-visible,
+.q2-media-side-expand:hover,
+.q2-media-side-expand:focus-visible {
+	border-color: var(--p2-color-link);
+	color: var(--p2-color-link);
+}
+
+.q2-media-side-expand {
+	margin-bottom: 1rem;
+}
+
+// Collapsed sidebar: the grid hides and the detail takes the full width.
+.q2-media-screen.is-side-collapsed {
+	grid-template-columns: 0 minmax(0, 1fr);
+}
+
+.q2-media-screen.is-side-collapsed .q2-media-side {
+	display: none;
+}
+
 .q2-media-upload {
 	padding: 0.55rem 1rem;
 	border: 0;
@@ -3063,9 +3105,18 @@ a {
 		grid-template-columns: 1fr;
 	}
 
+	.q2-media-screen.is-side-collapsed {
+		grid-template-columns: 1fr;
+	}
+
 	.q2-media-side {
 		border-right: 0;
 		border-bottom: 1px solid var(--q2-line);
+	}
+
+	.q2-media-side-toggle,
+	.q2-media-side-expand {
+		display: none;
 	}
 
 	.q2-media-detail {

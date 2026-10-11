@@ -1,6 +1,8 @@
 import apiFetch from '@wordpress/api-fetch';
+import { Icon } from '@wordpress/components';
 import { useEffect, useId, useRef, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
+import { chevronLeft, chevronRight } from '@wordpress/icons';
 import StateMessage from '../components/StateMessage';
 
 const MIME_GROUPS = [
@@ -29,6 +31,16 @@ export default function MediaScreen() {
 	const [ status, setStatus ] = useState( 'loading' );
 	const [ errorMessage, setErrorMessage ] = useState( '' );
 	const [ selected, setSelected ] = useState( null );
+	const [ sideCollapsed, setSideCollapsed ] = useState( () => {
+		try {
+			return (
+				window.localStorage.getItem( 'q2_media_side_collapsed' ) === '1'
+			);
+		} catch {
+			// Storage unavailable (e.g. private mode); keep expanded.
+			return false;
+		}
+	} );
 	const fileRef = useRef( null );
 	const [ uploading, setUploading ] = useState( 0 );
 	const searchId = useId();
@@ -145,9 +157,51 @@ export default function MediaScreen() {
 
 	const canUpload = window.q2Settings?.capabilities?.createPosts;
 
+	const toggleSide = () => {
+		setSideCollapsed( ( current ) => {
+			const next = ! current;
+			try {
+				window.localStorage.setItem(
+					'q2_media_side_collapsed',
+					next ? '1' : '0'
+				);
+			} catch {
+				// Storage unavailable; the state still applies.
+			}
+			return next;
+		} );
+	};
+
 	return (
-		<div className="q2-media-screen">
+		<div
+			className={ `q2-media-screen${
+				sideCollapsed ? ' is-side-collapsed' : ''
+			}` }
+		>
 			<aside className="q2-media-side">
+				<div className="q2-media-side-topbar">
+					<button
+						type="button"
+						className="q2-media-side-toggle"
+						onClick={ toggleSide }
+						aria-expanded={ ! sideCollapsed }
+						aria-label={
+							sideCollapsed
+								? __( 'Expand sidebar', 'q2' )
+								: __( 'Collapse sidebar', 'q2' )
+						}
+						title={
+							sideCollapsed
+								? __( 'Expand sidebar', 'q2' )
+								: __( 'Collapse sidebar', 'q2' )
+						}
+					>
+						<Icon
+							icon={ sideCollapsed ? chevronRight : chevronLeft }
+							size={ 20 }
+						/>
+					</button>
+				</div>
 				<header className="q2-page-header">
 					<div>
 						<span className="q2-eyebrow">
@@ -298,6 +352,18 @@ export default function MediaScreen() {
 				) }
 			</aside>
 			<section className="q2-media-detail">
+				{ sideCollapsed && (
+					<button
+						type="button"
+						className="q2-media-side-expand"
+						onClick={ toggleSide }
+						aria-expanded={ false }
+						aria-label={ __( 'Expand sidebar', 'q2' ) }
+						title={ __( 'Expand sidebar', 'q2' ) }
+					>
+						<Icon icon={ chevronRight } size={ 20 } />
+					</button>
+				) }
 				{ ! selected && (
 					<StateMessage>
 						<strong>{ __( 'Select a file', 'q2' ) }</strong>
