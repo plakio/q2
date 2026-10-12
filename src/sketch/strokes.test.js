@@ -1,9 +1,11 @@
 import {
 	canRedoStroke,
 	canUndoStroke,
+	findStrokeAtPoint,
 	initialStrokeHistory,
 	recordStroke,
 	redoStroke,
+	removeStroke,
 	undoStroke,
 } from './strokes';
 
@@ -59,5 +61,45 @@ describe( 'sketch stroke history', () => {
 		const history = initialStrokeHistory( STROKE_A );
 		expect( undoStroke( history ) ).toBe( history );
 		expect( redoStroke( history ) ).toBe( history );
+	} );
+} );
+
+describe( 'sketch eraser hit-testing', () => {
+	const LINE = [
+		{
+			stroke: [
+				[ 0, 0 ],
+				[ 100, 0 ],
+			],
+			color: '#000',
+		},
+	];
+	const DOT = [ { stroke: [ [ 50, 50 ] ], color: '#000' } ];
+
+	it( 'hits a stroke near its path', () => {
+		expect( findStrokeAtPoint( LINE, 50, 3 ) ).toBe( 0 );
+		expect( findStrokeAtPoint( LINE, 50, 30 ) ).toBe( -1 );
+	} );
+
+	it( 'hits single-point strokes within tolerance', () => {
+		expect( findStrokeAtPoint( DOT, 55, 55 ) ).toBe( 0 );
+		expect( findStrokeAtPoint( DOT, 0, 0 ) ).toBe( -1 );
+	} );
+
+	it( 'prefers the topmost stroke', () => {
+		const stacked = [ ...LINE, ...DOT ];
+		expect( findStrokeAtPoint( stacked, 55, 55 ) ).toBe( 1 );
+	} );
+
+	it( 'ignores empty or malformed strokes', () => {
+		expect( findStrokeAtPoint( [], 0, 0 ) ).toBe( -1 );
+		expect( findStrokeAtPoint( null, 0, 0 ) ).toBe( -1 );
+		expect( findStrokeAtPoint( [ {} ], 0, 0 ) ).toBe( -1 );
+	} );
+
+	it( 'removes a stroke by index', () => {
+		const stacked = [ ...LINE, ...DOT ];
+		expect( removeStroke( stacked, 0 ) ).toEqual( DOT );
+		expect( removeStroke( stacked, 5 ) ).toBe( stacked );
 	} );
 } );

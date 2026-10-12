@@ -59,3 +59,59 @@ export function canUndoStroke( history ) {
 export function canRedoStroke( history ) {
 	return history.future.length > 0;
 }
+
+function pointToSegmentDistance( px, py, ax, ay, bx, by ) {
+	const dx = bx - ax;
+	const dy = by - ay;
+	const lengthSquared = dx * dx + dy * dy;
+	if ( lengthSquared === 0 ) {
+		return Math.hypot( px - ax, py - ay );
+	}
+	const t = Math.min(
+		1,
+		Math.max( 0, ( ( px - ax ) * dx + ( py - ay ) * dy ) / lengthSquared )
+	);
+	return Math.hypot( px - ( ax + t * dx ), py - ( ay + t * dy ) );
+}
+
+/**
+ * Finds the topmost stroke near a point, for the eraser tool.
+ *
+ * @param {Array}  strokes   Stored strokes ({stroke: [[x, y], …]}).
+ * @param {number} x         Horizontal canvas coordinate.
+ * @param {number} y         Vertical canvas coordinate.
+ * @param {number} tolerance Hit radius in canvas units.
+ * @return {number} Stroke index, or -1 when nothing is near the point.
+ */
+export function findStrokeAtPoint( strokes, x, y, tolerance = 10 ) {
+	const list = Array.isArray( strokes ) ? strokes : [];
+	for ( let index = list.length - 1; index >= 0; index-- ) {
+		const points = list[ index ]?.stroke;
+		if ( ! Array.isArray( points ) || points.length === 0 ) {
+			continue;
+		}
+		if ( points.length === 1 ) {
+			const [ sx = 0, sy = 0 ] = points[ 0 ];
+			if ( Math.hypot( x - sx, y - sy ) <= tolerance ) {
+				return index;
+			}
+			continue;
+		}
+		for ( let i = 0; i < points.length - 1; i++ ) {
+			const [ ax = 0, ay = 0 ] = points[ i ];
+			const [ bx = 0, by = 0 ] = points[ i + 1 ];
+			if ( pointToSegmentDistance( x, y, ax, ay, bx, by ) <= tolerance ) {
+				return index;
+			}
+		}
+	}
+	return -1;
+}
+
+export function removeStroke( strokes, index ) {
+	const list = Array.isArray( strokes ) ? strokes : [];
+	if ( index < 0 || index >= list.length ) {
+		return list;
+	}
+	return list.filter( ( _, i ) => i !== index );
+}

@@ -15,13 +15,21 @@ import { redo as redoIcon, undo as undoIcon } from '@wordpress/icons';
 import {
 	canRedoStroke,
 	canUndoStroke,
+	findStrokeAtPoint,
 	initialStrokeHistory,
 	recordStroke,
 	redoStroke,
+	removeStroke,
 	undoStroke,
 } from './strokes';
 
-function SketchHistoryButtons( { history, onUndo, onRedo } ) {
+function SketchHistoryButtons( {
+	history,
+	erasing,
+	onUndo,
+	onRedo,
+	onToggleEraser,
+} ) {
 	return (
 		<BlockControls group="block">
 			<ToolbarGroup>
@@ -39,23 +47,92 @@ function SketchHistoryButtons( { history, onUndo, onRedo } ) {
 					disabled={ ! canRedoStroke( history ) }
 					onClick={ onRedo }
 				/>
+				<ToolbarButton
+					icon={ <EraserIcon /> }
+					label={ __( 'Eraser', 'q2' ) }
+					isPressed={ erasing }
+					onClick={ onToggleEraser }
+				/>
 			</ToolbarGroup>
 		</BlockControls>
 	);
 }
 
+function EraserIcon() {
+	return (
+		<svg viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M14.5 3l6.5 6.5-9.5 9.5H5v-6.5L14.5 3z" />
+		</svg>
+	);
+}
+
 function withSketchHistory( BlockEdit ) {
 	function SketchHistoryEdit( props ) {
-		const { attributes, setAttributes } = props;
+		const { attributes, setAttributes, clientId } = props;
 		const [ history, setHistory ] = useState( () =>
 			initialStrokeHistory( attributes.strokes )
 		);
+		const [ erasing, setErasing ] = useState( false );
 
 		useEffect( () => {
 			setHistory( ( current ) =>
 				recordStroke( current, attributes.strokes )
 			);
 		}, [ attributes.strokes ] );
+
+		useEffect( () => {
+			if ( ! erasing ) {
+				return undefined;
+			}
+			const current = attributes.strokes || [];
+			const onPointerDown = ( event ) => {
+				const svg = event.target?.closest?.(
+					`.wp-block-a8c-sketch svg`
+				);
+				if (
+					! svg ||
+					! svg.closest( `[data-block="${ clientId }"]` )
+				) {
+					return;
+				}
+				const rect = svg.getBoundingClientRect();
+				const index = findStrokeAtPoint(
+					current,
+					event.clientX - rect.left,
+					event.clientY - rect.top
+				);
+				if ( index < 0 ) {
+					return;
+				}
+				event.preventDefault();
+				event.stopPropagation();
+				setAttributes( { strokes: removeStroke( current, index ) } );
+			};
+			document.addEventListener( 'pointerdown', onPointerDown, true );
+			return () =>
+				document.removeEventListener(
+					'pointerdown',
+					onPointerDown,
+					true
+				);
+		}, [ erasing, attributes.strokes, setAttributes, clientId ] );
+
+		useEffect( () => {
+			if ( ! erasing ) {
+				return undefined;
+			}
+			const svg = document.querySelector(
+				`[data-block="${ clientId }"] .wp-block-a8c-sketch svg`
+			);
+			if ( ! svg ) {
+				return undefined;
+			}
+			const previous = svg.style.cursor;
+			svg.style.cursor = 'crosshair';
+			return () => {
+				svg.style.cursor = previous;
+			};
+		}, [ erasing, clientId ] );
 
 		if ( props.name !== 'a8c/sketch' ) {
 			return <BlockEdit { ...props } />;
@@ -73,8 +150,10 @@ function withSketchHistory( BlockEdit ) {
 			<>
 				<SketchHistoryButtons
 					history={ history }
+					erasing={ erasing }
 					onUndo={ () => apply( undoStroke( history ) ) }
 					onRedo={ () => apply( redoStroke( history ) ) }
+					onToggleEraser={ () => setErasing( ( value ) => ! value ) }
 				/>
 				<BlockEdit { ...props } />
 			</>

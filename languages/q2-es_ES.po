@@ -1537,10 +1537,14 @@ msgstr "Ampliar barra lateral"
 msgid "Collapse sidebar"
 msgstr "Contraer barra lateral"
 
-#: src/sketch/history.js:30
+#: src/sketch/history.js:38
 msgid "Undo stroke"
 msgstr "Deshacer trazo"
 
-#: src/sketch/history.js:37
+#: src/sketch/history.js:45
 msgid "Redo stroke"
 msgstr "Rehacer trazo"
+
+#: src/sketch/history.js:52
+msgid "Eraser"
+msgstr "Borrador"
