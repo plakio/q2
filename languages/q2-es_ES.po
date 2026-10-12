@@ -47,15 +47,15 @@ msgstr "No tienes permiso para acceder a Q2."
 msgid "Q2 access denied"
 msgstr "Acceso a Q2 denegado"
 
-#: includes/REST/Collaboration_Controller.php:162
+#: includes/REST/Collaboration_Controller.php:157
 msgid "That collaboration action is not supported."
 msgstr "Esa acción de colaboración no es compatible."
 
-#: includes/REST/Collaboration_Controller.php:230
+#: includes/REST/Collaboration_Controller.php:225
 msgid "A former member"
 msgstr "Un antiguo miembro"
 
-#: includes/REST/Collaboration_Controller.php:267
+#: includes/REST/Collaboration_Controller.php:262
 msgid "That feed view is not supported."
 msgstr "Esa vista del feed no es compatible."
 
@@ -75,9 +75,9 @@ msgstr "Escribe un comentario antes de guardar."
 msgid "That block is not supported in comments."
 msgstr "Ese bloque no es compatible con los comentarios."
 
-#: includes/Collaboration/Emails.php:46
-#: includes/Collaboration/Emails.php:87
-#: includes/REST/Collaboration_Controller.php:226
+#: includes/Collaboration/Emails.php:56
+#: includes/Collaboration/Emails.php:92
+#: includes/REST/Collaboration_Controller.php:221
 #: includes/REST/Knowledge_Controller.php:201
 #: src/tasks/TasksScreen.js:197
 #: src/tasks/TasksScreen.js:202
@@ -1552,44 +1552,44 @@ msgid "Eraser"
 msgstr "Borrador"
 
 #. translators: 1: mention author, 2: post title.
-#: includes/Collaboration/Emails.php:53
+#: includes/Collaboration/Emails.php:63
 #, php-format
 msgid "%1$s mentioned you in %2$s"
 msgstr "%1$s te mencionó en %2$s"
 
-#: includes/Collaboration/Emails.php:54
-#: includes/Collaboration/Emails.php:60
-#: includes/Collaboration/Emails.php:95
-#: includes/Collaboration/Emails.php:101
+#: includes/Collaboration/Emails.php:64
+#: includes/Collaboration/Emails.php:70
+#: includes/Collaboration/Emails.php:104
+#: includes/Collaboration/Emails.php:116
 msgid "Someone"
 msgstr "Alguien"
 
 #. translators: 1: mention author, 2: post title.
-#: includes/Collaboration/Emails.php:59
+#: includes/Collaboration/Emails.php:69
 #, php-format
 msgid "%1$s mentioned you in \"%2$s\"."
 msgstr "%1$s te mencionó en \"%2$s\"."
 
-#. translators: 1: follower name, 2: post title.
-#: includes/Collaboration/Emails.php:94
-#, php-format
-msgid "%1$s started following %2$s"
-msgstr "%1$s empezó a seguir %2$s"
-
-#. translators: 1: follower name, 2: post title.
-#: includes/Collaboration/Emails.php:100
-#, php-format
-msgid "%1$s started following \"%2$s\"."
-msgstr "%1$s empezó a seguir \"%2$s\"."
-
 #. translators: 1: recipient display name.
-#: includes/Collaboration/Emails.php:130
+#: includes/Collaboration/Emails.php:146
 #, php-format
 msgid "Hi %1$s,"
 msgstr "Hola %1$s,"
 
 #. translators: %s: site name.
-#: includes/Collaboration/Emails.php:134
+#: includes/Collaboration/Emails.php:150
 #, php-format
 msgid "%s workspace"
 msgstr "Espacio de %s"
+
+#. translators: 1: comment author, 2: post title.
+#: includes/Collaboration/Emails.php:103
+#, php-format
+msgid "%1$s commented on \"%2$s\"."
+msgstr "%1$s comentó en \"%2$s\"."
+
+#. translators: 1: comment author, 2: post title.
+#: includes/Collaboration/Emails.php:115
+#, php-format
+msgid "%1$s commented on %2$s"
+msgstr "%1$s comentó en %2$s"

@@ -14,26 +14,36 @@ defined( 'ABSPATH' ) || exit;
 use Q2\Editor\EditorFrame;
 
 /**
- * Sends email counterparts for follows and mentions.
+ * Sends email counterparts for mentions and followed-thread comments.
  */
 final class Emails {
 	/**
 	 * Hooks email delivery into collaboration events.
 	 */
 	public static function register(): void {
-		add_action( 'q2_notification_created', array( __CLASS__, 'maybe_send_mention_email' ) );
+		add_action( 'q2_notification_created', array( __CLASS__, 'maybe_send_notification_email' ) );
 	}
 
 	/**
-	 * Emails the recipient of a newly created mention notification.
+	 * Emails the recipient of a newly created mention or comment notification.
 	 *
 	 * @param array<string, mixed> $data Notification values.
 	 */
-	public static function maybe_send_mention_email( array $data ): void {
-		if ( 'mention' !== ( $data['type'] ?? '' ) ) {
-			return;
+	public static function maybe_send_notification_email( array $data ): void {
+		$type = (string) ( $data['type'] ?? '' );
+		if ( 'mention' === $type ) {
+			self::send_mention_email( $data );
+		} elseif ( 'comment' === $type ) {
+			self::send_comment_email( $data );
 		}
+	}
 
+	/**
+	 * Emails the recipient of a mention notification.
+	 *
+	 * @param array<string, mixed> $data Notification values.
+	 */
+	private static function send_mention_email( array $data ): void {
 		$post_id = (int) ( $data['object_id'] ?? 0 );
 		$post    = get_post( $post_id );
 		if ( ! $post instanceof \WP_Post ) {
@@ -65,42 +75,48 @@ final class Emails {
 	}
 
 	/**
-	 * Emails a post author about a new follower.
+	 * Emails a follower about a new comment on the followed post.
 	 *
-	 * @param int $follower_id New follower user ID.
-	 * @param int $post_id     Followed post ID.
+	 * @param array<string, mixed> $data Notification values.
 	 */
-	public static function send_follow_email( int $follower_id, int $post_id ): void {
-		$post = get_post( $post_id );
+	private static function send_comment_email( array $data ): void {
+		$post_id = (int) ( $data['object_id'] ?? 0 );
+		$post    = get_post( $post_id );
 		if ( ! $post instanceof \WP_Post ) {
 			return;
 		}
 
-		$author_id = (int) $post->post_author;
-		if ( $author_id <= 0 || $author_id === $follower_id ) {
-			return;
-		}
-
-		$follower = get_userdata( $follower_id );
-		$title    = get_the_title( $post );
+		$actor = get_userdata( (int) $data['actor_user_id'] );
+		$title = get_the_title( $post );
 		if ( '' === $title ) {
 			$title = __( 'Untitled', 'q2' );
 		}
 
+		$excerpt = '';
+		$comment = get_comment( (int) ( $data['secondary_object_id'] ?? 0 ) );
+		if ( $comment instanceof \WP_Comment ) {
+			$excerpt = wp_trim_words( wp_strip_all_tags( $comment->comment_content ), 24 );
+		}
+
+		$intro = sprintf(
+			/* translators: 1: comment author, 2: post title. */
+			__( '%1$s commented on "%2$s".', 'q2' ),
+			$actor ? $actor->display_name : __( 'Someone', 'q2' ),
+			$title
+		);
+		if ( '' !== $excerpt ) {
+			$intro .= "\n\n" . $excerpt;
+		}
+
 		self::send(
-			$author_id,
+			(int) $data['user_id'],
 			sprintf(
-				/* translators: 1: follower name, 2: post title. */
-				__( '%1$s started following %2$s', 'q2' ),
-				$follower ? $follower->display_name : __( 'Someone', 'q2' ),
+				/* translators: 1: comment author, 2: post title. */
+				__( '%1$s commented on %2$s', 'q2' ),
+				$actor ? $actor->display_name : __( 'Someone', 'q2' ),
 				$title
 			),
-			sprintf(
-				/* translators: 1: follower name, 2: post title. */
-				__( '%1$s started following "%2$s".', 'q2' ),
-				$follower ? $follower->display_name : __( 'Someone', 'q2' ),
-				$title
-			),
+			$intro,
 			$post_id
 		);
 	}

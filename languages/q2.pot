@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Q2 0.3.19\n"
+"Project-Id-Version: Q2 0.3.20\n"
 "Report-Msgid-Bugs-To: https://github.com/plakio/q2/issues\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-12T02:35:39+00:00\n"
+"POT-Creation-Date: 2026-10-12T02:44:36+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: q2\n"
@@ -48,9 +48,9 @@ msgstr ""
 msgid "Q2 access denied"
 msgstr ""
 
-#: includes/Collaboration/Emails.php:46
-#: includes/Collaboration/Emails.php:87
-#: includes/REST/Collaboration_Controller.php:226
+#: includes/Collaboration/Emails.php:56
+#: includes/Collaboration/Emails.php:92
+#: includes/REST/Collaboration_Controller.php:221
 #: includes/REST/Knowledge_Controller.php:201
 #: src/tasks/TasksScreen.js:197
 #: src/tasks/TasksScreen.js:202
@@ -58,44 +58,44 @@ msgid "Untitled"
 msgstr ""
 
 #. translators: 1: mention author, 2: post title.
-#: includes/Collaboration/Emails.php:53
+#: includes/Collaboration/Emails.php:63
 #, php-format
 msgid "%1$s mentioned you in %2$s"
 msgstr ""
 
-#: includes/Collaboration/Emails.php:54
-#: includes/Collaboration/Emails.php:60
-#: includes/Collaboration/Emails.php:95
-#: includes/Collaboration/Emails.php:101
+#: includes/Collaboration/Emails.php:64
+#: includes/Collaboration/Emails.php:70
+#: includes/Collaboration/Emails.php:104
+#: includes/Collaboration/Emails.php:116
 msgid "Someone"
 msgstr ""
 
 #. translators: 1: mention author, 2: post title.
-#: includes/Collaboration/Emails.php:59
+#: includes/Collaboration/Emails.php:69
 #, php-format
 msgid "%1$s mentioned you in \"%2$s\"."
 msgstr ""
 
-#. translators: 1: follower name, 2: post title.
-#: includes/Collaboration/Emails.php:94
+#. translators: 1: comment author, 2: post title.
+#: includes/Collaboration/Emails.php:103
 #, php-format
-msgid "%1$s started following %2$s"
+msgid "%1$s commented on \"%2$s\"."
 msgstr ""
 
-#. translators: 1: follower name, 2: post title.
-#: includes/Collaboration/Emails.php:100
+#. translators: 1: comment author, 2: post title.
+#: includes/Collaboration/Emails.php:115
 #, php-format
-msgid "%1$s started following \"%2$s\"."
+msgid "%1$s commented on %2$s"
 msgstr ""
 
 #. translators: 1: recipient display name.
-#: includes/Collaboration/Emails.php:130
+#: includes/Collaboration/Emails.php:146
 #, php-format
 msgid "Hi %1$s,"
 msgstr ""
 
 #. translators: %s: site name.
-#: includes/Collaboration/Emails.php:134
+#: includes/Collaboration/Emails.php:150
 #, php-format
 msgid "%s workspace"
 msgstr ""
@@ -107,15 +107,15 @@ msgstr ""
 msgid "Open full editor"
 msgstr ""
 
-#: includes/REST/Collaboration_Controller.php:162
+#: includes/REST/Collaboration_Controller.php:157
 msgid "That collaboration action is not supported."
 msgstr ""
 
-#: includes/REST/Collaboration_Controller.php:230
+#: includes/REST/Collaboration_Controller.php:225
 msgid "A former member"
 msgstr ""
 
-#: includes/REST/Collaboration_Controller.php:267
+#: includes/REST/Collaboration_Controller.php:262
 msgid "That feed view is not supported."
 msgstr ""
 
