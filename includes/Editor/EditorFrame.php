@@ -188,6 +188,7 @@ final class EditorFrame {
 			. 'body.q2-embed{margin:0!important;background:#fff!important;}'
 			. '#wpcontent,#wpbody-content{margin-left:0!important;padding:0!important;}'
 			. '.edit-post-header,.edit-post-layout__header{position:sticky;top:0;z-index:30;}'
+			. '.edit-post-header a[target="_blank"],.editor-header a[target="_blank"]{display:none!important;}'
 			. 'figure.wp-block-a8c-sketch.is-selected svg,.is-selected figure.wp-block-a8c-sketch svg,.is-selected .wp-block-a8c-sketch svg{pointer-events:auto!important;}';
 
 		if ( $inline ) {
