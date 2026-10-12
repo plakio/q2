@@ -9,6 +9,7 @@ declare( strict_types=1 );
 
 namespace Q2\REST;
 
+use Q2\Collaboration\Emails;
 use Q2\Collaboration\Repository;
 
 defined( 'ABSPATH' ) || exit;
@@ -135,7 +136,11 @@ final class Collaboration_Controller {
 		$enabled = rest_sanitize_boolean( $request->get_param( 'enabled' ) );
 
 		if ( 'follow' === $action ) {
+			$was_following = $this->repository->is_following( $user_id, $post_id );
 			$this->repository->set_following( $user_id, $post_id, $enabled );
+			if ( $enabled && ! $was_following ) {
+				Emails::send_follow_email( $user_id, $post_id );
+			}
 		} elseif ( 'like' === $action ) {
 			$this->repository->set_liked( $user_id, $post_id, $enabled );
 			if ( $enabled ) {

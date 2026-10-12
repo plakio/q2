@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit;
 
 use Q2\Application\Application;
 use Q2\Collaboration\Activity;
+use Q2\Collaboration\Emails;
 use Q2\Editor\EditorFrame;
 use Q2\REST\Bootstrap_Controller;
 use Q2\REST\Collaboration_Controller;
@@ -59,6 +60,7 @@ final class Plugin {
 		( new Application() )->register();
 		( new EditorFrame() )->register();
 		( new Activity() )->register();
+		Emails::register();
 		( new Bootstrap_Controller() )->register();
 		( new Collaboration_Controller() )->register();
 		( new Comments_Controller() )->register();

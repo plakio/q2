@@ -177,6 +177,22 @@ final class Repository {
 	}
 
 	/**
+	 * Checks whether a user follows a post.
+	 *
+	 * @param int $user_id User ID.
+	 * @param int $post_id Post ID.
+	 * @return bool
+	 */
+	public function is_following( int $user_id, int $post_id ): bool {
+		global $wpdb;
+		$follows = $this->table( 'follows' );
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery -- Internal table names and indexed point queries.
+		$found = (bool) $wpdb->get_var( $wpdb->prepare( "SELECT 1 FROM {$follows} WHERE user_id = %d AND object_type = 'post' AND object_id = %d", $user_id, $post_id ) );
+		// phpcs:enable
+		return $found;
+	}
+
+	/**
 	 * Returns follower IDs for a post.
 	 *
 	 * @param int $post_id Post ID.
@@ -236,11 +252,10 @@ final class Repository {
 	 */
 	public function post_state( int $user_id, int $post_id ): array {
 		global $wpdb;
-		$follows   = $this->table( 'follows' );
 		$reactions = $this->table( 'reactions' );
 		$reads     = $this->table( 'reads' );
 		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery -- Internal table names and indexed point queries.
-		$following = (bool) $wpdb->get_var( $wpdb->prepare( "SELECT 1 FROM {$follows} WHERE user_id = %d AND object_type = 'post' AND object_id = %d", $user_id, $post_id ) );
+		$following = $this->is_following( $user_id, $post_id );
 		$liked     = (bool) $wpdb->get_var( $wpdb->prepare( "SELECT 1 FROM {$reactions} WHERE user_id = %d AND object_type = 'post' AND object_id = %d AND reaction = 'like'", $user_id, $post_id ) );
 		$likes     = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$reactions} WHERE object_type = 'post' AND object_id = %d AND reaction = 'like'", $post_id ) );
 		$read_at   = (string) $wpdb->get_var( $wpdb->prepare( "SELECT read_at FROM {$reads} WHERE user_id = %d AND object_type = 'post' AND object_id = %d", $user_id, $post_id ) );
