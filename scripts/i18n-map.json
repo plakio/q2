@@ -22,5 +22,14 @@
 	"src/search/SearchScreen.js": "build/index.js",
 	"src/starters/StartersScreen.js": "build/index.js",
 	"src/surveys/useSurveyRuntime.js": "build/index.js",
-	"src/tasks/TasksScreen.js": "build/index.js"
+	"src/tasks/TasksScreen.js": "build/index.js",
+	"src/blocks/task-list/edit.js": "build/index.js",
+	"src/blocks/task-list/index.js": "build/index.js",
+	"src/editor/P2BlockEditor.js": "build/index.js",
+	"src/editor/PostEditorIframe.js": "build/index.js",
+	"src/editor/linkSuggestions.js": "build/index.js",
+	"src/sketch/history.js": "build/index.js",
+	"src/sketch/strokes.js": "build/index.js",
+	"src/sketch/support.js": "build/index.js",
+	"src/tasks/taskRuntime.js": "build/index.js"
 }
