@@ -395,7 +395,11 @@ function App() {
 						title={ editorTitle() }
 						onClose={ () => setEditor( null ) }
 						onSaved={ () => {
-							setEditor( null );
+							// Page editing stays open so writers can keep
+							// going; posts keep the close-on-save flow.
+							if ( editor.postType !== 'page' ) {
+								setEditor( null );
+							}
 							setContentRevision( ( value ) => value + 1 );
 						} }
 					/>

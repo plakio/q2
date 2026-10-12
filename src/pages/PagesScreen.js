@@ -447,7 +447,6 @@ export default function PagesScreen( {
 						title={ __( 'New page', 'q2' ) }
 						onClose={ () => setCreating( null ) }
 						onSaved={ () => {
-							setCreating( null );
 							reload();
 						} }
 					/>
@@ -569,7 +568,6 @@ export default function PagesScreen( {
 									onOpenInFullEditor?.( pageId );
 								} }
 								onSaved={ () => {
-									setEditing( false );
 									reload();
 									apiFetch( {
 										path: `/q2/v1/pages/${ selectedId }`,
