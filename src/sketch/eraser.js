@@ -39,7 +39,7 @@ function ensureCursorStyle( doc ) {
 	}
 	const style = doc.createElement( 'style' );
 	style.setAttribute( `data-${ CURSOR_STYLE_ID }`, '1' );
-	style.textContent = `.${ ERASING_CLASS } .wp-block-a8c-sketch svg{cursor:crosshair}`;
+	style.textContent = `.${ ERASING_CLASS } .wp-block-a8c-sketch svg,.${ ERASING_CLASS } .wp-block-q2-sketch svg{cursor:crosshair}`;
 	( doc.head || doc.documentElement ).appendChild( style );
 }
 
@@ -87,7 +87,9 @@ export function useSketchEraser( { strokes, setAttributes, erasing } ) {
 			if ( ! target || typeof target.closest !== 'function' ) {
 				return;
 			}
-			const svg = target.closest( '.wp-block-a8c-sketch svg' );
+			const svg = target.closest(
+				'.wp-block-a8c-sketch svg, .wp-block-q2-sketch svg'
+			);
 			if ( ! svg ) {
 				return;
 			}

@@ -36,6 +36,8 @@
 		"@wordpress/format-library": "5.54.0",
 		"@wordpress/hooks": "^4.54.0",
 		"@wordpress/i18n": "^6.26.0",
-		"@wordpress/icons": "^15.4.0"
+		"@wordpress/icons": "^15.4.0",
+		"@wordpress/notices": "^5.57.0",
+		"perfect-freehand": "^1.2.3"
 	}
 }

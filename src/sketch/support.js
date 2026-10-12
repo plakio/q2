@@ -17,7 +17,9 @@ function onMouseDown( event ) {
 	if ( ! target || typeof target.closest !== 'function' ) {
 		return;
 	}
-	const figure = target.closest( '.wp-block-a8c-sketch' );
+	const figure = target.closest(
+		'.wp-block-a8c-sketch, .wp-block-q2-sketch'
+	);
 	if (
 		! figure ||
 		! figure.closest( '.q2-p2-canvas, .q2-block-editor-canvas' ) ||

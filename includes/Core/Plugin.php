@@ -12,6 +12,7 @@ namespace Q2\Core;
 defined( 'ABSPATH' ) || exit;
 
 use Q2\Application\Application;
+use Q2\Blocks\Sketch;
 use Q2\Collaboration\Activity;
 use Q2\Collaboration\Emails;
 use Q2\Editor\EditorFrame;
@@ -58,6 +59,7 @@ final class Plugin {
 		Installer::maybe_upgrade();
 		Lifecycle::register();
 		( new Application() )->register();
+		Sketch::register();
 		( new EditorFrame() )->register();
 		( new Activity() )->register();
 		Emails::register();

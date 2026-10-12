@@ -340,12 +340,12 @@ msgstr "Guardar comentario"
 
 #: src/comments/CommentsThread.js:109
 #: src/comments/CommentsThread.js:139
-#: src/index.js:1614
+#: src/index.js:1618
 msgid "Reply"
 msgstr "Responder"
 
 #: src/comments/CommentsThread.js:116
-#: src/pages/PagesScreen.js:522
+#: src/pages/PagesScreen.js:521
 msgid "Edit"
 msgstr "Editar"
 
@@ -355,7 +355,7 @@ msgstr "Eliminando…"
 
 #: src/comments/CommentsThread.js:127
 #: src/media/MediaScreen.js:466
-#: src/pages/PagesScreen.js:553
+#: src/pages/PagesScreen.js:552
 msgid "Delete"
 msgstr "Eliminar"
 
@@ -389,15 +389,15 @@ msgstr "Comentar"
 
 #: src/components/TagPicker.js:25
 #: src/editor/P2BlockEditor.js:161
-#: src/index.js:1592
+#: src/index.js:1596
 #: src/search/SearchScreen.js:29
 msgid "Tags"
 msgstr "Etiquetas"
 
 #: src/editor/BlockContentEditor.js:159
 #: src/editor/P2BlockEditor.js:109
-#: src/index.js:1330
-#: src/pages/PagesScreen.js:533
+#: src/index.js:1334
+#: src/pages/PagesScreen.js:532
 msgid "Publish"
 msgstr "Publicar"
 
@@ -441,7 +441,7 @@ msgid "Media"
 msgstr "Multimedia"
 
 #: src/index.js:78
-#: src/index.js:616
+#: src/index.js:620
 #: src/notifications/NotificationsScreen.js:160
 msgid "Notifications"
 msgstr "Notificaciones"
@@ -480,262 +480,262 @@ msgstr "Navegación del espacio de trabajo"
 msgid "Powered by"
 msgstr "Funciona con"
 
-#: src/index.js:476
+#: src/index.js:480
 #: src/search/SearchScreen.js:94
 msgid "Search workspace"
 msgstr "Buscar en el espacio de trabajo"
 
-#: src/index.js:485
+#: src/index.js:489
 msgid "Toggle navigation"
 msgstr "Alternar navegación"
 
-#: src/index.js:536
-#: src/index.js:876
+#: src/index.js:540
+#: src/index.js:880
 msgid "A collaborative workspace."
 msgstr "Un espacio de trabajo colaborativo."
 
-#: src/index.js:567
+#: src/index.js:571
 msgid "Workspace actions"
 msgstr "Acciones del espacio de trabajo"
 
 #: src/editor/PostEditorIframe.js:121
 #: src/index.js:252
-#: src/index.js:590
+#: src/index.js:594
 msgid "New post"
 msgstr "Nueva publicación"
 
-#: src/index.js:631
+#: src/index.js:635
 msgid "My profile"
 msgstr "Mi perfil"
 
-#: src/index.js:643
+#: src/index.js:647
 msgid "Workspace settings"
 msgstr "Ajustes del espacio de trabajo"
 
-#: src/index.js:659
+#: src/index.js:663
 msgid "Signed in"
 msgstr "Sesión iniciada"
 
-#: src/index.js:671
+#: src/index.js:675
 msgid "Sign out"
 msgstr "Cerrar sesión"
 
-#: src/index.js:712
+#: src/index.js:716
 msgid "The workspace image could not be saved."
 msgstr "No se pudo guardar la imagen del espacio de trabajo."
 
-#: src/index.js:725
+#: src/index.js:729
 msgid "The media library is still loading. Please try again in a moment."
 msgstr "La biblioteca multimedia todavía se está cargando. Inténtalo de nuevo en un momento."
 
-#: src/index.js:735
+#: src/index.js:739
 msgid "Select cover image"
 msgstr "Seleccionar imagen de portada"
 
-#: src/index.js:736
+#: src/index.js:740
 msgid "Select workspace icon"
 msgstr "Seleccionar icono del espacio de trabajo"
 
-#: src/index.js:740
+#: src/index.js:744
 msgid "Use as cover"
 msgstr "Usar como portada"
 
-#: src/index.js:741
+#: src/index.js:745
 msgid "Use as icon"
 msgstr "Usar como icono"
 
-#: src/index.js:803
+#: src/index.js:807
 msgid "Change cover"
 msgstr "Cambiar portada"
 
-#: src/index.js:804
+#: src/index.js:808
 msgid "Add cover"
 msgstr "Añadir portada"
 
-#: src/index.js:815
+#: src/index.js:819
 msgid "Remove cover"
 msgstr "Quitar portada"
 
-#: src/index.js:850
+#: src/index.js:854
 msgid "Change workspace icon"
 msgstr "Cambiar icono del espacio de trabajo"
 
-#: src/index.js:851
+#: src/index.js:855
 msgid "Add workspace icon"
 msgstr "Añadir icono del espacio de trabajo"
 
-#: src/index.js:862
+#: src/index.js:866
 msgid "Remove workspace icon"
 msgstr "Quitar icono del espacio de trabajo"
 
-#: src/index.js:1008
-#: src/index.js:1010
+#: src/index.js:1012
+#: src/index.js:1014
 msgid "Team"
 msgstr "Equipo"
 
-#: src/index.js:1015
+#: src/index.js:1019
 msgid "View all team members"
 msgstr "Ver todos los miembros del equipo"
 
-#: src/index.js:1092
+#: src/index.js:1096
 msgid "The feed could not be loaded."
 msgstr "No se pudo cargar el feed."
 
-#: src/index.js:1145
+#: src/index.js:1149
 msgid "Filter feed"
 msgstr "Filtrar feed"
 
-#: src/index.js:1154
+#: src/index.js:1158
 msgid "All posts"
 msgstr "Todas las publicaciones"
 
-#: src/index.js:1156
+#: src/index.js:1160
 msgid "New Posts"
 msgstr "Nuevas publicaciones"
 
-#: src/index.js:1159
+#: src/index.js:1163
 msgid "New Comments"
 msgstr "Nuevos comentarios"
 
-#: src/index.js:1162
+#: src/index.js:1166
 msgid "My Posts"
 msgstr "Mis publicaciones"
 
-#: src/index.js:1165
+#: src/index.js:1169
 msgid "My Mentions"
 msgstr "Mis menciones"
 
-#: src/index.js:1171
+#: src/index.js:1175
 msgid "Feed view"
 msgstr "Vista del feed"
 
-#: src/index.js:1181
+#: src/index.js:1185
 msgid "Default view"
 msgstr "Vista predeterminada"
 
-#: src/index.js:1184
+#: src/index.js:1188
 msgid "Expanded view"
 msgstr "Vista ampliada"
 
-#: src/index.js:1187
+#: src/index.js:1191
 msgid "Compact view"
 msgstr "Vista compacta"
 
-#: src/index.js:1195
+#: src/index.js:1199
 msgid "Loading updates…"
 msgstr "Cargando novedades…"
 
-#: src/index.js:1200
+#: src/index.js:1204
 msgid "Something went wrong"
 msgstr "Algo salió mal"
 
-#: src/index.js:1203
+#: src/index.js:1207
 #: src/projects/ProjectsScreen.js:60
 msgid "Try again"
 msgstr "Intentar de nuevo"
 
-#: src/index.js:1210
+#: src/index.js:1214
 msgid "Start the conversation"
 msgstr "Inicia la conversación"
 
-#: src/index.js:1213
+#: src/index.js:1217
 msgid "Publish the first update for this workspace."
 msgstr "Publica la primera novedad de este espacio de trabajo."
 
-#: src/index.js:1236
+#: src/index.js:1240
 msgid "Loading more…"
 msgstr "Cargando más…"
 
-#: src/index.js:1245
+#: src/index.js:1249
 msgid "Load more updates"
 msgstr "Cargar más novedades"
 
-#: src/index.js:1263
+#: src/index.js:1267
 msgid "Update published."
 msgstr "Novedad publicada."
 
-#: src/index.js:1264
+#: src/index.js:1268
 msgid "Update submitted for review."
 msgstr "Novedad enviada a revisión."
 
-#: src/index.js:1285
+#: src/index.js:1289
 msgid "Now"
 msgstr "Ahora"
 
-#: src/index.js:1308
+#: src/index.js:1312
 msgid "Post"
 msgstr "Publicar"
 
 #. translators: %s: current user's display name.
-#: src/index.js:1294
+#: src/index.js:1298
 #, js-format
 msgid "Hi, %s! Post an update, ask a question, or share ideas."
 msgstr "¡Hola, %s! Publica una novedad, haz una pregunta o comparte ideas."
 
-#: src/index.js:1299
+#: src/index.js:1303
 msgid "there"
 msgstr "allí"
 
-#: src/index.js:1428
+#: src/index.js:1432
 msgid "Delete this post? This moves it to the trash."
 msgstr "¿Eliminar esta publicación? Se moverá a la papelera."
 
-#: src/index.js:1447
+#: src/index.js:1451
 msgid "The post could not be deleted."
 msgstr "No se pudo eliminar la publicación."
 
-#: src/index.js:1520
+#: src/index.js:1524
 msgid "Post actions"
 msgstr "Acciones de la publicación"
 
 #: src/editor/PostEditorIframe.js:121
 #: src/index.js:252
-#: src/index.js:1537
-#: src/index.js:1571
+#: src/index.js:1541
+#: src/index.js:1575
 msgid "Edit post"
 msgstr "Editar publicación"
 
-#: src/index.js:1546
+#: src/index.js:1550
 msgid "Delete post"
 msgstr "Eliminar publicación"
 
-#: src/index.js:1561
+#: src/index.js:1565
 msgid "Unknown author"
 msgstr "Autor desconocido"
 
-#: src/index.js:1630
+#: src/index.js:1634
 msgid "Following"
 msgstr "Siguiendo"
 
-#: src/index.js:1631
+#: src/index.js:1635
 msgid "Follow"
 msgstr "Seguir"
 
-#: src/index.js:1651
+#: src/index.js:1655
 msgid "Liked"
 msgstr "Te gusta"
 
-#: src/index.js:1652
+#: src/index.js:1656
 msgid "Like"
 msgstr "Me gusta"
 
-#: src/index.js:1682
+#: src/index.js:1686
 msgid "Q2 foundation"
 msgstr "Base de Q2"
 
-#: src/index.js:1689
+#: src/index.js:1693
 msgid "This area is architected and coming next."
 msgstr "Esta área está diseñada y llegará próximamente."
 
-#: src/index.js:1692
+#: src/index.js:1696
 msgid "The foundation milestone establishes navigation without pretending unfinished collaboration features are complete."
 msgstr "La base establece la navegación sin presentar como completas las funciones de colaboración que aún no lo están."
 
-#: src/index.js:1706
+#: src/index.js:1710
 msgid "Page not found"
 msgstr "Página no encontrada"
 
-#: src/index.js:1708
+#: src/index.js:1712
 msgid "Return to the feed"
 msgstr "Volver al feed"
 
@@ -846,7 +846,7 @@ msgstr "Subido por %1$s el %2$s · %3$s"
 
 #: src/media/MediaScreen.js:390
 #: src/pages/PagesScreen.js:405
-#: src/pages/PagesScreen.js:500
+#: src/pages/PagesScreen.js:499
 msgid "Unknown"
 msgstr "Desconocido"
 
@@ -944,7 +944,7 @@ msgstr "Expandir"
 
 #: src/pages/PagesScreen.js:42
 #: src/pages/PagesScreen.js:398
-#: src/pages/PagesScreen.js:491
+#: src/pages/PagesScreen.js:490
 msgid "(Untitled)"
 msgstr "(Sin título)"
 
@@ -971,7 +971,7 @@ msgid "Move this page to trash?"
 msgstr "¿Mover esta página a la papelera?"
 
 #: src/index.js:250
-#: src/index.js:603
+#: src/index.js:607
 #: src/pages/PagesScreen.js:447
 msgid "New page"
 msgstr "Nueva página"
@@ -1003,29 +1003,29 @@ msgstr "Editadas recientemente"
 msgid "%1$s · %2$s"
 msgstr "%1$s · %2$s"
 
-#: src/pages/PagesScreen.js:457
+#: src/pages/PagesScreen.js:456
 msgid "Select a page"
 msgstr "Selecciona una página"
 
-#: src/pages/PagesScreen.js:459
+#: src/pages/PagesScreen.js:458
 msgid "Pick a document from the tree to read or edit it."
 msgstr "Elige un documento del árbol para leerlo o editarlo."
 
-#: src/pages/PagesScreen.js:469
+#: src/pages/PagesScreen.js:468
 msgid "Loading page…"
 msgstr "Cargando página…"
 
-#: src/pages/PagesScreen.js:477
+#: src/pages/PagesScreen.js:476
 msgid "Breadcrumb"
 msgstr "Migas de pan"
 
 #. translators: 1: author display name, 2: creation date.
-#: src/pages/PagesScreen.js:498
+#: src/pages/PagesScreen.js:497
 #, js-format
 msgid "By %1$s on %2$s"
 msgstr "Por %1$s el %2$s"
 
-#: src/pages/PagesScreen.js:544
+#: src/pages/PagesScreen.js:543
 msgid "Move to draft"
 msgstr "Mover a borrador"
 
@@ -1361,7 +1361,7 @@ msgid "Update"
 msgstr "Actualizar"
 
 #: src/editor/P2BlockEditor.js:110
-#: src/index.js:1331
+#: src/index.js:1335
 msgid "Submit for review"
 msgstr "Enviar para revisión"
 
@@ -1387,40 +1387,40 @@ msgid "The editor could not be loaded."
 msgstr "No se ha podido cargar el editor."
 
 #: src/index.js:249
-#: src/pages/PagesScreen.js:564
+#: src/pages/PagesScreen.js:563
 msgid "Edit page"
 msgstr "Editar página"
 
-#: src/index.js:892
+#: src/index.js:896
 msgid "New posts"
 msgstr "Novedades nuevas"
 
-#: src/index.js:897
+#: src/index.js:901
 msgid "New comments"
 msgstr "Comentarios nuevos"
 
-#: src/index.js:902
+#: src/index.js:906
 msgid "My mentions"
 msgstr "Mis menciones"
 
-#: src/index.js:907
+#: src/index.js:911
 msgid "My posts"
 msgstr "Mis publicaciones"
 
-#: src/index.js:915
+#: src/index.js:919
 msgid "Post filters"
 msgstr "Filtros de publicaciones"
 
-#: src/index.js:956
+#: src/index.js:960
 msgid "Links"
 msgstr "Enlaces"
 
-#: src/index.js:988
+#: src/index.js:992
 msgid "No links yet."
 msgstr "Todavía no hay enlaces."
 
-#: src/index.js:1279
-#: src/index.js:1321
+#: src/index.js:1283
+#: src/index.js:1325
 msgid "Create a post"
 msgstr "Crear una publicación"
 
@@ -1432,7 +1432,7 @@ msgstr "Volver a las páginas"
 msgid "Q2 Workspace Links"
 msgstr "Enlaces del espacio de trabajo Q2"
 
-#: src/index.js:958
+#: src/index.js:962
 msgid "Edit links"
 msgstr "Editar enlaces"
 
@@ -1502,18 +1502,18 @@ msgstr "Mostrar opciones de la tarea"
 msgid "(no title)"
 msgstr "(sin título)"
 
-#: src/index.js:1379
+#: src/index.js:1383
 #: src/pages/PagesScreen.js:256
 msgid "Copy this link:"
 msgstr "Copia este enlace:"
 
-#: src/index.js:1660
-#: src/pages/PagesScreen.js:513
+#: src/index.js:1664
+#: src/pages/PagesScreen.js:512
 msgid "Copied!"
 msgstr "¡Copiado!"
 
-#: src/index.js:1661
-#: src/pages/PagesScreen.js:514
+#: src/index.js:1665
+#: src/pages/PagesScreen.js:513
 msgid "Copy link"
 msgstr "Copiar enlace"
 
@@ -1593,3 +1593,80 @@ msgstr "%1$s comentó en \"%2$s\"."
 #, php-format
 msgid "%1$s commented on %2$s"
 msgstr "%1$s comentó en %2$s"
+
+#. translators: %d: number of posts.
+#: includes/Blocks/Sketch.php:194
+#, php-format
+msgid "%d post(s) contain a8c/sketch blocks."
+msgstr "%d publicación(es) con bloques a8c/sketch."
+
+#. translators: %d: number of posts.
+#: includes/Blocks/Sketch.php:204
+#, php-format
+msgid "Migrated %d post(s) to q2/sketch."
+msgstr "%d publicación(es) migradas a q2/sketch."
+
+#: src/blocks/sketch/controls.js:61
+msgid "Theme"
+msgstr "Tema"
+
+#: src/blocks/sketch/controls.js:64
+msgid "Default"
+msgstr "Por defecto"
+
+#: src/blocks/sketch/controls.js:67
+msgid "Custom"
+msgstr "Personalizados"
+
+#: src/blocks/sketch/controls.js:83
+msgid "Image created and added to the library"
+msgstr "Imagen creada y añadida a la biblioteca"
+
+#: src/blocks/sketch/controls.js:91
+msgid "View Image"
+msgstr "Ver imagen"
+
+#: src/blocks/sketch/controls.js:110
+msgid "Brush"
+msgstr "Pincel"
+
+#: src/blocks/sketch/controls.js:130
+msgid "Color"
+msgstr "Color"
+
+#: src/blocks/sketch/controls.js:147
+msgid "Clear canvas"
+msgstr "Limpiar lienzo"
+
+#: src/blocks/sketch/controls.js:157
+msgid "Upload as image"
+msgstr "Subir como imagen"
+
+#: src/blocks/sketch/controls.js:163
+msgid "Alt text (alternative text)"
+msgstr "Texto alternativo"
+
+#: src/blocks/sketch/controls.js:168
+msgid "Add a short-text description so it's recognized as the accessible name for the sketch."
+msgstr "Añade una descripción breve para que se reconozca como nombre accesible del dibujo."
+
+#: src/blocks/sketch/index.js:15
+msgid "Sketch"
+msgstr "Sketch"
+
+#: src/blocks/sketch/index.js:16
+msgctxt "Block description"
+msgid "Draw and write freely on a canvas."
+msgstr "Dibuja y escribe libremente en un lienzo."
+
+#: src/blocks/sketch/index.js:23
+msgid "Draw"
+msgstr "Dibujar"
+
+#: src/blocks/sketch/upload.js:11
+msgid "Image generated via Sketch block"
+msgstr "Imagen generada con el bloque Dibujo"
+
+#: src/blocks/sketch/upload.js:21
+msgid "No valid image"
+msgstr "Imagen no válida"

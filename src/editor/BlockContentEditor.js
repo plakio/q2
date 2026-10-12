@@ -66,10 +66,10 @@ export const POST_BLOCKS = [
 	'core/spacer',
 	'core/html',
 	'core/shortcode',
-	// Third-party drawing block. Inert when the Sketch plugin is not
-	// active; its editor script is enqueued as an app dependency in
-	// Application::enqueue_assets so the type exists before mount.
-	'a8c/sketch',
+	// Q2 fork of the Sketch drawing block. The original a8c/sketch stays
+	// parseable for existing content (see Sketch fallback + transform),
+	// but only the fork is offered for new content.
+	'q2/sketch',
 	'q2/task',
 	'q2/task-list',
 	'q2/project-status',

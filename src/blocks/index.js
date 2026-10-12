@@ -7,3 +7,4 @@ import './project-status';
 import './changelog';
 import './survey';
 import './files';
+import './sketch';

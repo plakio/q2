@@ -85,7 +85,7 @@ function withSketchHistory( BlockEdit ) {
 			erasing,
 		} );
 
-		if ( props.name !== 'a8c/sketch' ) {
+		if ( props.name !== 'a8c/sketch' && props.name !== 'q2/sketch' ) {
 			return <BlockEdit { ...props } />;
 		}
 

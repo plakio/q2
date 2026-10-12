@@ -189,7 +189,7 @@ final class EditorFrame {
 			. '#wpcontent,#wpbody-content{margin-left:0!important;padding:0!important;}'
 			. '.edit-post-header,.edit-post-layout__header{position:sticky;top:0;z-index:30;}'
 			. '.edit-post-header a[target="_blank"],.editor-header a[target="_blank"]{display:none!important;}'
-			. 'figure.wp-block-a8c-sketch.is-selected svg,.is-selected figure.wp-block-a8c-sketch svg,.is-selected .wp-block-a8c-sketch svg{pointer-events:auto!important;}';
+			. 'figure.wp-block-a8c-sketch.is-selected svg,.is-selected figure.wp-block-a8c-sketch svg,.is-selected .wp-block-a8c-sketch svg,figure.wp-block-q2-sketch.is-selected svg,.is-selected figure.wp-block-q2-sketch svg,.is-selected .wp-block-q2-sketch svg{pointer-events:auto!important;}';
 
 		if ( $inline ) {
 			$css .= '.editor-post-title,.editor-post-title__block,.editor-visual-editor__post-title-wrapper,.edit-post-sidebar,.interface-interface-skeleton__sidebar,.editor-post-publish-panel{display:none!important;}'
@@ -433,7 +433,7 @@ final class EditorFrame {
 		if (event.button !== 0) { return; }
 		var target = event.target;
 		if (!target || typeof target.closest !== 'function') { return; }
-		var figure = target.closest('.wp-block-a8c-sketch');
+		var figure = target.closest('.wp-block-a8c-sketch,.wp-block-q2-sketch');
 		if (!figure || !figure.closest('.is-selected')) { return; }
 		event.preventDefault();
 	}
@@ -445,7 +445,7 @@ final class EditorFrame {
 			if (!doc.querySelector('style[data-q2-sketch]')) {
 				var sketchStyle = doc.createElement('style');
 				sketchStyle.setAttribute('data-q2-sketch', '1');
-				sketchStyle.textContent = 'figure.wp-block-a8c-sketch.is-selected svg,.is-selected figure.wp-block-a8c-sketch svg,.is-selected .wp-block-a8c-sketch svg{pointer-events:auto!important}';
+				sketchStyle.textContent = 'figure.wp-block-a8c-sketch.is-selected svg,.is-selected figure.wp-block-a8c-sketch svg,.is-selected .wp-block-a8c-sketch svg,figure.wp-block-q2-sketch.is-selected svg,.is-selected figure.wp-block-q2-sketch svg,.is-selected .wp-block-q2-sketch svg{pointer-events:auto!important}';
 				(doc.head || doc.documentElement).appendChild(sketchStyle);
 			}
 			hookTypeDocument(doc);

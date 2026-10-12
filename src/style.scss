@@ -2653,6 +2653,37 @@ a {
 	margin: 0;
 }
 
+/* Q2 Sketch block canvas (mirrors the upstream block styles). */
+/* stylelint-disable no-descending-specificity */
+.wp-block-q2-sketch {
+	height: 100%;
+	position: relative;
+}
+
+.wp-block-q2-sketch svg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	touch-action: none;
+	overflow: hidden;
+}
+
+.wp-block-q2-sketch svg path {
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+.wp-block-q2-sketch__brush-style-popover .components-popover__content {
+	min-width: initial;
+}
+
+.wp-block-q2-sketch__color-palette-popover .components-popover__content {
+	padding: 16px;
+}
+/* stylelint-enable no-descending-specificity */
+
 @media (max-width: 800px) {
 
 	.q2-post-editor-overlay {
@@ -4230,7 +4261,11 @@ a {
 .q2-p2-canvas .wp-block-a8c-sketch.is-selected svg,
 .q2-p2-canvas .is-selected .wp-block-a8c-sketch svg,
 .q2-block-editor-canvas .wp-block-a8c-sketch.is-selected svg,
-.q2-block-editor-canvas .is-selected .wp-block-a8c-sketch svg {
+.q2-block-editor-canvas .is-selected .wp-block-a8c-sketch svg,
+.q2-p2-canvas .wp-block-q2-sketch.is-selected svg,
+.q2-p2-canvas .is-selected .wp-block-q2-sketch svg,
+.q2-block-editor-canvas .wp-block-q2-sketch.is-selected svg,
+.q2-block-editor-canvas .is-selected .wp-block-q2-sketch svg {
 	pointer-events: auto;
 }
 
