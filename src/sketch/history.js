@@ -15,13 +15,12 @@ import { redo as redoIcon, undo as undoIcon } from '@wordpress/icons';
 import {
 	canRedoStroke,
 	canUndoStroke,
-	findStrokeAtPoint,
 	initialStrokeHistory,
 	recordStroke,
 	redoStroke,
-	removeStroke,
 	undoStroke,
 } from './strokes';
+import { useSketchEraser } from './eraser';
 
 function SketchHistoryButtons( {
 	history,
@@ -68,7 +67,7 @@ function EraserIcon() {
 
 function withSketchHistory( BlockEdit ) {
 	function SketchHistoryEdit( props ) {
-		const { attributes, setAttributes, clientId } = props;
+		const { attributes, setAttributes } = props;
 		const [ history, setHistory ] = useState( () =>
 			initialStrokeHistory( attributes.strokes )
 		);
@@ -80,59 +79,11 @@ function withSketchHistory( BlockEdit ) {
 			);
 		}, [ attributes.strokes ] );
 
-		useEffect( () => {
-			if ( ! erasing ) {
-				return undefined;
-			}
-			const current = attributes.strokes || [];
-			const onPointerDown = ( event ) => {
-				const svg = event.target?.closest?.(
-					`.wp-block-a8c-sketch svg`
-				);
-				if (
-					! svg ||
-					! svg.closest( `[data-block="${ clientId }"]` )
-				) {
-					return;
-				}
-				const rect = svg.getBoundingClientRect();
-				const index = findStrokeAtPoint(
-					current,
-					event.clientX - rect.left,
-					event.clientY - rect.top
-				);
-				if ( index < 0 ) {
-					return;
-				}
-				event.preventDefault();
-				event.stopPropagation();
-				setAttributes( { strokes: removeStroke( current, index ) } );
-			};
-			document.addEventListener( 'pointerdown', onPointerDown, true );
-			return () =>
-				document.removeEventListener(
-					'pointerdown',
-					onPointerDown,
-					true
-				);
-		}, [ erasing, attributes.strokes, setAttributes, clientId ] );
-
-		useEffect( () => {
-			if ( ! erasing ) {
-				return undefined;
-			}
-			const svg = document.querySelector(
-				`[data-block="${ clientId }"] .wp-block-a8c-sketch svg`
-			);
-			if ( ! svg ) {
-				return undefined;
-			}
-			const previous = svg.style.cursor;
-			svg.style.cursor = 'crosshair';
-			return () => {
-				svg.style.cursor = previous;
-			};
-		}, [ erasing, clientId ] );
+		useSketchEraser( {
+			strokes: attributes.strokes,
+			setAttributes,
+			erasing,
+		} );
 
 		if ( props.name !== 'a8c/sketch' ) {
 			return <BlockEdit { ...props } />;
