@@ -40,6 +40,16 @@ export default function Edit( { attributes, isSelected, setAttributes } ) {
 			if ( ! isSelected ) {
 				return;
 			}
+			// Capture the pointer so the stroke keeps receiving moves even
+			// when it crosses the resize handle or leaves the canvas, and
+			// so releasing over those areas still commits the stroke.
+			if ( typeof e.currentTarget.setPointerCapture === 'function' ) {
+				try {
+					e.currentTarget.setPointerCapture( e.pointerId );
+				} catch {
+					// Best-effort: drawing still works without capture.
+				}
+			}
 			const mark = {
 				type: e.pointerType,
 				points: [ [ e.clientX - x, e.clientY - y, e.pressure ] ],

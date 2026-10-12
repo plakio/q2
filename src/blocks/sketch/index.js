@@ -21,7 +21,7 @@ registerBlockType( 'q2/sketch', {
 	category: 'widgets',
 	icon,
 	keywords: [ __( 'Draw', 'q2' ) ],
-	supports: { html: false, reusable: false, align: true },
+	supports: { reusable: false, align: true },
 	apiVersion: 2,
 	attributes: {
 		strokes: { type: 'array', default: [] },

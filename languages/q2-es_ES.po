@@ -1316,8 +1316,8 @@ msgstr "Escribe por bloques"
 msgid "Type / to insert a block. Use the + button to browse available blocks."
 msgstr "Teclea / para insertar un bloque. Usa el botón + para ver los bloques disponibles."
 
-#: includes/Editor/EditorFrame.php:389
-#: includes/Editor/EditorFrame.php:390
+#: includes/Editor/EditorFrame.php:392
+#: includes/Editor/EditorFrame.php:393
 #: src/editor/BlockContentEditor.js:423
 #: src/editor/BlockContentEditor.js:427
 msgid "Open full editor"
@@ -1595,13 +1595,13 @@ msgid "%1$s commented on %2$s"
 msgstr "%1$s comentó en %2$s"
 
 #. translators: %d: number of posts.
-#: includes/Blocks/Sketch.php:194
+#: includes/Blocks/Sketch.php:225
 #, php-format
 msgid "%d post(s) contain a8c/sketch blocks."
 msgstr "%d publicación(es) con bloques a8c/sketch."
 
 #. translators: %d: number of posts.
-#: includes/Blocks/Sketch.php:204
+#: includes/Blocks/Sketch.php:235
 #, php-format
 msgid "Migrated %d post(s) to q2/sketch."
 msgstr "%d publicación(es) migradas a q2/sketch."
@@ -1670,3 +1670,23 @@ msgstr "Imagen generada con el bloque Dibujo"
 #: src/blocks/sketch/upload.js:21
 msgid "No valid image"
 msgstr "Imagen no válida"
+
+#: includes/Media/SVG_Sanitizer.php:234
+msgid "The SVG file is too large to sanitize."
+msgstr "El archivo SVG es demasiado grande para sanitizarlo."
+
+#: includes/Media/SVG_Sanitizer.php:241
+msgid "The file does not look like an SVG image."
+msgstr "El archivo no parece una imagen SVG."
+
+#: includes/Media/SVG_Sanitizer.php:248
+msgid "The SVG contains a DOCTYPE or entity declaration and was rejected."
+msgstr "El SVG contiene una declaración DOCTYPE o de entidad y fue rechazado."
+
+#: includes/Media/SVG_Sanitizer.php:262
+msgid "The SVG could not be parsed as XML."
+msgstr "El SVG no se pudo interpretar como XML."
+
+#: includes/Media/SVG_Sanitizer.php:270
+msgid "The SVG root element is missing."
+msgstr "Falta el elemento raíz del SVG."

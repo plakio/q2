@@ -16,6 +16,7 @@ use Q2\Blocks\Sketch;
 use Q2\Collaboration\Activity;
 use Q2\Collaboration\Emails;
 use Q2\Editor\EditorFrame;
+use Q2\Media\SVG;
 use Q2\REST\Bootstrap_Controller;
 use Q2\REST\Collaboration_Controller;
 use Q2\REST\Comments_Controller;
@@ -60,6 +61,7 @@ final class Plugin {
 		Lifecycle::register();
 		( new Application() )->register();
 		Sketch::register();
+		SVG::register();
 		( new EditorFrame() )->register();
 		( new Activity() )->register();
 		Emails::register();

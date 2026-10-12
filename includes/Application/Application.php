@@ -144,6 +144,7 @@ final class Application {
 		wp_enqueue_style( 'wp-editor' );
 		wp_enqueue_style( 'wp-edit-post' );
 		wp_enqueue_style( 'wp-format-library' );
+		wp_enqueue_style( 'q2-sketch' );
 		wp_enqueue_script( 'wp-format-library' );
 
 		$asset_file = Q2_PATH . 'build/index.asset.php';

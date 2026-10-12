@@ -16,13 +16,30 @@ defined( 'ABSPATH' ) || exit;
  */
 final class Sketch {
 	/**
-	 * Wires the fallback renderer and the migration command.
+	 * Wires the block styles, fallback renderer, and migration command.
 	 */
 	public static function register(): void {
+		add_action( 'init', array( __CLASS__, 'register_assets' ), 5 );
 		add_action( 'init', array( __CLASS__, 'register_fallback' ), 20 );
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			\WP_CLI::add_command( 'q2 migrate-sketch', array( __CLASS__, 'cli_migrate' ) );
 		}
+	}
+
+	/**
+	 * Registers the block stylesheet handle.
+	 *
+	 * The canvas styles ship as the block's own stylesheet so they load
+	 * wherever the block renders: the workspace, the embedded wp-admin
+	 * editor, and the front end.
+	 */
+	public static function register_assets(): void {
+		wp_register_style(
+			'q2-sketch',
+			Q2_URL . 'assets/sketch.css',
+			array(),
+			Q2_VERSION
+		);
 	}
 
 	/**
@@ -38,6 +55,7 @@ final class Sketch {
 				'q2/sketch',
 				array(
 					'render_callback' => array( __CLASS__, 'render_sketch' ),
+					'style'           => 'q2-sketch',
 					'supports'        => array( 'align' => true ),
 				)
 			);
@@ -47,6 +65,7 @@ final class Sketch {
 				'a8c/sketch',
 				array(
 					'render_callback' => array( __CLASS__, 'render_sketch' ),
+					'style'           => 'q2-sketch',
 					'supports'        => array( 'align' => true ),
 				)
 			);

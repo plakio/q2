@@ -1,0 +1,42 @@
+/**
+ * Q2 Sketch block styles.
+ *
+ * Shipped as the block's own stylesheet (not only inside the application
+ * bundle) so the drawing canvas renders identically wherever the block
+ * appears: the workspace, the embedded wp-admin editor, and the front
+ * end. Mirrors the upstream Automattic block styles.
+ */
+
+.wp-block-q2-sketch {
+	height: 100%;
+	position: relative;
+}
+
+.wp-block-q2-sketch svg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	touch-action: none;
+	overflow: hidden;
+}
+
+.wp-block-q2-sketch svg path {
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+/* Keep the whole canvas drawable: the resize handle sits just below the
+ * block instead of covering its bottom edge. */
+.wp-block-q2-sketch .components-resizable-box__handle-bottom {
+	bottom: -23px;
+}
+
+.wp-block-q2-sketch__brush-style-popover .components-popover__content {
+	min-width: initial;
+}
+
+.wp-block-q2-sketch__color-palette-popover .components-popover__content {
+	padding: 16px;
+}

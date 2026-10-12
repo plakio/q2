@@ -263,6 +263,9 @@ final class EditorFrame {
 			$asset['version'],
 			true
 		);
+		// The sketch canvas styles ship as a block stylesheet so the
+		// drawing area renders correctly inside the embedded editor too.
+		wp_enqueue_style( 'q2-sketch' );
 		wp_add_inline_script(
 			'q2-editor-blocks',
 			'window.q2Settings = window.q2Settings || ' . wp_json_encode(
