@@ -437,14 +437,39 @@ final class EditorFrame {
 		event.preventDefault();
 	}
 	function hookSketchDocument(doc) {
-		if (!doc || doc.__q2SketchHooked) { return; }
+		if (!doc) { return; }
 		try {
-			doc.__q2SketchHooked = true;
+			// Re-check presence instead of a one-way flag: the canvas
+			// document is rebuilt as content changes and may drop our tags.
+			if (!doc.querySelector('style[data-q2-sketch]')) {
+				var sketchStyle = doc.createElement('style');
+				sketchStyle.setAttribute('data-q2-sketch', '1');
+				sketchStyle.textContent = 'figure.wp-block-a8c-sketch.is-selected svg,.is-selected figure.wp-block-a8c-sketch svg,.is-selected .wp-block-a8c-sketch svg{pointer-events:auto!important}';
+				(doc.head || doc.documentElement).appendChild(sketchStyle);
+			}
+			hookTypeDocument(doc);
+			if (!doc.__q2SketchGuard) {
+				doc.__q2SketchGuard = true;
+				doc.addEventListener('mousedown', sketchGuard, true);
+			}
+		} catch (e) { /* cross-origin or detached; skip */ }
+	}
+	// Mirror the workspace reading type inside editor canvases so content
+	// looks the same while editing as after publishing: the active theme
+	// otherwise imposes its own family, sizes, and weights.
+	function hookTypeDocument(doc) {
+		if (!doc) { return; }
+		try {
+			if (doc.querySelector('style[data-q2-type]')) { return; }
 			var style = doc.createElement('style');
-			style.setAttribute('data-q2-sketch', '1');
-			style.textContent = 'figure.wp-block-a8c-sketch.is-selected svg,.is-selected figure.wp-block-a8c-sketch svg,.is-selected .wp-block-a8c-sketch svg{pointer-events:auto!important}';
+			style.setAttribute('data-q2-type', '1');
+			style.textContent = '.editor-styles-wrapper{font-family:inter,-apple-system,system-ui,blinkmacsystemfont,"Segoe UI",roboto,"Oxygen-Sans",ubuntu,cantarell,"Helvetica Neue",sans-serif!important;color:#00101c!important;font-size:1.05rem!important;line-height:1.72!important;font-weight:400!important}'
+				+ '.editor-styles-wrapper p:not([style*="font-size"]),.editor-styles-wrapper li:not([style*="font-size"]){font-family:inter,-apple-system,system-ui,blinkmacsystemfont,"Segoe UI",roboto,"Oxygen-Sans",ubuntu,cantarell,"Helvetica Neue",sans-serif!important;color:#00101c!important;font-size:1.05rem!important;line-height:1.72!important;font-weight:400!important}'
+				+ '.editor-styles-wrapper h1:not([style*="font-size"]),.editor-styles-wrapper h2:not([style*="font-size"]),.editor-styles-wrapper h3:not([style*="font-size"]){font-family:inter,-apple-system,system-ui,blinkmacsystemfont,"Segoe UI",roboto,"Oxygen-Sans",ubuntu,cantarell,"Helvetica Neue",sans-serif!important;color:#00101c!important;font-weight:700!important}'
+				+ '.editor-styles-wrapper h1:not([style*="font-size"]){font-size:2em!important}'
+				+ '.editor-styles-wrapper h2:not([style*="font-size"]){font-size:1.5em!important}'
+				+ '.editor-styles-wrapper h3:not([style*="font-size"]){font-size:1.17em!important}';
 			(doc.head || doc.documentElement).appendChild(style);
-			doc.addEventListener('mousedown', sketchGuard, true);
 		} catch (e) { /* cross-origin or detached; skip */ }
 	}
 	function hookSketchCanvases() {
@@ -474,7 +499,7 @@ final class EditorFrame {
 				hookWindow(window);
 			}).observe(document, { childList: true, subtree: true });
 		} catch (e) { /* MutationObserver unavailable; skip */ }
-		window.setInterval(function(){ hookWindow(window); }, 2000);
+		window.setInterval(function(){ hookWindow(window); }, 1000);
 	}
 	document.addEventListener('keydown', function(event) {
 		if (event.key === 'Escape' && (document.body.classList.contains('q2-embed-full') || document.body.classList.contains('q2-embed-p2'))) {
