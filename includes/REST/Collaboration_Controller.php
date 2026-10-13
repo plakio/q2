@@ -71,8 +71,24 @@ final class Collaboration_Controller {
 			'q2/v1',
 			'/notifications',
 			array(
-				'methods'             => 'GET',
-				'callback'            => array( $this, 'get_notifications' ),
+				array(
+					'methods'             => 'GET',
+					'callback'            => array( $this, 'get_notifications' ),
+					'permission_callback' => static fn(): bool => current_user_can( 'read' ),
+				),
+				array(
+					'methods'             => 'DELETE',
+					'callback'            => array( $this, 'clear_notifications' ),
+					'permission_callback' => static fn(): bool => current_user_can( 'read' ),
+				),
+			)
+		);
+		register_rest_route(
+			'q2/v1',
+			'/notifications/(?P<id>\d+)',
+			array(
+				'methods'             => 'DELETE',
+				'callback'            => array( $this, 'delete_notification' ),
 				'permission_callback' => static fn(): bool => current_user_can( 'read' ),
 			)
 		);
@@ -241,6 +257,27 @@ final class Collaboration_Controller {
 	public function mark_notifications_read( \WP_REST_Request $request ): \WP_REST_Response {
 		$this->repository->mark_notifications_read( get_current_user_id(), absint( $request->get_param( 'id' ) ) );
 		return rest_ensure_response( array( 'updated' => true ) );
+	}
+
+	/**
+	 * Deletes every notification for the current user.
+	 *
+	 * @param \WP_REST_Request $request Current request.
+	 */
+	public function clear_notifications( \WP_REST_Request $request ): \WP_REST_Response {
+		unset( $request );
+		$this->repository->delete_notifications( get_current_user_id() );
+		return rest_ensure_response( array( 'deleted' => true ) );
+	}
+
+	/**
+	 * Deletes a single notification for the current user.
+	 *
+	 * @param \WP_REST_Request $request Current request.
+	 */
+	public function delete_notification( \WP_REST_Request $request ): \WP_REST_Response {
+		$this->repository->delete_notifications( get_current_user_id(), absint( $request->get_param( 'id' ) ) );
+		return rest_ensure_response( array( 'deleted' => true ) );
 	}
 
 	/**

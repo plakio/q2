@@ -6,6 +6,7 @@ import BlockContentEditor, {
 	COMMENT_BLOCKS,
 } from '../editor/BlockContentEditor';
 import { buildCommentTree } from './tree';
+import { useHighlightedMentions } from '../mentions/highlight';
 
 function Comment( {
 	comment,
@@ -18,6 +19,7 @@ function Comment( {
 	const [ editing, setEditing ] = useState( false );
 	const [ deleting, setDeleting ] = useState( false );
 	const replies = childrenMap.get( comment.id ) || [];
+	const highlightedContent = useHighlightedMentions( comment.rendered );
 
 	const saveReply = async ( content ) => {
 		await apiFetch( {
@@ -96,7 +98,9 @@ function Comment( {
 				) : (
 					<div
 						className="q2-comment-content"
-						dangerouslySetInnerHTML={ { __html: comment.rendered } }
+						dangerouslySetInnerHTML={ {
+							__html: highlightedContent,
+						} }
 					/>
 				) }
 				{ ! editing && (

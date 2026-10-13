@@ -4,6 +4,7 @@ import { useEffect, useId, useMemo, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { chevronLeft, chevronRight } from '@wordpress/icons';
 import PostEditorIframe from '../editor/PostEditorIframe';
+import { HighlightedContent } from '../mentions/highlight';
 import StateMessage from '../components/StateMessage';
 
 function TreeNode( { node, onSelect, activeId, expanded, onToggle } ) {
@@ -578,11 +579,9 @@ export default function PagesScreen( {
 								} }
 							/>
 						) : (
-							<div
+							<HighlightedContent
 								className="q2-page-content"
-								dangerouslySetInnerHTML={ {
-									__html: pageData.rendered,
-								} }
+								html={ pageData.rendered }
 							/>
 						) }
 					</article>

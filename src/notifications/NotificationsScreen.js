@@ -74,6 +74,26 @@ export default function NotificationsScreen( { onOpenPost } ) {
 		load();
 	};
 
+	const removeNotification = async ( id = 0 ) => {
+		if ( id > 0 ) {
+			await apiFetch( {
+				path: `/q2/v1/notifications/${ id }`,
+				method: 'DELETE',
+			} );
+		} else {
+			// eslint-disable-next-line no-alert
+			if ( ! window.confirm( __( 'Delete all notifications?', 'q2' ) ) ) {
+				return;
+			}
+			await apiFetch( {
+				path: '/q2/v1/notifications',
+				method: 'DELETE',
+			} );
+		}
+		window.dispatchEvent( new CustomEvent( 'q2:notifications-changed' ) );
+		load();
+	};
+
 	const filtered = useMemo(
 		() =>
 			notifications.filter( ( item ) => {
@@ -94,6 +114,9 @@ export default function NotificationsScreen( { onOpenPost } ) {
 				}
 				if ( 'likes' === filter ) {
 					return 'like' === item.type;
+				}
+				if ( 'mentions' === filter ) {
+					return 'mention' === item.type;
 				}
 				return true;
 			} ),
@@ -135,6 +158,7 @@ export default function NotificationsScreen( { onOpenPost } ) {
 	const filters = [
 		[ 'all', __( 'All', 'q2' ) ],
 		[ 'unread', __( 'Unread', 'q2' ) ],
+		[ 'mentions', __( 'Mentions', 'q2' ) ],
 		[ 'comments', __( 'Comments', 'q2' ) ],
 		[ 'follows', __( 'Follows', 'q2' ) ],
 		[ 'likes', __( 'Likes', 'q2' ) ],
@@ -159,9 +183,17 @@ export default function NotificationsScreen( { onOpenPost } ) {
 					<span className="q2-eyebrow">{ __( 'Inbox', 'q2' ) }</span>
 					<h1>{ __( 'Notifications', 'q2' ) }</h1>
 				</div>
-				<button type="button" onClick={ () => markRead() }>
-					{ __( 'Mark all read', 'q2' ) }
-				</button>
+				<div className="q2-notification-actions">
+					<button type="button" onClick={ () => markRead() }>
+						{ __( 'Mark all read', 'q2' ) }
+					</button>
+					<button
+						type="button"
+						onClick={ () => removeNotification() }
+					>
+						{ __( 'Clear all', 'q2' ) }
+					</button>
+				</div>
 			</header>
 			<div className="q2-notification-filters">
 				{ filters.map( ( [ key, label ] ) => (
@@ -213,6 +245,19 @@ export default function NotificationsScreen( { onOpenPost } ) {
 											item.read ? '' : 'is-unread'
 										}
 									>
+										<button
+											type="button"
+											className="q2-notification-dismiss"
+											aria-label={ __(
+												'Delete notification',
+												'q2'
+											) }
+											onClick={ () =>
+												removeNotification( item.id )
+											}
+										>
+											×
+										</button>
 										<button
 											type="button"
 											onClick={ async () => {

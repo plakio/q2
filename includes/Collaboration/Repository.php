@@ -86,6 +86,21 @@ final class Repository {
 	}
 
 	/**
+	 * Deletes one notification, or all notifications, for a recipient.
+	 *
+	 * @param int $user_id Recipient user ID.
+	 * @param int $notification_id Optional notification ID.
+	 */
+	public function delete_notifications( int $user_id, int $notification_id = 0 ): void {
+		global $wpdb;
+		$where = array( 'user_id' => $user_id );
+		if ( $notification_id > 0 ) {
+			$where['id'] = $notification_id;
+		}
+		$wpdb->delete( $this->table( 'notifications' ), $where );
+	}
+
+	/**
 	 * Stores a per-object read marker.
 	 *
 	 * @param int    $user_id User ID.

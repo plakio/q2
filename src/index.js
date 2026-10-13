@@ -50,6 +50,7 @@ import SearchScreen from './search/SearchScreen';
 import StartersScreen from './starters/StartersScreen';
 import useSurveyRuntime from './surveys/useSurveyRuntime';
 import './mentions/register';
+import { useHighlightedMentions } from './mentions/highlight';
 import './sketch/history';
 import './sketch/support';
 import {
@@ -1389,6 +1390,7 @@ function Post( {
 	const terms = ( post._embedded?.[ 'wp:term' ] || [] ).flat();
 	const tagTerms = terms.filter( ( term ) => term.taxonomy === 'post_tag' );
 	useSurveyRuntime( post.id, contentRef, ! editing );
+	const highlightedContent = useHighlightedMentions( post.content.rendered );
 	const date = useMemo(
 		() =>
 			new Intl.DateTimeFormat( undefined, {
@@ -1604,7 +1606,7 @@ function Post( {
 					ref={ contentRef }
 					className="q2-post-content"
 					dangerouslySetInnerHTML={ {
-						__html: post.content.rendered,
+						__html: highlightedContent,
 					} }
 				/>
 			) }

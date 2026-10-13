@@ -1355,8 +1355,36 @@ a {
 }
 
 .q2-notification-list li {
+	position: relative;
 	border-bottom: 1px solid var(--q2-line);
 	background: #eef6fd;
+}
+
+.q2-notification-actions {
+	display: flex;
+	gap: 0.5rem;
+}
+
+.q2-notification-list .q2-notification-dismiss {
+	position: absolute;
+	top: 0.4rem;
+	right: 0.6rem;
+	width: 1.75rem;
+	height: 1.75rem;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: transparent;
+	color: var(--q2-muted);
+	font-size: 1.1rem;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.q2-notification-list .q2-notification-dismiss:hover,
+.q2-notification-list .q2-notification-dismiss:focus-visible {
+	background: var(--q2-soft);
+	color: var(--q2-ink);
 }
 
 .q2-notification-list li.is-unread {
@@ -1395,6 +1423,16 @@ a {
 .q2-person-mention {
 	color: var(--q2-accent);
 	font-size: 0.78rem;
+}
+
+.q2-mention {
+	display: inline-block;
+	padding: 0 0.35em;
+	border-radius: 999px;
+	background: var(--q2-soft);
+	color: var(--q2-accent);
+	font-weight: 600;
+	white-space: nowrap;
 }
 
 .q2-mention-option {
