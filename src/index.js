@@ -217,11 +217,15 @@ function App() {
 		[ goToRoute ]
 	);
 
-	useEffect( () => {
+	const reloadFeedMeta = useCallback( () => {
 		apiFetch( { path: '/q2/v1/collaboration/feed' } )
 			.then( setFeedMeta )
 			.catch( () => {} );
-	}, [ route ] );
+	}, [] );
+
+	useEffect( () => {
+		reloadFeedMeta();
+	}, [ route, reloadFeedMeta ] );
 
 	useEffect( () => {
 		document.body.classList.toggle( 'q2-has-modal', Boolean( editor ) );
@@ -266,6 +270,7 @@ function App() {
 				filter={ feedFilter }
 				feedMeta={ feedMeta }
 				onFilterChange={ chooseFeedFilter }
+				onRefreshMeta={ reloadFeedMeta }
 				onOpenInFullEditor={ ( postId ) =>
 					openEditor( 'post', postId )
 				}
@@ -1042,6 +1047,7 @@ function Feed( {
 	filter,
 	feedMeta,
 	onFilterChange,
+	onRefreshMeta,
 	onOpenInFullEditor,
 } ) {
 	const [ posts, setPosts ] = useState( [] );
@@ -1136,6 +1142,46 @@ function Feed( {
 		} );
 	};
 
+	const [ markingRead, setMarkingRead ] = useState( false );
+	const markListedRead = async () => {
+		if ( markingRead || 0 === posts.length ) {
+			return;
+		}
+		setMarkingRead( true );
+		try {
+			await Promise.all(
+				posts.map( ( post ) =>
+					apiFetch( {
+						path: `/q2/v1/collaboration/posts/${ post.id }`,
+						method: 'POST',
+						data: { action: 'read' },
+					} ).catch( () => {} )
+				)
+			);
+			const notifications = await apiFetch( {
+				path: '/q2/v1/notifications',
+			} ).catch( () => [] );
+			await Promise.all(
+				( Array.isArray( notifications ) ? notifications : [] )
+					.filter( ( item ) => 'mention' === item.type )
+					.map( ( item ) =>
+						apiFetch( {
+							path: '/q2/v1/notifications/read',
+							method: 'POST',
+							data: { id: item.id },
+						} ).catch( () => {} )
+					)
+			);
+			window.dispatchEvent(
+				new CustomEvent( 'q2:notifications-changed' )
+			);
+			onRefreshMeta?.();
+			reload();
+		} finally {
+			setMarkingRead( false );
+		}
+	};
+
 	return (
 		<div className={ `q2-feed is-${ view }-view` }>
 			{ settings.capabilities?.createPosts && (
@@ -1193,6 +1239,16 @@ function Feed( {
 						</option>
 					</select>
 				</label>
+				{ 'mentions' === filter && posts.length > 0 && (
+					<button
+						type="button"
+						className="q2-feed-mark-read"
+						disabled={ markingRead }
+						onClick={ markListedRead }
+					>
+						{ __( 'Mark all read', 'q2' ) }
+					</button>
+				) }
 			</div>
 			<div className="q2-feed-content">
 				{ status === 'loading' && (

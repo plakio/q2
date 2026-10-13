@@ -295,7 +295,10 @@ final class Repository {
 	}
 
 	/**
-	 * Returns post IDs that mention a user.
+	 * Returns post IDs that mention a user, excluding posts already read.
+	 *
+	 * Read posts drop out of the mentions inbox the same way they leave
+	 * the new-posts list, so the count reflects what is still unseen.
 	 *
 	 * @param int $user_id User ID.
 	 * @return int[]
@@ -303,8 +306,9 @@ final class Repository {
 	public function mentioned_post_ids( int $user_id ): array {
 		global $wpdb;
 		$table = $this->table( 'mentions' );
+		$reads = $this->table( 'reads' );
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table is generated internally.
-		$sql = $wpdb->prepare( "SELECT DISTINCT parent_post_id FROM {$table} WHERE mentioned_user_id = %d ORDER BY created_at DESC", $user_id );
+		$sql = $wpdb->prepare( "SELECT DISTINCT parent_post_id FROM {$table} WHERE mentioned_user_id = %d AND parent_post_id NOT IN ( SELECT object_id FROM {$reads} WHERE user_id = %d AND object_type = 'post' ) ORDER BY created_at DESC", $user_id, $user_id );
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery -- Dedicated indexed table.
 		return array_map( 'intval', $wpdb->get_col( $sql ) );
 	}
