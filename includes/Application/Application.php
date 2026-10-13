@@ -145,6 +145,7 @@ final class Application {
 		wp_enqueue_style( 'wp-edit-post' );
 		wp_enqueue_style( 'wp-format-library' );
 		wp_enqueue_style( 'q2-sketch' );
+		$this->enqueue_combined_block_styles();
 		wp_enqueue_script( 'wp-format-library' );
 
 		$asset_file = Q2_PATH . 'build/index.asset.php';
@@ -192,6 +193,34 @@ final class Application {
 			'before'
 		);
 		wp_set_script_translations( self::SCRIPT_HANDLE, 'q2', Q2_PATH . 'languages' );
+	}
+
+	/**
+	 * Loads every core block's front-end styles on application pages.
+	 *
+	 * With a block theme, the `wp-block-library` handle only points at the
+	 * shared `common` CSS; each block's own styles (table borders,
+	 * fixed layout, stripes, galleries, quotes, …) are enqueued from the
+	 * post rendered on the server. Q2 renders content client-side, so
+	 * those per-block styles never arrive and blocks look broken
+	 * (e.g. tables with separated double borders and content-sized
+	 * widths). The combined library stylesheet carries the same rules,
+	 * so workspace content matches the native front end.
+	 */
+	private function enqueue_combined_block_styles(): void {
+		if ( ! function_exists( 'wp_should_load_separate_core_block_assets' ) ) {
+			return;
+		}
+		if ( ! wp_should_load_separate_core_block_assets() ) {
+			return;
+		}
+
+		wp_enqueue_style(
+			'q2-block-library',
+			includes_url( 'css/dist/block-library/style.min.css' ),
+			array(),
+			wp_get_wp_version()
+		);
 	}
 
 	/**
