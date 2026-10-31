@@ -221,7 +221,7 @@ final class GitHub_Updater {
 			'last_updated'  => $release['published_at'],
 			'sections'      => array(
 				'description' => __( 'A modern, self-hosted collaborative workspace for WordPress.', 'q2' ),
-				'changelog'   => '' !== $release['notes'] ? wp_kses_post( nl2br( $release['notes'] ) ) : __( 'See the GitHub release for details.', 'q2' ),
+				'changelog'   => $this->render_release_notes( $release ),
 			),
 			'download_link' => $release['package'],
 		);
@@ -230,7 +230,7 @@ final class GitHub_Updater {
 	/**
 	 * Gets and caches normalized public release metadata.
 	 *
-	 * @return array{version:string,package:string,published_at:string,notes:string}|null
+	 * @return array{version:string,package:string,published_at:string,notes:string,release_url:string}|null
 	 */
 	private function get_latest_release(): ?array {
 		$cached = get_site_transient( self::CACHE_KEY );
@@ -268,9 +268,193 @@ final class GitHub_Updater {
 			'package'      => $package,
 			'published_at' => sanitize_text_field( (string) ( $body['published_at'] ?? '' ) ),
 			'notes'        => sanitize_textarea_field( (string) ( $body['body'] ?? '' ) ),
+			'release_url'  => esc_url_raw( (string) ( $body['html_url'] ?? '' ) ),
 		);
 		set_site_transient( self::CACHE_KEY, $release, self::CACHE_LIFETIME );
 		return $release;
+	}
+
+	/**
+	 * Changelog section for the plugin details modal.
+	 *
+	 * @param array{notes:string,release_url:string} $release Release metadata.
+	 */
+	private function render_release_notes( array $release ): string {
+		$notes = trim( (string) ( $release['notes'] ?? '' ) );
+		if ( '' === $notes ) {
+			return 'See the GitHub repository for release notes and commit history.';
+		}
+
+		$html = $this->markdown_to_html( $notes );
+
+		$release_url = (string) ( $release['release_url'] ?? '' );
+		if ( '' !== $release_url ) {
+			$html .= sprintf(
+				'<p><a href="%s">%s</a></p>',
+				esc_url( $release_url ),
+				esc_html__( 'View the full release on GitHub', 'q2' )
+			);
+		}
+
+		return $html;
+	}
+
+	/**
+	 * Minimal Markdown renderer for release notes.
+	 *
+	 * Covers what the curated notes use: headings, lists, paragraphs, code,
+	 * emphasis and links. Output is escaped here; WordPress runs the section
+	 * through wp_kses() again before printing it.
+	 *
+	 * @param string $markdown Release notes in Markdown.
+	 */
+	private function markdown_to_html( string $markdown ): string {
+		$lines = preg_split( '/\r\n|\r|\n/', $markdown );
+		if ( ! is_array( $lines ) ) {
+			$lines = array();
+		}
+		$html      = array();
+		$paragraph = array();
+		$list      = '';
+		$code      = null;
+
+		$flush_paragraph = function () use ( &$html, &$paragraph ): void {
+			if ( array() !== $paragraph ) {
+				$html[]    = '<p>' . $this->markdown_inline( implode( ' ', $paragraph ) ) . '</p>';
+				$paragraph = array();
+			}
+		};
+		$close_list      = function () use ( &$html, &$list ): void {
+			if ( '' !== $list ) {
+				$html[] = '</' . $list . '>';
+				$list   = '';
+			}
+		};
+
+		foreach ( $lines as $line ) {
+			$trimmed = trim( $line );
+
+			if ( str_starts_with( $trimmed, '```' ) ) {
+				$flush_paragraph();
+				$close_list();
+				if ( null === $code ) {
+					$code = array();
+				} else {
+					$html[] = '<pre><code>' . esc_html( implode( "\n", $code ) ) . '</code></pre>';
+					$code   = null;
+				}
+				continue;
+			}
+
+			if ( null !== $code ) {
+				$code[] = $line;
+				continue;
+			}
+
+			if ( '' === $trimmed ) {
+				$flush_paragraph();
+				$close_list();
+				continue;
+			}
+
+			if ( 1 === preg_match( '/^(#{1,6})\s+(.+?)\s*#*$/', $trimmed, $matches ) ) {
+				$flush_paragraph();
+				$close_list();
+				$level  = min( 6, strlen( $matches[1] ) + 1 );
+				$html[] = sprintf( '<h%d>%s</h%d>', $level, $this->markdown_inline( $matches[2] ), $level );
+				continue;
+			}
+
+			if ( 1 === preg_match( '/^>\s?(.*)$/', $trimmed, $matches ) ) {
+				$flush_paragraph();
+				$close_list();
+				$html[] = '<blockquote><p>' . $this->markdown_inline( $matches[1] ) . '</p></blockquote>';
+				continue;
+			}
+
+			if ( 1 === preg_match( '/^[-*+]\s+(.+)$/', $trimmed, $matches ) ) {
+				$flush_paragraph();
+				if ( 'ul' !== $list ) {
+					$close_list();
+					$html[] = '<ul>';
+					$list   = 'ul';
+				}
+				$html[] = '<li>' . $this->markdown_inline( $matches[1] ) . '</li>';
+				continue;
+			}
+
+			if ( 1 === preg_match( '/^\d+\.\s+(.+)$/', $trimmed, $matches ) ) {
+				$flush_paragraph();
+				if ( 'ol' !== $list ) {
+					$close_list();
+					$html[] = '<ol>';
+					$list   = 'ol';
+				}
+				$html[] = '<li>' . $this->markdown_inline( $matches[1] ) . '</li>';
+				continue;
+			}
+
+			$close_list();
+			$paragraph[] = $trimmed;
+		}
+
+		if ( null !== $code ) {
+			$html[] = '<pre><code>' . esc_html( implode( "\n", $code ) ) . '</code></pre>';
+		}
+		$flush_paragraph();
+		$close_list();
+
+		return implode( "\n", $html );
+	}
+
+	/**
+	 * Inline Markdown for a single line or paragraph.
+	 *
+	 * @param string $text Escaped text fragment.
+	 */
+	private function markdown_inline( string $text ): string {
+		// Markdown links are rendered first and parked behind placeholders so
+		// the bare-URL pass cannot linkify them a second time.
+		$links = array();
+		$text  = (string) preg_replace_callback(
+			'/\[([^\]]+)\]\(([^)\s]+)\)/',
+			static function ( array $matches ) use ( &$links ): string {
+				$links[] = sprintf( '<a href="%s">%s</a>', esc_url( $matches[2] ), esc_html( $matches[1] ) );
+				return "\x1A" . ( count( $links ) - 1 ) . "\x1A";
+			},
+			$text
+		);
+
+		$text = esc_html( $text );
+
+		// GitHub release notes end with a bare "Full Changelog" URL that
+		// contains "...", which make_clickable() would truncate, so the URL is
+		// detected here instead.
+		$text = (string) preg_replace_callback(
+			'~https?://[^\s<]+~i',
+			static function ( array $matches ): string {
+				$raw  = rtrim( $matches[0], '.,;:!?)' );
+				$tail = substr( $matches[0], strlen( $raw ) );
+				$url  = html_entity_decode( $raw, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+				return sprintf( '<a href="%s">%s</a>%s', esc_url( $url ), esc_html( $url ), $tail );
+			},
+			$text
+		);
+
+		$text = (string) preg_replace_callback(
+			'/`([^`]+)`/',
+			static fn( array $matches ): string => '<code>' . $matches[1] . '</code>',
+			$text
+		);
+
+		$text = (string) preg_replace( '/\*\*(.+?)\*\*/', '<strong>$1</strong>', $text );
+		$text = (string) preg_replace( '/(?<!\*)\*([^*\n]+)\*(?!\*)/', '<em>$1</em>', $text );
+
+		foreach ( $links as $index => $link ) {
+			$text = str_replace( "\x1A" . $index . "\x1A", $link, $text );
+		}
+
+		return $text;
 	}
 
 	/**
