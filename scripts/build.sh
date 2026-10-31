@@ -35,17 +35,18 @@ ZIP_FILE="$DIST_DIR/$PLUGIN_SLUG-$VERSION.zip"
 ( cd "$STAGING_ROOT" && zip -qr "$ZIP_FILE" "$PLUGIN_SLUG" )
 ( cd "$DIST_DIR" && shasum -a 256 "$PLUGIN_SLUG-$VERSION.zip" > "$PLUGIN_SLUG-$VERSION.zip.sha256" )
 
-if ! unzip -Z1 "$ZIP_FILE" | grep -Fxq "$PLUGIN_SLUG/q2.php"; then
+ENTRIES="$(unzip -Z1 "$ZIP_FILE")"
+if ! grep -Fxq "$PLUGIN_SLUG/q2.php" <<< "$ENTRIES"; then
 	printf 'Error: release ZIP must contain %s/q2.php.\n' "$PLUGIN_SLUG" >&2
 	exit 1
 fi
 
-if unzip -Z1 "$ZIP_FILE" | grep -Ev "^$PLUGIN_SLUG/" | grep -q '.'; then
+if [[ -n "$(grep -Ev "^$PLUGIN_SLUG/" <<< "$ENTRIES" || true)" ]]; then
 	printf 'Error: release ZIP must contain only the %s root directory.\n' "$PLUGIN_SLUG" >&2
 	exit 1
 fi
 
-if unzip -Z1 "$ZIP_FILE" | grep -Eq '(^|/)(node_modules|vendor|src|scripts|docs|\.git|\.env)(/|$)'; then
+if grep -Eq '(^|/)(node_modules|vendor|src|scripts|tests|docs|package\.json|package-lock\.json|release-notes|\.git|\.env)(/|$)' <<< "$ENTRIES"; then
 	printf 'Error: release ZIP contains development-only or sensitive files.\n' >&2
 	exit 1
 fi
