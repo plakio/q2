@@ -48,6 +48,21 @@ if git rev-parse "v$NEW_VERSION" >/dev/null 2>&1; then
 	exit 1
 fi
 
+NOTES_SCRIPT="$ROOT_DIR/scripts/release-notes.sh"
+if [[ ! -x "$NOTES_SCRIPT" ]]; then
+	printf 'Error: %s not found or not executable.\n' "$NOTES_SCRIPT" >&2
+	exit 1
+fi
+NOTES_STATUS=0
+"$NOTES_SCRIPT" "$NEW_VERSION" || NOTES_STATUS=$?
+if [[ "$NOTES_STATUS" -eq 10 ]]; then
+	printf 'Release stopped: review and complete the draft release notes, commit them, then run the release again.\n' >&2
+	exit 1
+fi
+if [[ "$NOTES_STATUS" -ne 0 ]]; then
+	exit "$NOTES_STATUS"
+fi
+
 php -r '
 $file = $argv[1];
 $version = $argv[2];

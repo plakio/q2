@@ -42,6 +42,7 @@ jobs:
           VERSION="${GITHUB_REF_NAME#v}"
           grep -q "Version:           $VERSION" q2.php
           test -f "dist/q2-$VERSION.zip"
+          test -s "scripts/release-notes/$VERSION.md"
           cp "dist/q2-$VERSION.zip" dist/q2.zip
           ( cd dist && shasum -a 256 q2.zip > q2.zip.sha256 )
 
@@ -50,11 +51,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
+          NOTES_FILE="scripts/release-notes/$VERSION.md"
+          test -s "$NOTES_FILE"
           gh release create "$GITHUB_REF_NAME" \
             "dist/q2.zip" \
             "dist/q2.zip.sha256" \
             "dist/q2-$VERSION.zip" \
             "dist/q2-$VERSION.zip.sha256" \
             --title "Q2 $VERSION" \
-            --generate-notes \
+            --notes-file "$NOTES_FILE" \
             --verify-tag
