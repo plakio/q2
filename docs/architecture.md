@@ -74,7 +74,7 @@ Every route:
 
 ## Permissions
 
-Q2 derives ordinary actions from Core capabilities. Q2-specific capabilities are limited to policy not represented by Core, initially `manage_q2` and `q2_mention_all`. Activation grants them to administrators; filters allow sites to customize role mapping. Future task assignment checks both the actor’s edit capability and the assignee’s site membership.
+Q2 derives ordinary actions from Core capabilities. The only Q2-specific capability is `manage_q2`, which activation grants to administrators; filters allow sites to customize role mapping. Mentioning `@all` is workspace-wide policy rather than a role privilege: every site member can notify everyone in the workspace. Future task assignment checks both the actor’s edit capability and the assignee’s site membership.
 
 ## Multisite workspaces
 

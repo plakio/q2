@@ -44,17 +44,15 @@ const memberCompleter = {
 					</span>
 				),
 			} ) );
-			if ( window.q2Settings?.capabilities?.mentionAll ) {
-				list.unshift( {
-					key: 'q2-member-all',
-					value: { slug: 'all' },
-					label: (
-						<strong>
-							{ __( 'Everyone in this workspace', 'q2' ) }
-						</strong>
-					),
-				} );
-			}
+			list.unshift( {
+				key: 'q2-member-all',
+				value: { slug: 'all' },
+				label: (
+					<strong>
+						{ __( 'Everyone in this workspace', 'q2' ) }
+					</strong>
+				),
+			} );
 			return list;
 		}, [ members ] );
 		return [ options ];

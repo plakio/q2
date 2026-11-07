@@ -9,8 +9,6 @@ declare( strict_types=1 );
 
 namespace Q2\Collaboration;
 
-use Q2\Core\Capabilities;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -173,9 +171,7 @@ final class Activity {
 		$recipients = array();
 		foreach ( $keys as $key ) {
 			if ( 'all' === $key ) {
-				if ( user_can( $actor, Capabilities::MENTION_ALL ) ) {
-					$recipients += $this->all_member_mentions();
-				}
+				$recipients += $this->all_member_mentions();
 				continue;
 			}
 

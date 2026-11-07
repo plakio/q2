@@ -38,8 +38,12 @@ final class EditorFrame {
 
 	/**
 	 * When a post is saved without a title (the Q2 P2 editor hides the
-	 * title field), derive a short title from the first paragraph of
-	 * content so listings, feeds, and notifications have a label.
+	 * title field), derive a title from the first paragraph of content
+	 * so listings, feeds, and notifications have a label.
+	 *
+	 * Only text that fits completely is promoted to the title. A long
+	 * first paragraph stays in the content instead of being truncated
+	 * and removed, which would discard the rest of the paragraph.
 	 *
 	 * @param array $data    Sanitized post data.
 	 * @param array $postarr Raw post array.
@@ -60,6 +64,7 @@ final class EditorFrame {
 
 		// P2 behaviour: the first line of the update becomes the post title
 		// and is removed from the content so the feed never renders it twice.
+		// Long paragraphs are not titles, so they stay in the content intact.
 		$blocks      = parse_blocks( (string) $data['post_content'] );
 		$first_index = null;
 		foreach ( $blocks as $index => $block ) {
@@ -97,16 +102,12 @@ final class EditorFrame {
 			return $data;
 		}
 
-		$title = $text;
-		if ( function_exists( 'mb_strlen' ) && function_exists( 'mb_substr' ) ) {
-			if ( mb_strlen( $title ) > 80 ) {
-				$title = mb_substr( $title, 0, 80 ) . '…';
-			}
-		} elseif ( strlen( $title ) > 80 ) {
-			$title = substr( $title, 0, 80 ) . '…';
+		$title_length = function_exists( 'mb_strlen' ) ? mb_strlen( $text ) : strlen( $text );
+		if ( $title_length > 80 ) {
+			return $data;
 		}
 
-		$data['post_title'] = $title;
+		$data['post_title'] = $text;
 
 		if ( 'core/paragraph' === $first['blockName'] || 'core/heading' === $first['blockName'] ) {
 			array_splice( $blocks, $first_index, 1 );

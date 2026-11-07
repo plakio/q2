@@ -13,7 +13,7 @@ Modern P2 is a WordPress.com-hosted, Gutenberg-based collaboration product. A wo
 | Posts | Gutenberg-authored posts form the chronological async stream. | Public, high | Native `post` and `post_content`. |
 | Pages | Stable documentation; multiple people can update it; creation date is secondary. | Public, high | Native hierarchical `page`. |
 | Comments | Chronological threaded replies; reply to a post or comment; the same block editor used for posts/pages; inline edit and trash. | Public, high | Native comments containing sanitized block markup. |
-| Mentions | Autocomplete for workspace members in posts, pages, and comments; multiple mentions and `@all`; notification on publish. | Public, high | Q2 parser/index and permission-gated `@all`. |
+| Mentions | Autocomplete for workspace members in posts, pages, and comments; multiple mentions and `@all`; notification on publish. | Public, high | Q2 parser/index and workspace-wide `@all`. |
 | Likes | Notifications and email for likes are documented; notification UI can filter Likes. | Public, high | Start with one idempotent Like reaction. |
 | Following | Users explicitly follow a post for comment notifications. New posts are emailed by default in the documented generation. | Public, high | Per-thread subscription, distinct from site membership. |
 | Notifications | Web/admin-bar notifications; All/Unread and Comments/Follows/Likes filters; email and browser delivery; keyboard navigation; display limited to latest 100. | Public, high | Durable in-app event inbox with channel adapters; do not copy the 100-row storage limit. |

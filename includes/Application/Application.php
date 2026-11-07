@@ -298,7 +298,6 @@ final class Application {
 				'editOthersPosts'  => current_user_can( 'edit_others_posts' ),
 				'moderateComments' => current_user_can( 'moderate_comments' ),
 				'manageQ2'         => current_user_can( Capabilities::MANAGE ),
-				'mentionAll'       => current_user_can( Capabilities::MENTION_ALL ),
 			),
 		);
 	}

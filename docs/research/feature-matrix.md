@@ -11,7 +11,7 @@ Legend: Core = ready primitive; UI = Q2 UI/domain logic; Table = Q2 indexed pers
 | New Posts/New Comments | Theme timestamps/internal seen code | Public docs unclear | Query primitives | Table; preserve as Q2 feature |
 | My Posts | Theme/Core author route | Available through filtering/navigation | Core | Core query filter |
 | My Mentions | Jetpack/private modules | Yes | No native mentions | Table + parser |
-| `@all` | Not complete self-hosted | Yes | No | Capability-gated Q2 mention target |
+| `@all` | Not complete self-hosted | Yes | No | Workspace-wide Q2 mention target |
 | Likes | Jetpack/wp.com | Yes | No | Table; Like first, reaction-ready schema |
 | Thread follows | o2/wp.com | Yes | No post subscription API | Table |
 | Notifications | Private wp.com modules | Web/email/browser | Hooks/email primitives | Table + in-app UI; channel seam |

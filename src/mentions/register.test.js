@@ -36,7 +36,7 @@ describe( 'member mentions completer', () => {
 	beforeEach( () => {
 		apiFetch.mockReset();
 		apiFetch.mockResolvedValue( MEMBERS );
-		window.q2Settings = { capabilities: { mentionAll: true } };
+		window.q2Settings = { capabilities: {} };
 	} );
 
 	afterEach( () => {
@@ -80,6 +80,7 @@ describe( 'member mentions completer', () => {
 		const previous = seen[ seen.length - 2 ];
 		expect( last ).toBe( previous );
 		expect( last.length ).toBe( MEMBERS.length + 1 );
+		expect( last[ 0 ].value ).toEqual( { slug: 'all' } );
 	} );
 
 	it( 'completes a member selection as plain-text mention', () => {
